@@ -219,6 +219,14 @@ const Storage = (() => {
         };
     }
 
+    function exportData() {
+        return JSON.stringify(
+            load(),
+            null,
+            2
+        );
+    }
+
     function importData(json) {
         const parsed =
             typeof json === "string"
@@ -427,13 +435,11 @@ function removeCustomWord(wordId) {
         updateStats,
         getTodayActivity,
         getCustomWords,
+        getReadyCustomWords,
         addPendingWords,
         removeCustomWord,
         updateCustomWord,
         normalizeWordKey,
-        getCustomWords,
-        getReadyCustomWords,
-        addPendingWords,
         export: exportData,
         import: importData,
         reset
