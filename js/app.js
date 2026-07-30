@@ -2,6 +2,9 @@
 
 const APP_VERSION = "0.8.0";
 
+const AI_API_URL =
+    "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
+
 const App = (() => {
     let words = [];
 
