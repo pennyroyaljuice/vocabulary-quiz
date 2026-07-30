@@ -16,7 +16,8 @@ const Storage = (() => {
             version: STORAGE_VERSION,
             stats: {},
             settings: { ...DEFAULT_SETTINGS },
-            activity: {}
+            activity: {},
+            customWords: []
         };
     }
 
@@ -56,12 +57,14 @@ const Storage = (() => {
     function migrate(source) {
         const migrated = {
             version: STORAGE_VERSION,
+
             stats:
                 source &&
                 typeof source.stats === "object" &&
                 source.stats !== null
                     ? source.stats
                     : {},
+
             settings: {
                 ...DEFAULT_SETTINGS,
                 ...(
@@ -72,12 +75,19 @@ const Storage = (() => {
                         : {}
                 )
             },
+
             activity:
                 source &&
                 typeof source.activity === "object" &&
                 source.activity !== null
                     ? source.activity
-                    : {}
+                    : {},
+
+            customWords:
+                source &&
+                Array.isArray(source.customWords)
+                    ? source.customWords
+                    : []
         };
 
         // 旧版では darkMode が boolean の場合がある
@@ -283,6 +293,135 @@ const Storage = (() => {
         }
     }
 
+function getCustomWords() {
+    return load().customWords;
+}
+
+function addPendingWords(wordNames) {
+    const data = load();
+    const existingKeys = new Set(
+        data.customWords.map(
+            (item) => normalizeWordKey(item.word)
+        )
+    );
+
+    const added = [];
+    const duplicates = [];
+
+    for (const rawWord of wordNames) {
+        const word = cleanWordName(rawWord);
+        const key = normalizeWordKey(word);
+
+        if (!key) {
+            continue;
+        }
+
+        if (existingKeys.has(key)) {
+            duplicates.push(word);
+            continue;
+        }
+
+        const item = {
+            id: createCustomWordId(),
+            word,
+            reading: "",
+            meaning: "",
+            description: "",
+            category: "",
+            quizTypes: [],
+            status: "pending",
+            createdAt: Date.now()
+        };
+
+        data.customWords.push(item);
+        existingKeys.add(key);
+        added.push(item);
+    }
+
+    save(data);
+
+    return {
+        added,
+        duplicates
+    };
+}
+
+    function getReadyCustomWords() {
+        return load().customWords.filter(
+            (item) =>
+                item.status === "ready" &&
+                item.word &&
+                item.meaning
+        );
+    }
+
+function removeCustomWord(wordId) {
+    const data = load();
+
+    data.customWords =
+        data.customWords.filter(
+            (item) =>
+                String(item.id) !==
+                String(wordId)
+        );
+
+    save(data);
+}
+
+    function updateCustomWord(wordId, changes) {
+        const data = load();
+
+        const index =
+            data.customWords.findIndex(
+                (item) =>
+                    String(item.id) ===
+                    String(wordId)
+            );
+
+        if (index < 0) {
+            throw new Error(
+                "追加語彙が見つかりません。"
+            );
+        }
+
+        data.customWords[index] = {
+            ...data.customWords[index],
+            ...changes,
+            id: data.customWords[index].id
+        };
+
+        save(data);
+
+        return {
+            ...data.customWords[index]
+        };
+    }
+
+    function cleanWordName(value) {
+        return String(value || "")
+            .replace(/^[\s・•●○□■\-–—]+/u, "")
+            .replace(/[（(][^）)]*[）)]/gu, "")
+            .trim();
+    }
+
+    function normalizeWordKey(value) {
+        return cleanWordName(value)
+            .normalize("NFKC")
+            .toLowerCase()
+            .replace(/[\s・･\-–—_＿]/gu, "");
+    }
+
+    function createCustomWordId() {
+        return (
+            "custom-" +
+            Date.now().toString(36) +
+            "-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 8)
+        );
+    }
+
     function reset() {
         localStorage.removeItem(STORAGE_KEY);
     }
@@ -314,6 +453,14 @@ const Storage = (() => {
         updateStats,
         getTodayActivity,
         toggleFavorite,
+        getCustomWords,
+        addPendingWords,
+        removeCustomWord,
+        updateCustomWord,
+        normalizeWordKey,
+        getCustomWords,
+        getReadyCustomWords,
+        addPendingWords,
         export: exportData,
         import: importData,
         reset

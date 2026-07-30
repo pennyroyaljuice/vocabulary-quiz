@@ -31,24 +31,45 @@ const App = (() => {
 
         if (!response.ok) {
             throw new Error(
-                `語彙データの読み込みに失敗しました。` +
-                ` HTTP ${response.status}`
+                `語彙データの読み込みに失敗しました。 HTTP ${response.status}`
             );
         }
 
         const data = await response.json();
 
-        const wordList = Array.isArray(data)
+        const standardWords = Array.isArray(data)
             ? data
             : data.words;
 
-        if (!Array.isArray(wordList)) {
+        if (!Array.isArray(standardWords)) {
             throw new Error(
                 "words.json の形式が不正です。"
             );
         }
 
-        return wordList;
+        const customWords =
+            Storage.getReadyCustomWords();
+
+        const merged = [
+            ...standardWords,
+            ...customWords
+        ];
+
+        const seen = new Set();
+
+        return merged.filter((item) => {
+            const key =
+                Storage.normalizeWordKey(
+                    item.word
+                );
+
+            if (!key || seen.has(key)) {
+                return false;
+            }
+
+            seen.add(key);
+            return true;
+        });
     }
 
     function updateHeaderWordCount() {
@@ -64,6 +85,16 @@ const App = (() => {
     }
 
     function registerRoutes() {
+
+        Router.register(
+             "addWords",
+            (container) =>
+            AddWords.render(
+            container,
+            words
+                          )
+        );
+
         Router.register(
             "home",
             renderHome
@@ -278,6 +309,14 @@ const App = (() => {
                     語彙一覧
                 </button>
 
+                 <button
+                    id="addWordsButton"
+                    class="menuButton"
+                     type="button"
+                >
+                    語彙を追加
+                </button>
+
                 <button
                     id="rankingButton"
                     class="menuButton"
@@ -338,6 +377,13 @@ const App = (() => {
                             dailyWords
                     });
                 }
+            );
+
+        container
+            .querySelector("#addWordsButton")
+            .addEventListener(
+                "click",
+                () => Router.show("addWords")
             );
 
         container
