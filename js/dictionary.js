@@ -86,11 +86,6 @@ const Dictionary = (() => {
                     )}
 
                     ${createFilterButton(
-                        "favorite",
-                        "お気に入り"
-                    )}
-
-                    ${createFilterButton(
                         "weak",
                         "苦手"
                     )}
@@ -302,11 +297,6 @@ const Dictionary = (() => {
                     null;
 
                 switch (currentFilter) {
-                    case "favorite":
-                        return Boolean(
-                            stat?.favorite
-                        );
-
                     case "weak":
                         return isWeakWord(
                             stat
@@ -459,11 +449,6 @@ const Dictionary = (() => {
                 )
                 : null;
 
-        const favoriteMark =
-            stat?.favorite
-                ? "★"
-                : "";
-
         return `
             <button
                 type="button"
@@ -487,19 +472,6 @@ const Dictionary = (() => {
                 </span>
 
                 <span class="dictionary-word-meta">
-                    ${
-                        favoriteMark
-                            ? `
-                                <span
-                                    class="favorite-mark"
-                                    aria-label="お気に入り"
-                                >
-                                    ${favoriteMark}
-                                </span>
-                            `
-                            : ""
-                    }
-
                     ${
                         accuracy === null
                             ? `
@@ -622,7 +594,6 @@ const Dictionary = (() => {
                 correct: 0,
                 wrong: 0,
                 streak: 0,
-                favorite: false
             };
 
         const accuracy =
@@ -638,36 +609,15 @@ const Dictionary = (() => {
 
         container.innerHTML = `
             <section class="card word-detail">
-                <div class="detail-top-actions">
-                    <button
-                        id="detailBackButton"
-                        class="menuButton compact-button"
-                        type="button"
-                    >
-                        一覧へ戻る
-                    </button>
-
-                    <button
-                        id="favoriteButton"
-                        class="favorite-button ${
-                            stat.favorite
-                                ? "active"
-                                : ""
-                        }"
-                        type="button"
-                        aria-pressed="${
-                            stat.favorite
-                                ? "true"
-                                : "false"
-                        }"
-                    >
-                        ${
-                            stat.favorite
-                                ? "★ お気に入り"
-                                : "☆ お気に入り"
-                        }
-                    </button>
-                </div>
+            <div class="detail-top-actions">
+                <button
+                    id="detailBackButton"
+                    class="menuButton compact-button"
+                    type="button"
+                >
+                    一覧へ戻る
+                </button>
+            </div>
 
                 <p class="eyebrow">
                     WORD DETAIL
@@ -769,24 +719,6 @@ const Dictionary = (() => {
                     Router.show(
                         "dictionary"
                     )
-            );
-
-        container
-            .querySelector(
-                "#favoriteButton"
-            )
-            .addEventListener(
-                "click",
-                () => {
-                    Storage.toggleFavorite(
-                        word.id
-                    );
-
-                    renderDetail(
-                        container,
-                        word.id
-                    );
-                }
             );
 
         container

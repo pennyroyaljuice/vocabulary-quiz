@@ -524,11 +524,6 @@ cursor:pointer;
     gap: 8px;
 }
 
-.favorite-mark {
-    color: #e2a500;
-    font-size: 1.2rem;
-}
-
 .status-label {
     padding: 4px 8px;
     border-radius: 999px;
@@ -554,20 +549,6 @@ cursor:pointer;
 .detail-reading {
     color: var(--sub);
     font-size: 1.1rem;
-}
-
-.favorite-button {
-    padding: 10px 14px;
-    border: 0;
-    border-radius: 999px;
-    background: #edf1f9;
-    color: var(--text);
-    cursor: pointer;
-}
-
-.favorite-button.active {
-    background: #fff3c4;
-    color: #916800;
 }
 
 .word-definition-list {
@@ -1783,5 +1764,63 @@ html[data-theme="dark"]
     .export-master-section
     .compact-primary {
         width: 100%;
+    }
+}
+
+.pending-word-item {
+    padding: 0;
+    overflow: hidden;
+}
+
+.pending-word-edit-button {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding: 14px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    text-align: left;
+}
+
+.pending-word-edit-button:hover {
+    background: #f3f6fd;
+}
+
+.pending-word-edit-button > span:first-child {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+}
+
+.pending-word-edit-button small {
+    color: var(--sub);
+}
+
+.pending-word-arrow {
+    flex: 0 0 auto;
+    color: var(--sub);
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.pending-word-item
+.delete-word-button {
+    margin-right: 12px;
+}
+
+html[data-theme="dark"]
+.pending-word-edit-button:hover {
+    background: #24323e;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"]
+    .pending-word-edit-button:hover {
+        background: #24323e;
     }
 }

@@ -96,6 +96,16 @@ const App = (() => {
         );
 
         Router.register(
+            "editCustomWord",
+            (container, params) =>
+                AddWords.renderEditor(
+                    container,
+                    words,
+                    params.wordId
+                )
+        );
+
+        Router.register(
             "home",
             renderHome
         );

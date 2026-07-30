@@ -27,7 +27,6 @@ const Storage = (() => {
             correct: 0,
             wrong: 0,
             streak: 0,
-            favorite: false,
             lastSeen: null,
             lastCorrect: null,
             lastWrong: null
@@ -218,31 +217,6 @@ const Storage = (() => {
             correct:
                 Number(today?.correct) || 0
         };
-    }
-
-    function toggleFavorite(wordId) {
-        const data = load();
-        const key = String(wordId);
-
-        data.stats[key] = {
-            ...createDefaultWordStats(),
-            ...(data.stats[key] || {})
-        };
-
-        data.stats[key].favorite =
-            !data.stats[key].favorite;
-
-        save(data);
-
-        return data.stats[key].favorite;
-    }
-
-    function exportData() {
-        return JSON.stringify(
-            load(),
-            null,
-            2
-        );
     }
 
     function importData(json) {
@@ -452,7 +426,6 @@ function removeCustomWord(wordId) {
         updateSetting,
         updateStats,
         getTodayActivity,
-        toggleFavorite,
         getCustomWords,
         addPendingWords,
         removeCustomWord,

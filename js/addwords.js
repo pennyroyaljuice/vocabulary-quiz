@@ -166,6 +166,291 @@ const AddWords = (() => {
         bindEvents(container);
     }
 
+    function renderEditor(
+        container,
+        words,
+        wordId
+    ) {
+        standardWords =
+            Array.isArray(words)
+                ? [...words]
+                : [];
+
+        const item =
+            Storage.getCustomWords()
+                .find(
+                    (word) =>
+                        String(word.id) ===
+                        String(wordId)
+                );
+
+        if (!item) {
+            container.innerHTML = `
+                <section class="card error-card">
+                    <h2>
+                        登録待ち語彙が見つかりません
+                    </h2>
+
+                    <button
+                        id="editorBackButton"
+                        class="primary"
+                        type="button"
+                    >
+                        語彙追加画面へ戻る
+                    </button>
+                </section>
+            `;
+
+            container
+                .querySelector(
+                    "#editorBackButton"
+                )
+                .addEventListener(
+                    "click",
+                    () =>
+                        Router.show(
+                            "addWords"
+                        )
+                );
+
+            return;
+        }
+
+        const quizTypes =
+            Array.isArray(item.quizTypes)
+                ? item.quizTypes
+                : [];
+
+        container.innerHTML = `
+            <section class="card">
+                <div class="page-heading">
+                    <div>
+                        <p class="eyebrow">
+                            CONFIRM VOCABULARY
+                        </p>
+
+                        <h2>
+                            生成内容の確認
+                        </h2>
+
+                        <p class="page-description">
+                            内容を確認し、必要に応じて編集してください。
+                        </p>
+                    </div>
+
+                    <button
+                        id="editorBackButton"
+                        class="menuButton compact-button"
+                        type="button"
+                    >
+                        登録待ち一覧へ戻る
+                    </button>
+                </div>
+            </section>
+
+            <section
+                class="card custom-word-editor"
+                data-custom-word-card="${Utils.escapeAttribute(
+                    item.id
+                )}"
+            >
+                <div class="confirmation-card-heading">
+                    <div>
+                        <p class="eyebrow">
+                            VOCABULARY DATA
+                        </p>
+
+                        <h3>
+                            ${Utils.escapeHtml(
+                                item.word
+                            )}
+                        </h3>
+                    </div>
+
+                    <span class="pending-status">
+                        ${
+                            item.status === "generated"
+                                ? "AI生成済み"
+                                : "手動編集中"
+                        }
+                    </span>
+                </div>
+
+                <div class="custom-word-fields">
+                    ${createInputField(
+                        "語彙",
+                        "word",
+                        item.word,
+                        true
+                    )}
+
+                    ${createInputField(
+                        "読み",
+                        "reading",
+                        item.reading
+                    )}
+
+                    ${createTextareaField(
+                        "意味",
+                        "meaning",
+                        item.meaning
+                    )}
+
+                    ${createTextareaField(
+                        "補足説明",
+                        "description",
+                        item.description
+                    )}
+
+                    ${createInputField(
+                        "カテゴリ",
+                        "category",
+                        item.category
+                    )}
+
+                    <fieldset class="quiz-type-editor">
+                        <legend>
+                            問題形式
+                        </legend>
+
+                        ${createQuizTypeCheckbox(
+                            "wordToMeaning",
+                            "単語から意味を選ぶ",
+                            quizTypes.includes(
+                                "wordToMeaning"
+                            ) ||
+                            quizTypes.length === 0
+                        )}
+
+                        ${createQuizTypeCheckbox(
+                            "meaningToWord",
+                            "意味から単語を選ぶ",
+                            quizTypes.includes(
+                                "meaningToWord"
+                            ) ||
+                            quizTypes.length === 0
+                        )}
+
+                        ${createQuizTypeCheckbox(
+                            "reading",
+                            "読みを選ぶ",
+                            quizTypes.includes(
+                                "reading"
+                            )
+                        )}
+                    </fieldset>
+                </div>
+
+                <p
+                    class="custom-word-message hidden"
+                    aria-live="polite"
+                ></p>
+
+                <div class="custom-word-actions">
+                    <button
+                        id="regenerateWordButton"
+                        class="secondary-button"
+                        type="button"
+                        disabled
+                        title="AI接続後に利用できます"
+                    >
+                        AIで生成・再生成
+                    </button>
+
+                    <button
+                        id="saveDraftButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        下書きを保存
+                    </button>
+
+                    <button
+                        id="finalizeWordButton"
+                        class="primary"
+                        type="button"
+                    >
+                        確定してクイズに追加
+                    </button>
+
+                    <button
+                        id="deleteEditorWordButton"
+                        class="delete-word-button"
+                        type="button"
+                    >
+                        削除
+                    </button>
+                </div>
+            </section>
+        `;
+
+        container
+            .querySelector(
+                "#editorBackButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    Router.show(
+                        "addWords"
+                    )
+            );
+
+        container
+            .querySelector(
+                "#saveDraftButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    saveCustomWord(
+                        container,
+                        item.id,
+                        false
+                    )
+            );
+
+        container
+            .querySelector(
+                "#finalizeWordButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    saveCustomWord(
+                        container,
+                        item.id,
+                        true
+                    )
+            );
+
+        container
+            .querySelector(
+                "#deleteEditorWordButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    const confirmed =
+                        confirm(
+                            `「${item.word}」を削除しますか？`
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    Storage.removeCustomWord(
+                        item.id
+                    );
+
+                    Router.show(
+                        "addWords"
+                    );
+                }
+            );
+    }
+
     function bindEvents(container) {
         container
             .querySelector(
@@ -226,6 +511,26 @@ const AddWords = (() => {
                             .finalizeCustomWord,
                         true
                     )
+                );
+            });
+
+        container
+            .querySelectorAll(
+                "[data-edit-custom-word]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        Router.show(
+                            "editCustomWord",
+                            {
+                                wordId:
+                                    button.dataset
+                                        .editCustomWord
+                            }
+                        );
+                    }
                 );
             });
 
@@ -444,12 +749,31 @@ const AddWords = (() => {
             return;
         }
 
-        const quizTypes =
-            createQuizTypes({
-                word,
-                reading,
-                category
-            });
+    const automaticTypes =
+        createQuizTypes({
+            word,
+            reading,
+            category
+        });
+
+    const quizTypes =
+        selectedQuizTypes.filter(
+            (type) =>
+                automaticTypes.includes(type)
+        );
+
+        if (
+            finalize &&
+            quizTypes.length === 0
+        ) {
+            showMessage(
+                message,
+                "問題形式を1つ以上選択してください。",
+                "warning"
+            );
+
+            return;
+        }
 
         Storage.updateCustomWord(
             wordId,
@@ -588,9 +912,7 @@ const AddWords = (() => {
         renderPage(container);
     }
 
-    function createPendingWordsList(
-        words
-    ) {
+    function createPendingWordsList(words) {
         if (!words.length) {
             return `
                 <div class="empty-state">
@@ -602,7 +924,7 @@ const AddWords = (() => {
         }
 
         return `
-            <div class="custom-word-editor-list">
+            <div class="pending-words-list">
                 ${words
                     .slice()
                     .sort(
@@ -611,7 +933,47 @@ const AddWords = (() => {
                             Number(a.createdAt)
                     )
                     .map(
-                        createEditorCard
+                        (item) => `
+                            <article class="pending-word-item">
+                                <button
+                                    class="pending-word-edit-button"
+                                    type="button"
+                                    data-edit-custom-word="${Utils.escapeAttribute(
+                                        item.id
+                                    )}"
+                                >
+                                    <span>
+                                        <strong>
+                                            ${Utils.escapeHtml(
+                                                item.word
+                                            )}
+                                        </strong>
+
+                                        <small>
+                                            ${
+                                                item.meaning
+                                                    ? "下書き保存済み"
+                                                    : "情報生成待ち"
+                                            }
+                                        </small>
+                                    </span>
+
+                                    <span class="pending-word-arrow">
+                                        ›
+                                    </span>
+                                </button>
+
+                                <button
+                                    class="delete-word-button"
+                                    type="button"
+                                    data-delete-custom-word="${Utils.escapeAttribute(
+                                        item.id
+                                    )}"
+                                >
+                                    削除
+                                </button>
+                            </article>
+                        `
                     )
                     .join("")}
             </div>
@@ -1012,6 +1374,7 @@ const AddWords = (() => {
     }
 
     return {
-        render
+        render,
+        renderEditor
     };
 })();
