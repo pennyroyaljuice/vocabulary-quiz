@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>語彙クイズ | Vocabulary Quiz</title>
+
+<meta
+    name="description"
+    content="苦手な言葉ほど出題されやすい、個人用の語彙学習クイズです。"
+>
+
+<meta
+    name="theme-color"
+    content="#3f72ff"
+>
+
+<link rel="stylesheet"
+      href="css/style.css">
+
+</head>
+
+<body>
+
+<div id="app">
+
+<header class="topbar">
+
+<h1 class="logo">
+
+📚 Vocabulary Quiz
+
+</h1>
+
+<div id="word-count">
+
+174 Words
+
+</div>
+
+</header>
+
+<main id="view">
+
+<section
+class="card home-card">
+
+<h2>
+
+今日のおすすめ
+
+</h2>
+
+<p>
+
+苦手な語を優先して出題します
+
+</p>
+
+<button
+id="dailyButton"
+class="primary">
+
+今日の5問
+
+</button>
+
+</section>
+
+<section
+class="card">
+
+<button
+id="startQuiz"
+class="menuButton">
+
+クイズ開始
+
+</button>
+
+<button
+id="reviewButton"
+class="menuButton">
+
+復習ノート
+
+</button>
+
+<button
+id="dictionaryButton"
+class="menuButton">
+
+語彙一覧
+
+</button>
+
+<button
+id="rankingButton"
+class="menuButton">
+
+苦手ランキング
+
+</button>
+
+<button
+id="statisticsButton"
+class="menuButton">
+
+統計
+
+</button>
+
+<button
+id="settingsButton"
+class="menuButton">
+
+設定
+
+</button>
+
+</section>
+
+<section
+class="card stats">
+
+<div class="stat">
+
+<span>
+
+総語彙
+
+</span>
+
+<strong
+id="totalWords">
+
+174
+
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>
+
+習得
+
+</span>
+
+<strong
+id="masteredWords">
+
+0
+
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>
+
+苦手
+
+</span>
+
+<strong
+id="weakWords">
+
+0
+
+</strong>
+
+</div>
+
+<div class="stat">
+
+<span>
+
+未出題
+
+</span>
+
+<strong
+id="newWords">
+
+174
+
+</strong>
+
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+<script
+src="js/utils.js">
+
+</script>
+
+<script
+src="js/storage.js">
+
+</script>
+
+<script
+src="js/router.js">
+
+</script>
+
+<script
+src="js/quiz.js">
+
+</script>
+
+<script
+src="js/review.js">
+
+</script>
+
+<script
+src="js/dictionary.js">
+
+</script>
+
+<script
+src="js/statistics.js">
+
+</script>
+
+<script
+src="js/settings.js">
+
+</script>
+
+<script
+src="js/app.js">
+
+</script>
+
+</body>
+
+ <footer class="site-footer">
+    Vocabulary Quiz
+    <span>
+        Version 0.7.0
+    </span>
+</footer>
+
+</html>
