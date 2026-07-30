@@ -223,12 +223,12 @@ const Settings = (() => {
                 </button>
             </section>
 
-            <section class="app-version">
-                Vocabulary Quiz
-                <strong>
-                    Version 0.7.0
-                </strong>
-            </section>
+        <section class="app-version">
+            Vocabulary Quiz
+            <strong>
+                Version ${APP_VERSION}
+            </strong>
+        </section>
         `;
 
         bindEvents(container);

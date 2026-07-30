@@ -1,5 +1,7 @@
 "use strict";
 
+const APP_VERSION = "0.8.0";
+
 const App = (() => {
     let words = [];
 
@@ -8,6 +10,8 @@ const App = (() => {
             words = await loadWords();
 
             updateHeaderWordCount();
+
+            updateVersionDisplay();
 
             Quiz.initialize(words);
 
@@ -81,6 +85,18 @@ const App = (() => {
         if (element) {
             element.textContent =
                 `${words.length} Words`;
+        }
+    }
+
+    function updateVersionDisplay() {
+        const footerVersion =
+            document.getElementById(
+                "footerVersion"
+            );
+
+        if (footerVersion) {
+            footerVersion.textContent =
+                `Version ${APP_VERSION}`;
         }
     }
 
