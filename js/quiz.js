@@ -281,17 +281,20 @@ function calculateWeight(word, previousIds = []) {
             Array.isArray(word.quizTypes) &&
             word.quizTypes.length > 0
         ) {
-            return word.quizTypes.filter((type) => {
-                if (
-                    type === QUESTION_TYPES.READING &&
-                    !readingQuiz
-                ) {
-                    return false;
-                }
+        return word.quizTypes.filter((type) => {
+            if (
+                type === QUESTION_TYPES.READING
+            ) {
+                return (
+                    readingQuiz &&
+                    canAskReadingQuestion(word)
+                );
+            }
 
-                return Object.values(QUESTION_TYPES).includes(type);
-            });
-        }
+            return Object.values(
+                QUESTION_TYPES
+            ).includes(type);
+        });
 
         const types = [
             QUESTION_TYPES.WORD_TO_MEANING,
@@ -314,9 +317,41 @@ function calculateWeight(word, previousIds = []) {
         }
 
         // 漢字を含まない語では読み問題を出さない
-        return /[\u3400-\u9FFF々〆ヵヶ]/u.test(word.word);
-    }
+        if (!/[\u3400-\u9FFF々〆ヵヶ]/u.test(word.word)) {
+            return false;
+        }
 
+        // 慣用句・ことわざ・文章的な表現は読み問題を出さない
+        const excludedCategories = [
+            "慣用句",
+            "ことわざ",
+            "故事成語",
+            "婉曲表現",
+            "宗教"
+        ];
+
+        if (
+            excludedCategories.some(
+                (category) =>
+                    String(word.category || "")
+                        .includes(category)
+            )
+        ) {
+            return false;
+        }
+
+        // 助詞を含む長い表現は、文章・成句として扱う
+        if (
+            /(?:が|を|に|へ|と|の|は|も|で|から|まで)/u.test(
+                word.word
+            ) &&
+            word.word.length >= 6
+        ) {
+            return false;
+        }
+
+        return true;
+    }
     function createWordToMeaningQuestion(word) {
         const distractors = selectMeaningDistractors(word, 3);
         const choices = Utils.shuffle([
@@ -356,10 +391,17 @@ function calculateWeight(word, previousIds = []) {
     }
 
     function createReadingQuestion(word) {
-        const distractors = selectReadingDistractors(word, 3);
+        const distractors =
+            selectReadingDistractors(
+                word,
+                3
+            );
+
         const choices = Utils.shuffle([
             word.reading,
-            ...distractors.map((item) => item.reading)
+            ...distractors.map(
+                (item) => item.reading
+            )
         ]);
 
         return {
@@ -368,10 +410,37 @@ function calculateWeight(word, previousIds = []) {
             type: QUESTION_TYPES.READING,
             typeLabel: "読み問題",
             prompt: "次の言葉の読みとして正しいものは？",
-            text: word.word,
+            text: maskOkurigana(word.word),
             choices,
             correctAnswer: word.reading
         };
+    }
+
+        function maskOkurigana(word) {
+        return Array.from(word)
+            .map((character) => {
+                // 漢字・々などはそのまま表示
+                if (
+                    /[\u3400-\u9FFF々〆ヵヶ]/u.test(
+                        character
+                    )
+                ) {
+                    return character;
+                }
+
+                // 区切り記号や空白も残す
+                if (
+                    /[\s・\-ー]/u.test(
+                        character
+                    )
+                ) {
+                    return character;
+                }
+
+                // 送り仮名などを隠す
+                return "＿";
+            })
+            .join("");
     }
 
     function selectWordDistractors(correctWord, count) {
@@ -396,16 +465,126 @@ function calculateWeight(word, previousIds = []) {
         );
     }
 
-    function selectReadingDistractors(correctWord, count) {
-        return selectBestDistractors(
-            correctWord,
-            count,
-            (candidate) =>
-                candidate.reading &&
-                candidate.reading !== correctWord.reading &&
-                canAskReadingQuestion(candidate),
-            readingSimilarityScore
-        );
+    function selectReadingDistractors(
+        correctWord,
+        count
+    ) {
+        const correctEnding =
+            getReadingEnding(correctWord);
+
+        const candidates = words
+            .filter((candidate) => {
+                if (
+                    String(candidate.id) ===
+                    String(correctWord.id)
+                ) {
+                    return false;
+                }
+
+                if (
+                    !candidate.reading ||
+                    candidate.reading ===
+                        correctWord.reading
+                ) {
+                    return false;
+                }
+
+                return canAskReadingQuestion(
+                    candidate
+                );
+            })
+            .map((candidate) => {
+                let score =
+                    readingSimilarityScore(
+                        correctWord,
+                        candidate
+                    );
+
+                const candidateEnding =
+                    getReadingEnding(candidate);
+
+                // 送り仮名がある語は、同じ語尾を優先
+                if (
+                    correctEnding &&
+                    candidateEnding ===
+                        correctEnding
+                ) {
+                    score += 12;
+                }
+
+                // 読みの文字数が同じものを優先
+                if (
+                    candidate.reading.length ===
+                    correctWord.reading.length
+                ) {
+                    score += 7;
+                }
+
+                return {
+                    candidate,
+                    score:
+                        score +
+                        Math.random() * 1.5
+                };
+            })
+            .sort(
+                (a, b) =>
+                    b.score - a.score
+            );
+
+        const selected = [];
+        const usedReadings = new Set();
+
+        for (const item of candidates) {
+            if (
+                usedReadings.has(
+                    item.candidate.reading
+                )
+            ) {
+                continue;
+            }
+
+            selected.push(
+                item.candidate
+            );
+
+            usedReadings.add(
+                item.candidate.reading
+            );
+
+            if (
+                selected.length >= count
+            ) {
+                break;
+            }
+        }
+
+        return selected.slice(0, count);
+    }
+
+        function getReadingEnding(word) {
+        const match =
+            String(word.word || "")
+                .match(
+                    /([ぁ-ゖ]+)$/u
+                );
+
+        if (!match) {
+            return "";
+        }
+
+        const okurigana =
+            match[1];
+
+        // 読みの末尾から、送り仮名と同じ部分を取得
+        if (
+            String(word.reading || "")
+                .endsWith(okurigana)
+        ) {
+            return okurigana;
+        }
+
+        return "";
     }
 
     function selectBestDistractors(
