@@ -351,8 +351,6 @@ const AddWords = (() => {
                         id="regenerateWordButton"
                         class="secondary-button"
                         type="button"
-                        disabled
-                        title="AI接続後に利用できます"
                     >
                         AIで生成・再生成
                     </button>
@@ -393,6 +391,19 @@ const AddWords = (() => {
                 () =>
                     Router.show(
                         "addWords"
+                    )
+            );
+
+        container
+            .querySelector(
+                "#regenerateWordButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    generateAndFillWord(
+                        container,
+                        item.id
                     )
             );
 
@@ -449,6 +460,144 @@ const AddWords = (() => {
                     );
                 }
             );
+    }
+
+    async function generateAndFillWord(
+        container,
+        wordId
+    ) {
+        const card =
+            container.querySelector(
+                `[data-custom-word-card="${CSS.escape(
+                    String(wordId)
+                )}"]`
+            );
+
+        if (!card) {
+            return;
+        }
+
+        const wordInput =
+            card.querySelector(
+                '[data-field="word"]'
+            );
+
+        const button =
+            card.querySelector(
+                "#regenerateWordButton"
+            );
+
+        const message =
+            card.querySelector(
+                ".custom-word-message"
+            );
+
+        const word =
+            wordInput.value.trim();
+
+        if (!word) {
+            showMessage(
+                message,
+                "語彙を入力してください。",
+                "warning"
+            );
+
+            return;
+        }
+
+        const originalText =
+            button.textContent;
+
+        button.disabled = true;
+        button.textContent =
+            "AI生成中...";
+
+        showMessage(
+            message,
+            "AIが読み・意味・カテゴリを生成しています。",
+            "success"
+        );
+
+        try {
+            const generated =
+                await generateWordByAI(
+                    word
+                );
+
+            card.querySelector(
+                '[data-field="word"]'
+            ).value =
+                generated.word || word;
+
+            card.querySelector(
+                '[data-field="reading"]'
+            ).value =
+                generated.reading || "";
+
+            card.querySelector(
+                '[data-field="meaning"]'
+            ).value =
+                generated.meaning || "";
+
+            card.querySelector(
+                '[data-field="description"]'
+            ).value =
+                generated.description || "";
+
+            card.querySelector(
+                '[data-field="category"]'
+            ).value =
+                generated.category || "";
+
+            const generatedTypes =
+                Array.isArray(
+                    generated.quizTypes
+                )
+                    ? generated.quizTypes
+                    : [];
+
+            card.querySelectorAll(
+                "[data-quiz-type]"
+            ).forEach((input) => {
+                input.checked =
+                    generatedTypes.includes(
+                        input.dataset.quizType
+                    );
+            });
+
+            Storage.updateCustomWord(
+                wordId,
+                {
+                    ...generated,
+                    word:
+                        generated.word ||
+                        word,
+                    status:
+                        "generated",
+                    updatedAt:
+                        Date.now()
+                }
+            );
+
+            showMessage(
+                message,
+                "AI生成が完了しました。内容を確認してください。",
+                "success"
+            );
+        } catch (error) {
+            console.error(error);
+
+            showMessage(
+                message,
+                error.message ||
+                    "AI生成に失敗しました。",
+                "warning"
+            );
+        } finally {
+            button.disabled = false;
+            button.textContent =
+                originalText;
+        }
     }
 
     function bindEvents(container) {
@@ -591,6 +740,7 @@ const AddWords = (() => {
 
         const newCandidates = [];
         const standardDuplicates = [];
+        const customDuplicates = [];
 
         for (const candidate of candidates) {
             const key =
@@ -618,41 +768,119 @@ const AddWords = (() => {
                 newCandidates
             );
 
-        const duplicateWords = [
-            ...standardDuplicates,
+        customDuplicates.push(
             ...result.duplicates
-        ];
+        );
 
-        resultBox.classList.remove(
+        const duplicateCount =
+            standardDuplicates.length +
+            customDuplicates.length;
+
+            resultBox.classList.remove(
             "hidden"
         );
 
+        resultBox.classList.toggle(
+            "duplicates-only",
+            result.added.length === 0 &&
+            duplicateCount > 0
+        );
+
         resultBox.innerHTML = `
-            <div class="add-result-section success-result">
-                <strong>
-                    新規登録：
-                    ${result.added.length}語
-                </strong>
+            ${
+                result.added.length
+                    ? `
+                        <section class="add-result-panel success-result">
+                            <div class="add-result-heading">
+                                <span class="result-icon">
+                                    ✓
+                                </span>
 
-                ${createSimpleList(
-                    result.added.map(
-                        (item) => item.word
-                    )
-                )}
-            </div>
+                                <div>
+                                    <strong>
+                                        ${result.added.length}語を登録待ちへ追加しました
+                                    </strong>
 
-            <div class="add-result-section duplicate-result">
-                <strong>
-                    重複のため除外：
-                    ${duplicateWords.length}語
-                </strong>
+                                    <p>
+                                        読み・意味を生成または入力すると、
+                                        クイズへ登録できます。
+                                    </p>
+                                </div>
+                            </div>
 
-                ${createSimpleList(
-                    [...new Set(
-                        duplicateWords
-                    )]
-                )}
-            </div>
+                            ${createSimpleList(
+                                result.added.map(
+                                    (item) => item.word
+                                )
+                            )}
+                        </section>
+                    `
+                    : ""
+            }
+
+            ${
+                duplicateCount
+                    ? `
+                        <section class="add-result-panel duplicate-result">
+                            <div class="add-result-heading">
+                                <span class="result-icon">
+                                    !
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        ${duplicateCount}語は重複のため追加しませんでした
+                                    </strong>
+
+                                    <p>
+                                        すでに登録されている語彙です。
+                                    </p>
+                                </div>
+                            </div>
+
+                            ${
+                                standardDuplicates.length
+                                    ? `
+                                        <div class="duplicate-group">
+                                            <h4>
+                                                標準語彙に登録済み
+                                            </h4>
+
+                                            ${createSimpleList(
+                                                [
+                                                    ...new Set(
+                                                        standardDuplicates
+                                                    )
+                                                ]
+                                            )}
+                                        </div>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                customDuplicates.length
+                                    ? `
+                                        <div class="duplicate-group">
+                                            <h4>
+                                                登録待ち・追加済み語彙に存在
+                                            </h4>
+
+                                            ${createSimpleList(
+                                                [
+                                                    ...new Set(
+                                                        customDuplicates
+                                                    )
+                                                ]
+                                            )}
+                                        </div>
+                                    `
+                                    : ""
+                            }
+                        </section>
+                    `
+                    : ""
+            }
         `;
 
         textarea.value = "";
@@ -1255,6 +1483,45 @@ const AddWords = (() => {
         `;
     }
 
+    async function generateWordByAI(
+        word
+    ) {
+        const response =
+            await fetch(
+                AI_API_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        word
+                    })
+                }
+            );
+
+        const json =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                json.error ||
+                "AI生成に失敗しました。"
+            );
+        }
+
+        if (!json.vocabulary) {
+            throw new Error(
+                "AIの生成結果が不正です。"
+            );
+        }
+
+        return json.vocabulary;
+    }
+
     function createSimpleList(values) {
         if (!values.length) {
             return "";
@@ -1378,3 +1645,35 @@ const AddWords = (() => {
         renderEditor
     };
 })();
+
+    async function generateWordByAI(
+        word
+    ) {
+        const response =
+            await fetch(
+                AI_API_URL,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        word
+                    })
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                "AI生成に失敗しました。"
+            );
+        }
+
+        const json =
+            await response.json();
+
+        return json.vocabulary;
+    }
