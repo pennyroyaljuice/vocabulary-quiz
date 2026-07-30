@@ -281,20 +281,21 @@ function calculateWeight(word, previousIds = []) {
             Array.isArray(word.quizTypes) &&
             word.quizTypes.length > 0
         ) {
-        return word.quizTypes.filter((type) => {
-            if (
-                type === QUESTION_TYPES.READING
-            ) {
-                return (
-                    readingQuiz &&
-                    canAskReadingQuestion(word)
-                );
-            }
+            return word.quizTypes.filter((type) => {
+                if (
+                    type === QUESTION_TYPES.READING
+                ) {
+                    return (
+                        readingQuiz &&
+                        canAskReadingQuestion(word)
+                    );
+                }
 
-            return Object.values(
-                QUESTION_TYPES
-            ).includes(type);
-        });
+                return Object.values(
+                    QUESTION_TYPES
+                ).includes(type);
+            });
+        }
 
         const types = [
             QUESTION_TYPES.WORD_TO_MEANING,
@@ -305,7 +306,9 @@ function calculateWeight(word, previousIds = []) {
             readingQuiz &&
             canAskReadingQuestion(word)
         ) {
-            types.push(QUESTION_TYPES.READING);
+            types.push(
+                QUESTION_TYPES.READING
+            );
         }
 
         return types;
