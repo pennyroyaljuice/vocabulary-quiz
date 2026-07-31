@@ -62,9 +62,22 @@ const App = (() => {
             ...customWords
         ];
 
+        const hiddenWordIds =
+            new Set(
+                Storage.getHiddenWordIds()
+            );
+
         const seen = new Set();
 
         return merged.filter((item) => {
+                if (
+             hiddenWordIds.has(
+                    String(item.id)
+                )
+            ) {
+                return false;
+            }
+            
             const key =
                 Storage.normalizeWordKey(
                     item.word

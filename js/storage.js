@@ -17,7 +17,8 @@ const Storage = (() => {
             stats: {},
             settings: { ...DEFAULT_SETTINGS },
             activity: {},
-            customWords: []
+            customWords: [],
+            hiddenWordIds: []
         };
     }
 
@@ -86,7 +87,13 @@ const Storage = (() => {
                 source &&
                 Array.isArray(source.customWords)
                     ? source.customWords
-                    : []
+                    : [],
+
+            hiddenWordIds:
+                source &&
+                Array.isArray(source.hiddenWordIds)
+                ? source.hiddenWordIds.map(String)
+                : []
         };
 
         // 旧版では darkMode が boolean の場合がある
@@ -404,6 +411,59 @@ function removeCustomWord(wordId) {
         );
     }
 
+    function getHiddenWordIds() {
+        return load().hiddenWordIds.map(String);
+    }
+
+    function isWordHidden(wordId) {
+        return getHiddenWordIds()
+            .includes(String(wordId));
+    }
+
+    function hideWord(wordId) {
+        const data = load();
+        const key = String(wordId);
+
+        if (!data.hiddenWordIds.includes(key)) {
+            data.hiddenWordIds.push(key);
+        }
+
+        save(data);
+    }
+
+    function restoreWord(wordId) {
+        const data = load();
+        const key = String(wordId);
+
+        data.hiddenWordIds =
+            data.hiddenWordIds.filter(
+                (id) => String(id) !== key
+            );
+
+        save(data);
+    }
+
+    function hideAllStandardWords(wordIds) {
+        const data = load();
+
+        data.hiddenWordIds = [
+            ...new Set([
+                ...data.hiddenWordIds.map(String),
+                ...wordIds.map(String)
+            ])
+        ];
+
+        save(data);
+    }
+
+    function restoreAllHiddenWords() {
+        const data = load();
+
+        data.hiddenWordIds = [];
+
+        save(data);
+    }
+
     function reset() {
         localStorage.removeItem(STORAGE_KEY);
     }
@@ -440,6 +500,12 @@ function removeCustomWord(wordId) {
         removeCustomWord,
         updateCustomWord,
         normalizeWordKey,
+        getHiddenWordIds,
+        isWordHidden,
+        hideWord,
+        restoreWord,
+        hideAllStandardWords,
+        restoreAllHiddenWords,
         export: exportData,
         import: importData,
         reset

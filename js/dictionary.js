@@ -706,6 +706,14 @@ const Dictionary = (() => {
                 >
                     この語を含む復習を始める
                 </button>
+
+                <button
+                    id="hideWordButton"
+                    class="danger-button secondary-danger"
+                    type="button"
+                >
+                    この語を自分のリストから外す
+                </button>
             </section>
         `;
 
@@ -719,6 +727,27 @@ const Dictionary = (() => {
                     Router.show(
                         "dictionary"
                     )
+            );
+
+        container
+            .querySelector(
+                "#hideWordButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    const confirmed =
+                        confirm(
+                            `「${word.word}」を自分の語彙リストから外しますか？\n後から設定画面で復元できます。`
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    Storage.hideWord(word.id);
+                    location.reload();
+                }
             );
 
         container
