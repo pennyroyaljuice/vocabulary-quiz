@@ -248,6 +248,49 @@ const Storage = (() => {
         );
     }
 
+    function exportBackup() {
+        const data =
+            load();
+
+        const backup = {
+            backupFormatVersion:
+                1,
+
+            exportedAt:
+                new Date()
+                    .toISOString(),
+
+            appStorageVersion:
+                STORAGE_VERSION,
+
+            data: {
+                stats:
+                    data.stats,
+
+                settings:
+                    data.settings,
+
+                activity:
+                    data.activity,
+
+                customWords:
+                    data.customWords,
+
+                wordOverrides:
+                    data.wordOverrides,
+
+                hiddenWordIds:
+                    data.hiddenWordIds
+            }
+        };
+
+        return JSON.stringify(
+            backup,
+            null,
+            2
+        );
+    }
+
     function importData(json) {
         const parsed =
             typeof json === "string"
@@ -657,6 +700,7 @@ function removeCustomWord(wordId) {
         updateWordOverride,
         removeWordOverride,
         export: exportData,
+        exportBackup,
         import: importData,
         reset
     };
