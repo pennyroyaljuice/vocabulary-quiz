@@ -65,9 +65,7 @@ const AddWords = (() => {
                     id="newWordsInput"
                     class="words-textarea"
                     rows="8"
-                    placeholder="嚆矢
-シニフィアン
-フォートナイト"
+                    placeholder="語彙を入力してください"
                 ></textarea>
 
                 <p class="settings-description">
@@ -906,7 +904,7 @@ const AddWords = (() => {
         if (result.added.length > 0) {
             textarea.value = "";
         }
-        
+
         refreshLists(container);
     }
 
