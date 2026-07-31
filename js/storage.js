@@ -534,15 +534,131 @@ const Storage = (() => {
     data.customWords =
         [...wordsByKey.values()];
 
+        const importedOverrides =
+            backup.data.wordOverrides &&
+            typeof backup.data.wordOverrides ===
+                "object" &&
+            !Array.isArray(
+                backup.data.wordOverrides
+            )
+                ? backup.data.wordOverrides
+                : {};
+
+        let overrideAddedCount = 0;
+        let overrideUpdatedCount = 0;
+        let overrideSkippedCount = 0;
+
+        for (
+            const [
+                wordId,
+                importedOverride
+            ]
+            of Object.entries(
+                importedOverrides
+            )
+        ) {
+            if (
+                !importedOverride ||
+                typeof importedOverride !==
+                    "object" ||
+                Array.isArray(
+                    importedOverride
+                )
+            ) {
+                overrideSkippedCount += 1;
+                continue;
+            }
+
+            const key =
+                String(wordId);
+
+            const localOverride =
+                data.wordOverrides[key];
+
+            if (!localOverride) {
+                data.wordOverrides[key] = {
+                    ...importedOverride
+                };
+
+                overrideAddedCount += 1;
+                continue;
+            }
+
+            const localTime =
+                Number(
+                    localOverride.updatedAt
+                ) || 0;
+
+            const importedTime =
+                Number(
+                    importedOverride.updatedAt
+                ) || 0;
+
+            if (
+                importedTime >
+                localTime
+            ) {
+                data.wordOverrides[key] = {
+                    ...localOverride,
+                    ...importedOverride
+                };
+
+                overrideUpdatedCount += 1;
+            } else {
+                overrideSkippedCount += 1;
+            }
+        }
+
+        const importedHiddenIds =
+            Array.isArray(
+                backup.data.hiddenWordIds
+            )
+                ? backup.data.hiddenWordIds
+                : [];
+
+        data.hiddenWordIds = [
+            ...new Set([
+                ...data.hiddenWordIds.map(
+                    String
+                ),
+                ...importedHiddenIds.map(
+                    String
+                )
+            ])
+        ];
+
     save(data);
 
-    return {
-        addedCount,
-        updatedCount,
-        skippedCount,
-        totalCount:
-            data.customWords.length
-    };
+        return {
+            customWords: {
+                addedCount,
+                updatedCount,
+                skippedCount,
+                totalCount:
+                    data.customWords.length
+            },
+
+            wordOverrides: {
+                addedCount:
+                    overrideAddedCount,
+
+                updatedCount:
+                    overrideUpdatedCount,
+
+                skippedCount:
+                    overrideSkippedCount,
+
+                totalCount:
+                    Object.keys(
+                        data.wordOverrides
+                    ).length
+            },
+
+            hiddenWordIds: {
+                totalCount:
+                    data.hiddenWordIds.length
+            }
+        };
 }
 
     function getWordUpdateTime(
