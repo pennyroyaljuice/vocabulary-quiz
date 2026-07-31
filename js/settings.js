@@ -203,8 +203,9 @@ const Settings = (() => {
                 </h3>
 
                 <p class="settings-description">
-                    学習履歴や設定をファイルへ保存し、
-                    別の端末で復元できます。
+                    追加語彙、標準語彙の編集、非表示語彙、
+                    学習履歴、設定をJSONファイルへ保存します。
+                    読み込み時は、現在の語彙データを残したまま統合します。
                 </p>
 
                 <div class="settings-button-grid">
@@ -213,7 +214,7 @@ const Settings = (() => {
                         class="menuButton"
                         type="button"
                     >
-                        バックアップを書き出す
+                        完全バックアップを書き出す
                     </button>
 
                     <button
@@ -221,9 +222,8 @@ const Settings = (() => {
                         class="menuButton"
                         type="button"
                     >
-                        バックアップを復元する
+                        バックアップを統合する
                     </button>
-
                     <input
                         id="importDataInput"
                         class="hidden"
@@ -473,33 +473,39 @@ container
         );
     }
 
-    function exportLearningData() {
+  function exportLearningData() {
         const json =
-            Storage.export();
+            Storage.exportBackup();
 
         const blob =
             new Blob(
                 [json],
                 {
                     type:
-                        "application/json"
+                        "application/json;charset=utf-8"
                 }
             );
 
         const url =
-            URL.createObjectURL(blob);
+            URL.createObjectURL(
+                blob
+            );
 
         const anchor =
-            document.createElement("a");
+            document.createElement(
+                "a"
+            );
 
         const date =
             new Date()
                 .toISOString()
                 .slice(0, 10);
 
-        anchor.href = url;
+        anchor.href =
+            url;
+
         anchor.download =
-            `vocabulary-quiz-backup-${date}.json`;
+            `vocabulary-quiz-complete-backup-${date}.json`;
 
         document.body.appendChild(
             anchor
@@ -508,7 +514,9 @@ container
         anchor.click();
         anchor.remove();
 
-        URL.revokeObjectURL(url);
+        URL.revokeObjectURL(
+            url
+        );
     }
 
     async function importLearningData(
@@ -522,34 +530,86 @@ container
         }
 
         try {
+            const confirmed =
+                confirm(
+                    "選択したバックアップを現在の語彙データへ統合します。\n現在の追加語彙は削除されません。\n続行しますか？"
+                );
+
+            if (!confirmed) {
+                return;
+            }
+
             const text =
                 await file.text();
 
             const parsed =
                 JSON.parse(text);
 
-            validateBackup(parsed);
+            validateCompleteBackup(
+                parsed
+            );
 
-            Storage.import(text);
+            const result =
+                Storage.mergeBackup(
+                    parsed
+                );
+
+            const customWords =
+                result.customWords;
+
+            const wordOverrides =
+                result.wordOverrides;
+
+            const hiddenWordIds =
+                result.hiddenWordIds;
 
             alert(
-                "バックアップを復元しました。"
+                [
+                    "バックアップを統合しました。",
+                    "",
+                    "追加語彙",
+                    `新規追加：${customWords.addedCount}語`,
+                    `更新：${customWords.updatedCount}語`,
+                    `変更なし：${customWords.skippedCount}語`,
+                    `統合後：${customWords.totalCount}語`,
+                    "",
+                    "標準語彙の編集",
+                    `新規追加：${wordOverrides.addedCount}件`,
+                    `更新：${wordOverrides.updatedCount}件`,
+                    `変更なし：${wordOverrides.skippedCount}件`,
+                    `統合後：${wordOverrides.totalCount}件`,
+                    "",
+                    "非表示語彙",
+                    `統合後：${hiddenWordIds.totalCount}語`
+                ].join("\n")
             );
 
             location.reload();
         } catch (error) {
+            console.error(
+                error
+            );
+
             alert(
+                error.message ||
                 "バックアップを読み込めませんでした。"
             );
         } finally {
-            event.target.value = "";
+            event.target.value =
+                "";
         }
     }
 
-    function validateBackup(data) {
+    function validateCompleteBackup(
+        backup
+    ) {
         if (
-            !data ||
-            typeof data !== "object"
+            !backup ||
+            typeof backup !==
+                "object" ||
+            Array.isArray(
+                backup
+            )
         ) {
             throw new Error(
                 "バックアップ形式が不正です。"
@@ -557,21 +617,71 @@ container
         }
 
         if (
-            data.stats &&
-            typeof data.stats !== "object"
+            Number(
+                backup.backupFormatVersion
+            ) !== 1
         ) {
             throw new Error(
-                "学習履歴の形式が不正です。"
+                "対応していないバックアップ形式です。"
             );
         }
 
         if (
-            data.settings &&
-            typeof data.settings !==
-                "object"
+            !backup.data ||
+            typeof backup.data !==
+                "object" ||
+            Array.isArray(
+                backup.data
+            )
         ) {
             throw new Error(
-                "設定の形式が不正です。"
+                "バックアップ内にデータがありません。"
+            );
+        }
+
+        if (
+            backup.data.customWords !==
+                undefined &&
+            !Array.isArray(
+                backup.data.customWords
+            )
+        ) {
+            throw new Error(
+                "追加語彙の形式が不正です。"
+            );
+        }
+
+        if (
+            backup.data.wordOverrides !==
+                undefined &&
+            (
+                typeof backup.data
+                    .wordOverrides !==
+                    "object" ||
+                backup.data
+                    .wordOverrides ===
+                    null ||
+                Array.isArray(
+                    backup.data
+                        .wordOverrides
+                )
+            )
+        ) {
+            throw new Error(
+                "標準語彙編集データの形式が不正です。"
+            );
+        }
+
+        if (
+            backup.data.hiddenWordIds !==
+                undefined &&
+            !Array.isArray(
+                backup.data
+                    .hiddenWordIds
+            )
+        ) {
+            throw new Error(
+                "非表示語彙データの形式が不正です。"
             );
         }
     }
