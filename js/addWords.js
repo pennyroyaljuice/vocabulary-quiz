@@ -444,7 +444,7 @@ const AddWords = (() => {
                         true
                     )
             );
-
+            
         container
             .querySelector(
                 "#deleteEditorWordButton"
@@ -452,15 +452,6 @@ const AddWords = (() => {
             .addEventListener(
                 "click",
                 () => {
-                    const confirmed =
-                        confirm(
-                            `「${item.word}」を削除しますか？`
-                        );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
                     Storage.removeCustomWord(
                         item.id
                     );
@@ -1213,15 +1204,6 @@ const AddWords = (() => {
         container,
         wordId
     ) {
-        const confirmed =
-            confirm(
-                "この追加語彙を削除しますか？"
-            );
-
-        if (!confirmed) {
-            return;
-        }
-
         Storage.removeCustomWord(
             wordId
         );
