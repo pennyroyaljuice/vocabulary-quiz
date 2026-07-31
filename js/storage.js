@@ -282,58 +282,102 @@ const Storage = (() => {
         }
     }
 
-function getCustomWords() {
-    return load().customWords;
-}
-
-function addPendingWords(wordNames) {
-    const data = load();
-    const existingKeys = new Set(
-        data.customWords.map(
-            (item) => normalizeWordKey(item.word)
-        )
-    );
-
-    const added = [];
-    const duplicates = [];
-
-    for (const rawWord of wordNames) {
-        const word = cleanWordName(rawWord);
-        const key = normalizeWordKey(word);
-
-        if (!key) {
-            continue;
-        }
-
-        if (existingKeys.has(key)) {
-            duplicates.push(word);
-            continue;
-        }
-
-        const item = {
-            id: createCustomWordId(),
-            word,
-            reading: "",
-            meaning: "",
-            description: "",
-            category: "",
-            quizTypes: [],
-            status: "pending",
-            createdAt: Date.now()
-        };
-
-        data.customWords.push(item);
-        existingKeys.add(key);
-        added.push(item);
+    function getCustomWords() {
+        return load().customWords;
     }
 
-    save(data);
+    function addPendingWords(entries) {
+        const data = load();
 
-    return {
-        added,
-        duplicates
-    };
-}
+        const existingKeys = new Set(
+            data.customWords.map(
+                (item) =>
+                    normalizeWordKey(
+                        item.word
+                    )
+            )
+        );
+
+        const added = [];
+        const duplicates = [];
+
+        for (const source of entries) {
+            const entry =
+                typeof source === "string"
+                    ? {
+                        word: source,
+                        readingHint: "",
+                        contextHint: ""
+                    }
+                    : source;
+
+            const word =
+                cleanWordName(
+                    entry.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (!key) {
+                continue;
+            }
+
+            if (existingKeys.has(key)) {
+                duplicates.push(word);
+                continue;
+            }
+
+            const readingHint =
+                String(
+                    entry.readingHint || ""
+                ).trim();
+
+            const contextHint =
+                String(
+                    entry.contextHint || ""
+                ).trim();
+
+            const item = {
+                id:
+                    createCustomWordId(),
+
+                word,
+
+                reading:
+                    readingHint,
+
+                readingHint,
+
+                contextHint,
+
+                meaning: "",
+                description: "",
+                category: "",
+                quizTypes: [],
+
+                status:
+                    "pending",
+
+                createdAt:
+                    Date.now(),
+
+                updatedAt:
+                    null
+            };
+
+            data.customWords.push(item);
+            existingKeys.add(key);
+            added.push(item);
+        }
+
+        save(data);
+
+        return {
+            added,
+            duplicates
+        };
+    }
 
     function getReadyCustomWords() {
         return load().customWords.filter(

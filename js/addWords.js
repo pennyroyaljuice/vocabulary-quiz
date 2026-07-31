@@ -39,10 +39,10 @@ const AddWords = (() => {
                         <h2>
                             語彙を追加
                         </h2>
-
-                        <p class="page-description">
+                        <p class="settings-description">
                             1行に1語ずつ入力してください。
-                            括弧内のメモは自動的に除去されます。
+                            読みや文脈を指定する場合は
+                            「語彙｜読み｜補足」の形式で入力できます。
                         </p>
                     </div>
 
@@ -67,6 +67,12 @@ const AddWords = (() => {
                     rows="8"
                     placeholder="語彙を入力してください"
                 ></textarea>
+
+                <p class="input-format-help">
+                    <strong>入力形式</strong><br>
+                    <code>語彙｜読み｜補足</code><br>
+                    読み・補足は省略できます。
+                </p>
 
                 <p class="settings-description">
                     既存語彙および追加済み語彙との重複は除外されます。
@@ -100,9 +106,9 @@ const AddWords = (() => {
                         </p>
                     </div>
 
-                    <strong>
-                        ${pendingWords.length}語
-                    </strong>
+            <strong id="pendingWordsCount">
+                ${pendingWords.length}語
+            </strong>
                 </div>
 
                 <div id="pendingWordsList">
@@ -287,6 +293,12 @@ const AddWords = (() => {
                         "reading",
                         item.reading
                     )}
+
+                    ${createInputField(
+                    "AIへの補足ヒント",
+                    "contextHint",
+                    item.contextHint
+                )}
 
                     ${createTextareaField(
                         "意味",
@@ -517,10 +529,22 @@ const AddWords = (() => {
         );
 
         try {
-            const generated =
-                await generateWordByAI(
-                    word
-                );
+        const readingHint =
+            card.querySelector(
+                '[data-field="reading"]'
+            )?.value.trim() || "";
+
+        const contextHint =
+            card.querySelector(
+                '[data-field="contextHint"]'
+            )?.value.trim() || "";
+
+        const generated =
+            await generateWordByAI(
+                word,
+                readingHint,
+                contextHint
+            );
 
             card.querySelector(
                 '[data-field="word"]'
@@ -708,11 +732,16 @@ const AddWords = (() => {
                 "#addWordsResult"
             );
 
-        const candidates =
-            textarea.value
-                .split(/\r?\n/u)
-                .map((line) => line.trim())
-                .filter(Boolean);
+    const candidates =
+        textarea.value
+            .split(/\r?\n/u)
+            .map(
+                parseVocabularyLine
+            )
+            .filter(
+                (entry) =>
+                    Boolean(entry.word)
+            );
 
         if (!candidates.length) {
             showMessage(
@@ -743,7 +772,7 @@ const AddWords = (() => {
         for (const candidate of candidates) {
             const key =
                 Storage.normalizeWordKey(
-                    candidate
+                    candidate.word
                 );
 
             if (!key) {
@@ -760,7 +789,6 @@ const AddWords = (() => {
                 );
             }
         }
-
         const result =
             Storage.addPendingWords(
                 newCandidates
@@ -905,7 +933,34 @@ const AddWords = (() => {
             textarea.value = "";
         }
 
-        refreshLists(container);
+        updatePendingWordsDisplay(
+            container
+        );  
+    }
+
+
+    function parseVocabularyLine(line) {
+        const parts =
+            String(line || "")
+                .split(/[｜|]/u)
+                .map(
+                    (part) =>
+                        part.trim()
+                );
+
+        return {
+            word:
+                parts[0] || "",
+
+            readingHint:
+                parts[1] || "",
+
+            contextHint:
+                parts
+                    .slice(2)
+                    .join("｜")
+                    .trim()
+        };
     }
 
     function saveCustomWord(
@@ -948,6 +1003,11 @@ const AddWords = (() => {
             card.querySelector(
                 '[data-field="category"]'
             ).value.trim();
+
+        const contextHint =
+            card.querySelector(
+                '[data-field="contextHint"]'
+            )?.value.trim() || "";
 
         const selectedQuizTypes =
             Array.from(
@@ -997,37 +1057,40 @@ const AddWords = (() => {
             return;
         }
 
-    const automaticTypes =
-        createQuizTypes({
-            word,
-            reading,
-            category
-        });
+        const automaticTypes =
+            createQuizTypes({
+                word,
+                reading,
+                category
+            });
 
-    const quizTypes =
-        selectedQuizTypes.filter(
-            (type) =>
-                automaticTypes.includes(type)
-        );
-
-        if (
-            finalize &&
-            quizTypes.length === 0
-        ) {
-            showMessage(
-                message,
-                "問題形式を1つ以上選択してください。",
-                "warning"
+        const quizTypes =
+            selectedQuizTypes.filter(
+                (type) =>
+                    automaticTypes.includes(type)
             );
 
-            return;
-        }
+            if (
+                finalize &&
+                quizTypes.length === 0
+            ) {
+                showMessage(
+                    message,
+                    "問題形式を1つ以上選択してください。",
+                    "warning"
+                );
+
+                return;
+            }
 
         Storage.updateCustomWord(
             wordId,
             {
                 word,
                 reading,
+                readingHint:
+                    reading,
+                contextHint,
                 meaning,
                 description,
                 category:
@@ -1158,6 +1221,83 @@ const AddWords = (() => {
 
     function refreshLists(container) {
         renderPage(container);
+    }
+
+    function updatePendingWordsDisplay(
+        container
+    ) {
+        const pendingWords =
+            Storage.getCustomWords()
+                .filter(
+                    (item) =>
+                        item.status !== "ready"
+                );
+
+        const countElement =
+            container.querySelector(
+                "#pendingWordsCount"
+            );
+
+        const listElement =
+            container.querySelector(
+                "#pendingWordsList"
+            );
+
+        if (countElement) {
+            countElement.textContent =
+                `${pendingWords.length}語`;
+        }
+
+        if (listElement) {
+            listElement.innerHTML =
+                createPendingWordsList(
+                    pendingWords
+                );
+        }
+
+        bindPendingWordEvents(
+            container
+        );
+    }
+
+    function bindPendingWordEvents(
+        container
+    ) {
+        container
+            .querySelectorAll(
+                "#pendingWordsList [data-edit-custom-word]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        Router.show(
+                            "editCustomWord",
+                            {
+                                wordId:
+                                    button.dataset
+                                        .editCustomWord
+                            }
+                        );
+                    }
+                );
+            });
+
+        container
+            .querySelectorAll(
+                "#pendingWordsList [data-delete-custom-word]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    () =>
+                        deleteCustomWord(
+                            container,
+                            button.dataset
+                                .deleteCustomWord
+                        )
+                );
+            });
     }
 
     function createPendingWordsList(words) {
@@ -1504,7 +1644,9 @@ const AddWords = (() => {
     }
 
     async function generateWordByAI(
-        word
+        word,
+        readingHint = "",
+        contextHint = ""
     ) {
         const response =
             await fetch(
@@ -1518,7 +1660,9 @@ const AddWords = (() => {
                     },
 
                     body: JSON.stringify({
-                        word
+                        word,
+                        readingHint,
+                        contextHint
                     })
                 }
             );
@@ -1528,6 +1672,7 @@ const AddWords = (() => {
 
         if (!response.ok) {
             throw new Error(
+                json.detail ||
                 json.error ||
                 "AI生成に失敗しました。"
             );
@@ -1540,28 +1685,6 @@ const AddWords = (() => {
         }
 
         return json.vocabulary;
-    }
-
-    function createSimpleList(values) {
-        if (!values.length) {
-            return "";
-        }
-
-        return `
-            <ul>
-                ${values
-                    .map(
-                        (value) => `
-                            <li>
-                                ${Utils.escapeHtml(
-                                    value
-                                )}
-                            </li>
-                        `
-                    )
-                    .join("")}
-            </ul>
-        `;
     }
 
     function showMessage(
@@ -1665,35 +1788,3 @@ const AddWords = (() => {
         renderEditor
     };
 })();
-
-    async function generateWordByAI(
-        word
-    ) {
-        const response =
-            await fetch(
-                AI_API_URL,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        word
-                    })
-                }
-            );
-
-        if (!response.ok) {
-            throw new Error(
-                "AI生成に失敗しました。"
-            );
-        }
-
-        const json =
-            await response.json();
-
-        return json.vocabulary;
-    }

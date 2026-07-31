@@ -2010,3 +2010,14 @@ html[data-theme="dark"]
         background: #263d55;
     }
 }
+
+.input-format-help {
+    margin-top: 8px;
+    color: var(--sub);
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.input-format-help code {
+    font-weight: 700;
+}

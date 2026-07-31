@@ -141,6 +141,16 @@ export default {
             const word =
                 cleanWord(body.word);
 
+            const readingHint =
+                String(
+                    body.readingHint || ""
+                ).trim();
+
+            const contextHint =
+                String(
+                    body.contextHint || ""
+                ).trim();
+
             if (!word) {
                 return jsonResponse(
                     {
@@ -192,15 +202,37 @@ export default {
 - 漢字を含む単独語や熟語では、読みを学ぶ価値がある場合のみreadingをquizTypesに含める。
 - 入力された見出し語の表記を変更しない。
 - JSON以外の文章を出力しない。
+- 利用者が読みを指定した場合は、その読みを原則として使用する。
+- 利用者が文脈や分野を指定した場合は、その文脈に適した意味を優先する。
+- 指定された読みや文脈が見出し語と明らかに矛盾する場合は、無理に断定しない。
                                 `.trim()
                             },
 
-                            {
-                                role: "user",
+                           {
+                            role: "user",
 
-                                content:
-                                    `見出し語：${word}`
-                            }
+                            content: [
+                                `見出し語：${word}`,
+
+                                readingHint
+                                    ? `利用者が指定した読み：${readingHint}`
+                                    : "",
+
+                                contextHint
+                                    ? `利用者からの文脈・分野のヒント：${contextHint}`
+                                    : "",
+
+                                readingHint
+                                    ? "指定された読みを原則として維持し、その読みで使われる語義を生成してください。"
+                                    : "",
+
+                                contextHint
+                                    ? "補足ヒントに合う語義を優先してください。"
+                                    : ""
+                            ]
+                                .filter(Boolean)
+                                .join("\n")
+                        }
                         ],
 
                         response_format: {
@@ -227,7 +259,8 @@ export default {
             const normalized =
                 normalizeVocabulary(
                     generated,
-                    word
+                    word,
+                    readingHint
                 );
 
             return jsonResponse(
@@ -317,8 +350,9 @@ function extractVocabulary(result) {
 
 function normalizeVocabulary(
     generated,
-    originalWord
-) {
+    originalWord,
+    readingHint = "")
+{
     const quizTypes =
         Array.isArray(
             generated.quizTypes
@@ -358,7 +392,9 @@ function normalizeVocabulary(
 
     const reading =
         String(
-            generated.reading || ""
+            readingHint ||
+            generated.reading ||
+            ""
         ).trim();
 
     if (!reading) {
