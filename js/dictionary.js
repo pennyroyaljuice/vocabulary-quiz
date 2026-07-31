@@ -700,6 +700,14 @@ const Dictionary = (() => {
                 </section>
 
                 <button
+                    id="editWordButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    この語を編集
+                </button>
+
+                <button
                     id="singleWordQuizButton"
                     class="primary"
                     type="button"
@@ -747,6 +755,23 @@ const Dictionary = (() => {
 
                     Storage.hideWord(word.id);
                     location.reload();
+                }
+            );
+
+        container
+            .querySelector(
+                "#editWordButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    Router.show(
+                        "editWord",
+                        {
+                            wordId:
+                                word.id
+                        }
+                    );
                 }
             );
 

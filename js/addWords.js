@@ -444,7 +444,7 @@ const AddWords = (() => {
                         true
                     )
             );
-            
+
         container
             .querySelector(
                 "#deleteEditorWordButton"
@@ -461,6 +461,294 @@ const AddWords = (() => {
                     );
                 }
             );
+    }
+
+    function renderUnifiedEditor(
+        container,
+        words,
+        wordId
+    ) {
+        standardWords =
+            Array.isArray(words)
+                ? words.filter(
+                    (word) =>
+                        word.source ===
+                        "standard"
+                )
+                : [];
+
+        const item =
+            Array.isArray(words)
+                ? words.find(
+                    (word) =>
+                        String(word.id) ===
+                        String(wordId)
+                )
+                : null;
+
+        if (!item) {
+            container.innerHTML = `
+                <section class="card error-card">
+                    <h2>
+                        語彙が見つかりません
+                    </h2>
+
+                    <button
+                        id="unifiedEditorBackButton"
+                        class="primary"
+                        type="button"
+                    >
+                        語彙一覧へ戻る
+                    </button>
+                </section>
+            `;
+
+            container
+                .querySelector(
+                    "#unifiedEditorBackButton"
+                )
+                .addEventListener(
+                    "click",
+                    () =>
+                        Router.show(
+                            "dictionary"
+                        )
+                );
+
+            return;
+        }
+
+        const quizTypes =
+            Array.isArray(item.quizTypes)
+                ? item.quizTypes
+                : [];
+
+        const sourceLabel =
+            item.source === "standard"
+                ? "標準語彙"
+                : "追加語彙";
+
+        container.innerHTML = `
+            <section class="card">
+                <div class="page-heading">
+                    <div>
+                        <p class="eyebrow">
+                            EDIT VOCABULARY
+                        </p>
+
+                        <h2>
+                            語彙を編集
+                        </h2>
+
+                        <p class="page-description">
+                            内容を確認し、必要に応じて修正してください。
+                        </p>
+                    </div>
+
+                    <button
+                        id="unifiedEditorBackButton"
+                        class="menuButton compact-button"
+                        type="button"
+                    >
+                        詳細画面へ戻る
+                    </button>
+                </div>
+            </section>
+
+            <section
+                class="card custom-word-editor"
+                data-unified-word-card="${Utils.escapeAttribute(
+                    item.id
+                )}"
+            >
+                <div class="confirmation-card-heading">
+                    <div>
+                        <p class="eyebrow">
+                            VOCABULARY DATA
+                        </p>
+
+                        <h3>
+                            ${Utils.escapeHtml(
+                                item.word
+                            )}
+                        </h3>
+                    </div>
+
+                    <span class="pending-status">
+                        ${sourceLabel}
+                    </span>
+                </div>
+
+                <div class="custom-word-fields">
+                    ${createInputField(
+                        "語彙",
+                        "word",
+                        item.word,
+                        true
+                    )}
+
+                    ${createInputField(
+                        "読み",
+                        "reading",
+                        item.reading
+                    )}
+
+                    ${createTextareaField(
+                        "意味",
+                        "meaning",
+                        item.meaning
+                    )}
+
+                    ${createTextareaField(
+                        "補足説明",
+                        "description",
+                        item.description
+                    )}
+
+                    ${createInputField(
+                        "カテゴリ",
+                        "category",
+                        item.category
+                    )}
+
+                    <fieldset class="quiz-type-editor">
+                        <legend>
+                            問題形式
+                        </legend>
+
+                        ${createQuizTypeCheckbox(
+                            "wordToMeaning",
+                            "単語から意味を選ぶ",
+                            quizTypes.includes(
+                                "wordToMeaning"
+                            )
+                        )}
+
+                        ${createQuizTypeCheckbox(
+                            "meaningToWord",
+                            "意味から単語を選ぶ",
+                            quizTypes.includes(
+                                "meaningToWord"
+                            )
+                        )}
+
+                        ${createQuizTypeCheckbox(
+                            "reading",
+                            "読みを選ぶ",
+                            quizTypes.includes(
+                                "reading"
+                            )
+                        )}
+                    </fieldset>
+                </div>
+
+                <p
+                    class="custom-word-message hidden"
+                    aria-live="polite"
+                ></p>
+
+                <div class="custom-word-actions">
+                    <button
+                        id="saveUnifiedWordButton"
+                        class="primary"
+                        type="button"
+                    >
+                        変更を保存
+                    </button>
+
+                <button
+                    id="removeUnifiedWordButton"
+                    class="danger-button"
+                    type="button"
+                >
+                    一覧から外す
+                </button>
+
+                    ${
+                        item.source === "standard" &&
+                        item.overridden
+                            ? `
+                                <button
+                                    id="restoreStandardWordButton"
+                                    class="menuButton"
+                                    type="button"
+                                >
+                                    標準内容へ戻す
+                                </button>
+                            `
+                            : ""
+                    }
+                </div>
+            </section>
+        `;
+
+        container
+            .querySelector(
+                "#unifiedEditorBackButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    Router.show(
+                        "dictionary",
+                        {
+                            wordId:
+                                item.id
+                        }
+                    )
+            );
+
+        container
+            .querySelector(
+                "#saveUnifiedWordButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    saveUnifiedWord(
+                        container,
+                        item
+                    )
+            );
+
+        container
+            .querySelector(
+                "#removeUnifiedWordButton"
+            )
+            .addEventListener(
+                "click",
+                () =>
+                    removeUnifiedWord(
+                        item
+                    )
+            );
+
+        const restoreButton =
+            container.querySelector(
+                "#restoreStandardWordButton"
+            );
+
+        if (restoreButton) {
+            restoreButton.addEventListener(
+                "click",
+                () => {
+                    const confirmed =
+                        confirm(
+                            "この標準語彙への修正を取り消し、元の内容へ戻しますか？"
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    Storage.removeWordOverride(
+                        item.id
+                    );
+
+                    location.reload();
+                }
+            );
+        }
     }
 
     async function generateAndFillWord(
@@ -785,16 +1073,6 @@ const AddWords = (() => {
                 newCandidates
             );
 
-        console.log(
-            "追加結果",
-            result
-        );
-
-        console.log(
-            "保存直後のcustomWords",
-            Storage.getCustomWords()
-        );
-
         customDuplicates.push(
             ...result.duplicates
         );
@@ -962,6 +1240,161 @@ const AddWords = (() => {
                     .join("｜")
                     .trim()
         };
+    }
+
+    function removeUnifiedWord(
+        item
+    ) {
+        const confirmed =
+            confirm(
+                `「${item.word}」を一覧から外しますか？`
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        if (
+            item.source ===
+            "standard"
+        ) {
+            Storage.hideWord(
+                item.id
+            );
+        } else {
+            Storage.removeCustomWord(
+                item.id
+            );
+        }
+
+        alert(
+            "一覧から外しました。"
+        );
+
+        location.reload();
+    }
+
+    function saveUnifiedWord(
+        container,
+        originalItem
+    ) {
+        const card =
+            container.querySelector(
+                `[data-unified-word-card="${CSS.escape(
+                    String(originalItem.id)
+                )}"]`
+            );
+
+        if (!card) {
+            return;
+        }
+
+        const word =
+            card.querySelector(
+                '[data-field="word"]'
+            ).value.trim();
+
+        const reading =
+            card.querySelector(
+                '[data-field="reading"]'
+            ).value.trim();
+
+        const meaning =
+            card.querySelector(
+                '[data-field="meaning"]'
+            ).value.trim();
+
+        const description =
+            card.querySelector(
+                '[data-field="description"]'
+            ).value.trim();
+
+        const category =
+            card.querySelector(
+                '[data-field="category"]'
+            ).value.trim();
+
+        const quizTypes =
+            Array.from(
+                card.querySelectorAll(
+                    "[data-quiz-type]:checked"
+                )
+            ).map(
+                (input) =>
+                    input.dataset.quizType
+            );
+
+        const message =
+            card.querySelector(
+                ".custom-word-message"
+            );
+
+        if (!word) {
+            showMessage(
+                message,
+                "語彙を入力してください。",
+                "warning"
+            );
+
+            return;
+        }
+
+        if (!meaning) {
+            showMessage(
+                message,
+                "意味を入力してください。",
+                "warning"
+            );
+
+            return;
+        }
+
+        if (!quizTypes.length) {
+            showMessage(
+                message,
+                "問題形式を1つ以上選択してください。",
+                "warning"
+            );
+
+            return;
+        }
+
+        const changes = {
+            word,
+            reading,
+            meaning,
+            description,
+            category:
+                category || "未分類",
+            quizTypes,
+            updatedAt:
+                Date.now()
+        };
+
+        if (
+            originalItem.source ===
+            "standard"
+        ) {
+            Storage.updateWordOverride(
+                originalItem.id,
+                changes
+            );
+        } else {
+            Storage.updateCustomWord(
+                originalItem.id,
+                {
+                    ...changes,
+                    status:
+                        "ready"
+                }
+            );
+        }
+
+        alert(
+            `「${word}」の変更を保存しました。`
+        );
+
+        location.reload();
     }
 
     function saveCustomWord(
@@ -1218,11 +1651,6 @@ const AddWords = (() => {
     function updatePendingWordsDisplay(
         container
     ) {
-
-        console.log(
-            "一覧更新時のcustomWords",
-            Storage.getCustomWords()
-        );
 
         const pendingWords =
             Storage.getCustomWords()
@@ -1803,8 +2231,9 @@ const AddWords = (() => {
         URL.revokeObjectURL(url);
     }
 
-    return {
-        render,
-        renderEditor
-    };
+        return {
+            render,
+            renderEditor,
+            renderUnifiedEditor
+        };
 })();

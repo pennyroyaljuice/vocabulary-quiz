@@ -57,9 +57,18 @@ const App = (() => {
             );
         }
 
+        const wordOverrides =
+            Storage.getWordOverrides();
+
         const standardWords =
             sourceWords.map(
-                normalizeStandardWord
+                (item) =>
+                    normalizeStandardWord(
+                        item,
+                        wordOverrides[
+                            String(item.id)
+                        ] || null
+                    )
             );
 
         const customWords =
@@ -111,59 +120,74 @@ const App = (() => {
             });
     }
 
-    function normalizeStandardWord(
-    item
-    ) {
-        return {
-            id:
-                String(item.id),
+function normalizeStandardWord(
+    item,
+    override = null
+) {
+    const source = {
+        ...item,
+        ...(
+            override &&
+            typeof override === "object"
+                ? override
+                : {}
+        )
+    };
 
-            word:
-                String(
-                    item.word || ""
-                ).trim(),
+    return {
+        id:
+            String(item.id),
 
-            reading:
-                String(
-                    item.reading || ""
-                ).trim(),
+        word:
+            String(
+                source.word || ""
+            ).trim(),
 
-            meaning:
-                String(
-                    item.meaning || ""
-                ).trim(),
+        reading:
+            String(
+                source.reading || ""
+            ).trim(),
 
-            description:
-                String(
-                    item.description || ""
-                ).trim(),
+        meaning:
+            String(
+                source.meaning || ""
+            ).trim(),
 
-            category:
-                String(
-                    item.category ||
-                    "未分類"
-                ).trim(),
+        description:
+            String(
+                source.description || ""
+            ).trim(),
 
-            quizTypes:
-                Array.isArray(
-                    item.quizTypes
-                )
-                    ? [...item.quizTypes]
-                    : [],
+        category:
+            String(
+                source.category ||
+                "未分類"
+            ).trim(),
 
-            source:
-                "standard",
+        quizTypes:
+            Array.isArray(
+                source.quizTypes
+            )
+                ? [...source.quizTypes]
+                : [],
 
-            status:
-                "ready",
+        source:
+            "standard",
 
-            createdAt:
-                null,
+        status:
+            "ready",
 
-            updatedAt:
-                null
-        };
-    }
+        createdAt:
+            null,
+
+        updatedAt:
+            override?.updatedAt ||
+            null,
+
+        overridden:
+            Boolean(override)
+    };
+}
 
     function normalizeCustomWord(
         item
@@ -261,6 +285,16 @@ const App = (() => {
             "editCustomWord",
             (container, params) =>
                 AddWords.renderEditor(
+                    container,
+                    words,
+                    params.wordId
+                )
+        );
+
+        Router.register(
+            "editWord",
+            (container, params) =>
+                AddWords.renderUnifiedEditor(
                     container,
                     words,
                     params.wordId
