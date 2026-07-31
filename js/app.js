@@ -529,12 +529,22 @@ const App = (() => {
         }
 
         container.innerHTML = `
-            <section class="quiz-progress">
-                <span>
+            <section class="quiz-toolbar">
+                <button
+                    id="quizHomeButton"
+                    class="quiz-home-button"
+                    type="button"
+                >
+                    ← ホーム
+                </button>
+
+                <span class="quiz-progress-label">
                     問${question.number}
                     / ${question.total}
                 </span>
+            </section>
 
+            <section class="quiz-progress">
                 <progress
                     value="${question.number}"
                     max="${question.total}"
@@ -601,6 +611,26 @@ const App = (() => {
                 ></section>
             </section>
         `;
+
+        container
+            .querySelector(
+                "#quizHomeButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    const confirmed =
+                        confirm(
+                            "クイズを中断してホームへ戻りますか？\n現在の途中結果はリザルトに反映されません。"
+                        );
+
+                    if (!confirmed) {
+                        return;
+                    }
+
+                    Router.show("home");
+                }
+            );
 
         container
             .querySelectorAll(".choice")

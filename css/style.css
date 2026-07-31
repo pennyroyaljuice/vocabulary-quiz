@@ -1948,3 +1948,65 @@ html[data-theme="dark"]
         color: #f1d584;
     }
 }
+
+.quiz-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.quiz-home-button {
+    padding: 9px 14px;
+    border: 1px solid #d7deea;
+    border-radius: 10px;
+    background: var(--card);
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-weight: 700;
+}
+
+.quiz-home-button:hover {
+    border-color: var(--primary);
+    background: #edf2ff;
+}
+
+.quiz-progress-label {
+    color: var(--sub);
+    font-weight: 800;
+}
+
+.quiz-progress {
+    display: block;
+    margin-bottom: 18px;
+}
+
+.quiz-progress progress {
+    width: 100%;
+}
+
+html[data-theme="dark"]
+.quiz-home-button {
+    border-color: #3b4b59;
+    background: #1c2630;
+}
+
+html[data-theme="dark"]
+.quiz-home-button:hover {
+    background: #263d55;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"]
+    .quiz-home-button {
+        border-color: #3b4b59;
+        background: #1c2630;
+    }
+
+    html[data-theme="auto"]
+    .quiz-home-button:hover {
+        background: #263d55;
+    }
+}
