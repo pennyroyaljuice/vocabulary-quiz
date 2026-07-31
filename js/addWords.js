@@ -794,6 +794,16 @@ const AddWords = (() => {
                 newCandidates
             );
 
+        console.log(
+            "追加結果",
+            result
+        );
+
+        console.log(
+            "保存直後のcustomWords",
+            Storage.getCustomWords()
+        );
+
         customDuplicates.push(
             ...result.duplicates
         );
@@ -1226,6 +1236,12 @@ const AddWords = (() => {
     function updatePendingWordsDisplay(
         container
     ) {
+
+        console.log(
+            "一覧更新時のcustomWords",
+            Storage.getCustomWords()
+        );
+
         const pendingWords =
             Storage.getCustomWords()
                 .filter(
@@ -1298,6 +1314,28 @@ const AddWords = (() => {
                         )
                 );
             });
+    }
+
+    function createSimpleList(values) {
+        if (!values.length) {
+            return "";
+        }
+
+        return `
+            <ul>
+                ${values
+                    .map(
+                        (value) => `
+                            <li>
+                                ${Utils.escapeHtml(
+                                    value
+                                )}
+                            </li>
+                        `
+                    )
+                    .join("")}
+            </ul>
+        `;
     }
 
     function createPendingWordsList(words) {
