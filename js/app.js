@@ -29,12 +29,13 @@ const App = (() => {
     }
 
     async function loadWords() {
-        const response = await fetch(
-            "data/words.json",
-            {
-                cache: "no-store"
-            }
-        );
+        const response =
+            await fetch(
+                "data/words.json",
+                {
+                    cache: "no-store"
+                }
+            );
 
         if (!response.ok) {
             throw new Error(
@@ -42,54 +43,183 @@ const App = (() => {
             );
         }
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
-        const standardWords = Array.isArray(data)
-            ? data
-            : data.words;
+        const sourceWords =
+            Array.isArray(data)
+                ? data
+                : data.words;
 
-        if (!Array.isArray(standardWords)) {
+        if (!Array.isArray(sourceWords)) {
             throw new Error(
                 "words.json の形式が不正です。"
             );
         }
 
-        const customWords =
-            Storage.getReadyCustomWords();
+        const standardWords =
+            sourceWords.map(
+                normalizeStandardWord
+            );
 
-        const merged = [
-            ...standardWords,
-            ...customWords
-        ];
+        const customWords =
+            Storage.getCustomWords()
+                .filter(
+                    (item) =>
+                        item.status === "ready" &&
+                        item.word &&
+                        item.meaning
+                )
+                .map(
+                    normalizeCustomWord
+                );
 
         const hiddenWordIds =
             new Set(
                 Storage.getHiddenWordIds()
+                    .map(String)
             );
 
-        const seen = new Set();
+        const seen =
+            new Set();
 
-        return merged.filter((item) => {
+        return [
+            ...standardWords,
+            ...customWords
+        ]
+            .filter(
+                (item) =>
+                    !hiddenWordIds.has(
+                        String(item.id)
+                    )
+            )
+            .filter((item) => {
+                const key =
+                    Storage.normalizeWordKey(
+                        item.word
+                    );
+
                 if (
-             hiddenWordIds.has(
-                    String(item.id)
+                    !key ||
+                    seen.has(key)
+                ) {
+                    return false;
+                }
+
+                seen.add(key);
+                return true;
+            });
+    }
+
+    function normalizeStandardWord(
+    item
+    ) {
+        return {
+            id:
+                String(item.id),
+
+            word:
+                String(
+                    item.word || ""
+                ).trim(),
+
+            reading:
+                String(
+                    item.reading || ""
+                ).trim(),
+
+            meaning:
+                String(
+                    item.meaning || ""
+                ).trim(),
+
+            description:
+                String(
+                    item.description || ""
+                ).trim(),
+
+            category:
+                String(
+                    item.category ||
+                    "未分類"
+                ).trim(),
+
+            quizTypes:
+                Array.isArray(
+                    item.quizTypes
                 )
-            ) {
-                return false;
-            }
-            
-            const key =
-                Storage.normalizeWordKey(
-                    item.word
-                );
+                    ? [...item.quizTypes]
+                    : [],
 
-            if (!key || seen.has(key)) {
-                return false;
-            }
+            source:
+                "standard",
 
-            seen.add(key);
-            return true;
-        });
+            status:
+                "ready",
+
+            createdAt:
+                null,
+
+            updatedAt:
+                null
+        };
+    }
+
+    function normalizeCustomWord(
+        item
+    ) {
+        return {
+            id:
+                String(item.id),
+
+            word:
+                String(
+                    item.word || ""
+                ).trim(),
+
+            reading:
+                String(
+                    item.reading || ""
+                ).trim(),
+
+            meaning:
+                String(
+                    item.meaning || ""
+                ).trim(),
+
+            description:
+                String(
+                    item.description || ""
+                ).trim(),
+
+            category:
+                String(
+                    item.category ||
+                    "未分類"
+                ).trim(),
+
+            quizTypes:
+                Array.isArray(
+                    item.quizTypes
+                )
+                    ? [...item.quizTypes]
+                    : [],
+
+            source:
+                "custom",
+
+            status:
+                item.status ||
+                "ready",
+
+            createdAt:
+                item.createdAt ||
+                null,
+
+            updatedAt:
+                item.updatedAt ||
+                null
+        };
     }
 
     function updateHeaderWordCount() {

@@ -15,9 +15,12 @@ const Storage = (() => {
         return {
             version: STORAGE_VERSION,
             stats: {},
-            settings: { ...DEFAULT_SETTINGS },
+            settings: {
+                ...DEFAULT_SETTINGS
+            },
             activity: {},
             customWords: [],
+            wordOverrides: {},
             hiddenWordIds: []
         };
     }
@@ -88,6 +91,17 @@ const Storage = (() => {
                 Array.isArray(source.customWords)
                     ? source.customWords
                     : [],
+
+           wordOverrides:
+                    source &&
+                    typeof source.wordOverrides ===
+                        "object" &&
+                    source.wordOverrides !== null &&
+                    !Array.isArray(
+                        source.wordOverrides
+                    )
+                        ? source.wordOverrides
+                        : {},
 
             hiddenWordIds:
                 source &&
@@ -429,6 +443,94 @@ function removeCustomWord(wordId) {
             ...data.customWords[index]
         };
     }
+    
+    function getWordOverrides() {
+    return {
+        ...load().wordOverrides
+    };
+}
+
+    function getWordOverride(wordId) {
+        const overrides =
+            load().wordOverrides;
+
+        return overrides[
+            String(wordId)
+        ] || null;
+    }
+
+    function updateWordOverride(
+        wordId,
+        changes
+    ) {
+        const data = load();
+        const key = String(wordId);
+
+        const allowedChanges = {
+            word:
+                String(
+                    changes.word || ""
+                ).trim(),
+
+            reading:
+                String(
+                    changes.reading || ""
+                ).trim(),
+
+            meaning:
+                String(
+                    changes.meaning || ""
+                ).trim(),
+
+            description:
+                String(
+                    changes.description || ""
+                ).trim(),
+
+            category:
+                String(
+                    changes.category ||
+                    "未分類"
+                ).trim(),
+
+            quizTypes:
+                Array.isArray(
+                    changes.quizTypes
+                )
+                    ? [
+                        ...changes.quizTypes
+                    ]
+                    : [],
+
+            updatedAt:
+                Date.now()
+        };
+
+        data.wordOverrides[key] = {
+            ...(
+                data.wordOverrides[key] ||
+                {}
+            ),
+            ...allowedChanges
+        };
+
+        save(data);
+
+        return {
+            ...data.wordOverrides[key]
+        };
+    }
+
+    function removeWordOverride(
+        wordId
+    ) {
+        const data = load();
+        const key = String(wordId);
+
+        delete data.wordOverrides[key];
+
+        save(data);
+    }
 
     function cleanWordName(value) {
         return String(value || "")
@@ -550,6 +652,10 @@ function removeCustomWord(wordId) {
         restoreWord,
         hideAllStandardWords,
         restoreAllHiddenWords,
+        getWordOverrides,
+        getWordOverride,
+        updateWordOverride,
+        removeWordOverride,
         export: exportData,
         import: importData,
         reset
