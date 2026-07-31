@@ -291,6 +291,270 @@ const Storage = (() => {
         );
     }
 
+    function mergeBackup(
+    backupSource
+) {
+    const backup =
+        typeof backupSource === "string"
+            ? JSON.parse(backupSource)
+            : backupSource;
+
+    if (
+        !backup ||
+        typeof backup !== "object" ||
+        Array.isArray(backup)
+    ) {
+        throw new Error(
+            "バックアップ形式が不正です。"
+        );
+    }
+
+    if (
+        !backup.data ||
+        typeof backup.data !== "object" ||
+        Array.isArray(backup.data)
+    ) {
+        throw new Error(
+            "バックアップデータが見つかりません。"
+        );
+    }
+
+    const importedWords =
+        Array.isArray(
+            backup.data.customWords
+        )
+            ? backup.data.customWords
+            : [];
+
+    const data =
+        load();
+
+    const localWords =
+        Array.isArray(data.customWords)
+            ? data.customWords
+            : [];
+
+    const wordsByKey =
+        new Map();
+
+    const usedIds =
+        new Set(
+            localWords.map(
+                (item) =>
+                    String(item.id)
+            )
+        );
+
+    for (const item of localWords) {
+        const key =
+            normalizeWordKey(
+                item.word
+            );
+
+        if (!key) {
+            continue;
+        }
+
+        wordsByKey.set(
+            key,
+            {
+                ...item
+            }
+        );
+    }
+
+    let addedCount = 0;
+    let updatedCount = 0;
+    let skippedCount = 0;
+
+    for (
+        const importedItem
+        of importedWords
+    ) {
+        if (
+            !importedItem ||
+            typeof importedItem !==
+                "object"
+        ) {
+            skippedCount += 1;
+            continue;
+        }
+
+        const word =
+            cleanWordName(
+                importedItem.word
+            );
+
+        const key =
+            normalizeWordKey(word);
+
+        if (!key) {
+            skippedCount += 1;
+            continue;
+        }
+
+        const existing =
+            wordsByKey.get(key);
+
+        if (existing) {
+            const localTime =
+                getWordUpdateTime(
+                    existing
+                );
+
+            const importedTime =
+                getWordUpdateTime(
+                    importedItem
+                );
+
+            if (
+                importedTime >
+                localTime
+            ) {
+                wordsByKey.set(
+                    key,
+                    {
+                        ...existing,
+                        ...importedItem,
+
+                        // 同じ語彙の場合は、
+                        // 現在の端末側のIDを維持する
+                        id:
+                            existing.id,
+
+                        word
+                    }
+                );
+
+                updatedCount += 1;
+            } else {
+                skippedCount += 1;
+            }
+
+            continue;
+        }
+
+        let importedId =
+            String(
+                importedItem.id || ""
+            );
+
+        if (
+            !importedId ||
+            usedIds.has(importedId)
+        ) {
+            importedId =
+                createCustomWordId();
+        }
+
+        const newItem = {
+            ...importedItem,
+            id:
+                importedId,
+            word,
+
+            reading:
+                String(
+                    importedItem.reading ||
+                    ""
+                ).trim(),
+
+            readingHint:
+                String(
+                    importedItem
+                        .readingHint ||
+                    importedItem.reading ||
+                    ""
+                ).trim(),
+
+            contextHint:
+                String(
+                    importedItem
+                        .contextHint ||
+                    ""
+                ).trim(),
+
+            meaning:
+                String(
+                    importedItem.meaning ||
+                    ""
+                ).trim(),
+
+            description:
+                String(
+                    importedItem
+                        .description ||
+                    ""
+                ).trim(),
+
+            category:
+                String(
+                    importedItem.category ||
+                    ""
+                ).trim(),
+
+            quizTypes:
+                Array.isArray(
+                    importedItem.quizTypes
+                )
+                    ? [
+                        ...importedItem.quizTypes
+                    ]
+                    : [],
+
+            status:
+                importedItem.status ||
+                "pending",
+
+            createdAt:
+                Number(
+                    importedItem.createdAt
+                ) ||
+                Date.now(),
+
+            updatedAt:
+                Number(
+                    importedItem.updatedAt
+                ) ||
+                null
+        };
+
+        wordsByKey.set(
+            key,
+            newItem
+        );
+
+        usedIds.add(
+            importedId
+        );
+
+        addedCount += 1;
+    }
+
+    data.customWords =
+        [...wordsByKey.values()];
+
+    save(data);
+
+    return {
+        addedCount,
+        updatedCount,
+        skippedCount,
+        totalCount:
+            data.customWords.length
+    };
+}
+
+    function getWordUpdateTime(
+        item
+    ) {
+        return (
+            Number(item?.updatedAt) ||
+            Number(item?.createdAt) ||
+            0
+        );
+    }
+
     function importData(json) {
         const parsed =
             typeof json === "string"
@@ -445,18 +709,18 @@ const Storage = (() => {
         );
     }
 
-function removeCustomWord(wordId) {
-    const data = load();
+    function removeCustomWord(wordId) {
+        const data = load();
 
-    data.customWords =
-        data.customWords.filter(
-            (item) =>
-                String(item.id) !==
-                String(wordId)
-        );
+        data.customWords =
+            data.customWords.filter(
+                (item) =>
+                    String(item.id) !==
+                    String(wordId)
+            );
 
-    save(data);
-}
+        save(data);
+    }
 
     function updateCustomWord(wordId, changes) {
         const data = load();
@@ -701,6 +965,7 @@ function removeCustomWord(wordId) {
         removeWordOverride,
         export: exportData,
         exportBackup,
+        mergeBackup,
         import: importData,
         reset
     };
