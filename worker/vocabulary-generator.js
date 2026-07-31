@@ -4,31 +4,40 @@ const ALLOWED_ORIGINS = new Set([
     "http://localhost:5500"
 ]);
 
-const MODEL = "@cf/qwen/qwen3-30b-a3b-fp8";
+const MODEL =
+    "@cf/meta/llama-3.1-8b-instruct-fast";
 
 const VOCABULARY_SCHEMA = {
     type: "object",
     additionalProperties: false,
+
     properties: {
         word: {
             type: "string"
         },
+
         reading: {
             type: "string"
         },
+
         meaning: {
             type: "string"
         },
+
         description: {
             type: "string"
         },
+
         category: {
             type: "string"
         },
+
         quizTypes: {
             type: "array",
+
             items: {
                 type: "string",
+
                 enum: [
                     "wordToMeaning",
                     "meaningToWord",
@@ -37,6 +46,7 @@ const VOCABULARY_SCHEMA = {
             }
         }
     },
+
     required: [
         "word",
         "reading",
@@ -61,19 +71,26 @@ export default {
                     ALLOWED_ORIGINS.has(origin)
                         ? 204
                         : 403,
-                headers: corsHeaders
+
+                headers:
+                    corsHeaders
             });
         }
 
-        // ブラウザでURLを直接開いた際の確認用
         if (request.method === "GET") {
             return jsonResponse(
                 {
                     status: "ok",
+
                     message:
-                        "Vocabulary Generator API is running."
+                        "Vocabulary Generator API is running.",
+
+                    model:
+                        MODEL
                 },
+
                 200,
+
                 corsHeaders
             );
         }
@@ -84,7 +101,9 @@ export default {
                     error:
                         "POSTメソッドを使用してください。"
                 },
+
                 405,
+
                 corsHeaders
             );
         }
@@ -95,7 +114,22 @@ export default {
                     error:
                         "このWebサイトからのアクセスは許可されていません。"
                 },
+
                 403,
+
+                corsHeaders
+            );
+        }
+
+        if (!env.AI) {
+            return jsonResponse(
+                {
+                    error:
+                        "Workers AIのバインディングが設定されていません。"
+                },
+
+                500,
+
                 corsHeaders
             );
         }
@@ -113,7 +147,9 @@ export default {
                         error:
                             "語彙を入力してください。"
                     },
+
                     400,
+
                     corsHeaders
                 );
             }
@@ -124,7 +160,9 @@ export default {
                         error:
                             "語彙が長すぎます。"
                     },
+
                     400,
+
                     corsHeaders
                 );
             }
@@ -132,10 +170,12 @@ export default {
             const result =
                 await env.AI.run(
                     MODEL,
+
                     {
                         messages: [
                             {
                                 role: "system",
+
                                 content: `
 あなたは日本語辞典の編集者です。
 入力された見出し語について、語彙学習クイズ用の辞書データを作成してください。
@@ -143,66 +183,88 @@ export default {
 必須ルール：
 - 意味は辞書的・簡潔・正確にする。
 - 不確かな語源や出典を断定しない。
-- readingは原則ひらがな。
-- カタカナ語や英字語のreadingは空文字でよい。
-- descriptionは用法、由来、注意点などの短い補足。
+- readingは原則ひらがなにする。
+- カタカナ語や英字語ではreadingを空文字にしてよい。
+- descriptionには用法、由来、注意点などの短い補足を書く。
 - categoryは簡潔な日本語分類にする。
 - wordToMeaningとmeaningToWordは原則含める。
-- カタカナ語、英字語、慣用句、ことわざ、長い文章表現ではreadingを含めない。
+- カタカナ語、英字語、慣用句、ことわざ、長い文章表現ではreadingをquizTypesに含めない。
+- 漢字を含む単独語や熟語では、読みを学ぶ価値がある場合のみreadingをquizTypesに含める。
 - 入力された見出し語の表記を変更しない。
 - JSON以外の文章を出力しない。
                                 `.trim()
                             },
+
                             {
                                 role: "user",
+
                                 content:
                                     `見出し語：${word}`
                             }
                         ],
 
                         response_format: {
-                            type: "json_schema",
-                            json_schema: {
-                                name:
-                                    "vocabulary_entry",
-                                strict: true,
-                                schema:
-                                    VOCABULARY_SCHEMA
-                            }
+                            type:
+                                "json_schema",
+
+                            json_schema:
+                                VOCABULARY_SCHEMA
                         },
 
-                        temperature: 0.2,
-                        max_tokens: 700
+                        temperature:
+                            0.2,
+
+                        max_tokens:
+                            700
                     }
                 );
 
             const generated =
-                extractVocabulary(result);
+                extractVocabulary(
+                    result
+                );
 
-            generated.word = word;
+            const normalized =
+                normalizeVocabulary(
+                    generated,
+                    word
+                );
 
             return jsonResponse(
                 {
                     vocabulary:
-                        generated
+                        normalized
                 },
+
                 200,
+
                 corsHeaders
             );
         } catch (error) {
-            console.error(error);
+            console.error(
+                "AI ERROR:",
+                error
+            );
+
+            console.error(
+                "STACK:",
+                error?.stack
+            );
 
             return jsonResponse(
                 {
                     error:
                         "語彙情報の生成中にエラーが発生しました。",
+
                     detail:
                         String(
                             error?.message ||
                             error
                         )
                 },
+
                 500,
+
                 corsHeaders
             );
         }
@@ -234,12 +296,110 @@ function extractVocabulary(result) {
 
     const cleaned =
         text
-            .replace(/^```json\s*/u, "")
-            .replace(/^```\s*/u, "")
-            .replace(/\s*```$/u, "")
+            .replace(
+                /^```json\s*/u,
+                ""
+            )
+            .replace(
+                /^```\s*/u,
+                ""
+            )
+            .replace(
+                /\s*```$/u,
+                ""
+            )
             .trim();
 
-    return JSON.parse(cleaned);
+    return JSON.parse(
+        cleaned
+    );
+}
+
+function normalizeVocabulary(
+    generated,
+    originalWord
+) {
+    const quizTypes =
+        Array.isArray(
+            generated.quizTypes
+        )
+            ? generated.quizTypes.filter(
+                (type) =>
+                    [
+                        "wordToMeaning",
+                        "meaningToWord",
+                        "reading"
+                    ].includes(type)
+            )
+            : [];
+
+    const uniqueQuizTypes =
+        [...new Set(quizTypes)];
+
+    if (
+        !uniqueQuizTypes.includes(
+            "wordToMeaning"
+        )
+    ) {
+        uniqueQuizTypes.unshift(
+            "wordToMeaning"
+        );
+    }
+
+    if (
+        !uniqueQuizTypes.includes(
+            "meaningToWord"
+        )
+    ) {
+        uniqueQuizTypes.push(
+            "meaningToWord"
+        );
+    }
+
+    const reading =
+        String(
+            generated.reading || ""
+        ).trim();
+
+    if (!reading) {
+        const readingIndex =
+            uniqueQuizTypes.indexOf(
+                "reading"
+            );
+
+        if (readingIndex >= 0) {
+            uniqueQuizTypes.splice(
+                readingIndex,
+                1
+            );
+        }
+    }
+
+    return {
+        word:
+            originalWord,
+
+        reading,
+
+        meaning:
+            String(
+                generated.meaning || ""
+            ).trim(),
+
+        description:
+            String(
+                generated.description || ""
+            ).trim(),
+
+        category:
+            String(
+                generated.category ||
+                "未分類"
+            ).trim(),
+
+        quizTypes:
+            uniqueQuizTypes
+    };
 }
 
 function cleanWord(value) {
@@ -259,20 +419,26 @@ function createCorsHeaders(origin) {
     const headers = {
         "Access-Control-Allow-Methods":
             "GET, POST, OPTIONS",
+
         "Access-Control-Allow-Headers":
             "Content-Type",
+
         "Access-Control-Max-Age":
             "86400",
+
         "Content-Type":
             "application/json; charset=utf-8"
     };
 
-    if (ALLOWED_ORIGINS.has(origin)) {
+    if (
+        ALLOWED_ORIGINS.has(origin)
+    ) {
         headers[
             "Access-Control-Allow-Origin"
         ] = origin;
 
-        headers.Vary = "Origin";
+        headers.Vary =
+            "Origin";
     }
 
     return headers;
@@ -285,6 +451,7 @@ function jsonResponse(
 ) {
     return new Response(
         JSON.stringify(data),
+
         {
             status,
             headers

@@ -883,8 +883,30 @@ const AddWords = (() => {
             }
         `;
 
-        textarea.value = "";
+        if (
+            result.added.length === 0 &&
+            duplicateCount > 0
+        ) {
+            const heading =
+                resultBox.querySelector(
+                    ".duplicate-result strong"
+                );
 
+            if (heading) {
+                heading.textContent =
+                    "入力された語彙はすべて登録済みでした";
+            }
+        }
+
+        resultBox.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+        });
+
+        if (result.added.length > 0) {
+            textarea.value = "";
+        }
+        
         refreshLists(container);
     }
 
