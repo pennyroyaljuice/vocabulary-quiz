@@ -300,6 +300,14 @@ const AddWords = (() => {
                     item.contextHint
                 )}
 
+                ${createTextareaField(
+                    "参考URL（1行に1件）",
+                    "sourceUrls",
+                    sourcesToText(
+                        item.sources
+                    )
+                )}
+
                     ${createTextareaField(
                         "意味",
                         "meaning",
@@ -593,6 +601,14 @@ const AddWords = (() => {
                         item.reading
                     )}
 
+                     ${createTextareaField(
+                        "参考URL（1行に1件）",
+                        "sourceUrls",
+                        sourcesToText(
+                            item.sources
+                        )
+                    )}
+
                     ${createTextareaField(
                         "意味",
                         "meaning",
@@ -808,22 +824,30 @@ const AddWords = (() => {
         );
 
         try {
-        const readingHint =
-            card.querySelector(
-                '[data-field="reading"]'
-            )?.value.trim() || "";
+            const readingHint =
+                card.querySelector(
+                    '[data-field="reading"]'
+                )?.value.trim() || "";
 
-        const contextHint =
-            card.querySelector(
-                '[data-field="contextHint"]'
-            )?.value.trim() || "";
+            const contextHint =
+                card.querySelector(
+                    '[data-field="contextHint"]'
+                )?.value.trim() || "";
 
-        const generated =
-            await generateWordByAI(
-                word,
-                readingHint,
-                contextHint
-            );
+            const sources =
+                parseSourcesInput(
+                    card.querySelector(
+                        '[data-field="sourceUrls"]'
+                    )?.value || ""
+                );
+
+            const generated =
+                await generateWordByAI(
+                    word,
+                    readingHint,
+                    contextHint,
+                    sources
+                );
 
             card.querySelector(
                 '[data-field="word"]'
@@ -866,19 +890,30 @@ const AddWords = (() => {
                     );
             });
 
-            Storage.updateCustomWord(
-                wordId,
-                {
-                    ...generated,
-                    word:
-                        generated.word ||
-                        word,
-                    status:
-                        "generated",
-                    updatedAt:
-                        Date.now()
-                }
-            );
+        Storage.updateCustomWord(
+            wordId,
+            {
+                ...generated,
+
+                sources:
+                    Array.isArray(
+                        generated.sources
+                    ) &&
+                    generated.sources.length > 0
+                        ? generated.sources
+                        : sources,
+
+                word:
+                    generated.word ||
+                    word,
+
+                status:
+                    "generated",
+
+                updatedAt:
+                    Date.now()
+            }
+        );
 
             showMessage(
                 message,
@@ -1313,6 +1348,13 @@ const AddWords = (() => {
             card.querySelector(
                 '[data-field="category"]'
             ).value.trim();
+            
+        const sources =
+            parseSourcesInput(
+                card.querySelector(
+                    '[data-field="sourceUrls"]'
+                )?.value || ""
+            );
 
         const quizTypes =
             Array.from(
@@ -1367,11 +1409,11 @@ const AddWords = (() => {
             category:
                 category || "未分類",
             quizTypes,
+            sources,
             updatedAt:
                 Date.now()
         };
-
-        if (
+                if (
             originalItem.source ===
             "standard"
         ) {
@@ -1442,6 +1484,16 @@ const AddWords = (() => {
             card.querySelector(
                 '[data-field="contextHint"]'
             )?.value.trim() || "";
+
+        const sourceUrls =
+            card.querySelector(
+                '[data-field="sourceUrls"]'
+            )?.value || "";
+
+        const sources =
+            parseSourcesInput(
+                sourceUrls
+            );
 
         const selectedQuizTypes =
             Array.from(
@@ -1525,6 +1577,7 @@ const AddWords = (() => {
                 readingHint:
                     reading,
                 contextHint,
+                sources,
                 meaning,
                 description,
                 category:
@@ -2091,10 +2144,70 @@ const AddWords = (() => {
         `;
     }
 
+    function sourcesToText(
+    sources
+) {
+    if (!Array.isArray(sources)) {
+        return "";
+    }
+
+    return sources
+        .map((source) => {
+            if (
+                typeof source ===
+                "string"
+            ) {
+                return source.trim();
+            }
+
+            if (
+                source &&
+                typeof source ===
+                    "object"
+            ) {
+                return String(
+                    source.url || ""
+                ).trim();
+            }
+
+            return "";
+        })
+        .filter(Boolean)
+        .join("\n");
+}
+
+    function parseSourcesInput(
+        value
+    ) {
+        const seen =
+            new Set();
+
+        return String(value || "")
+            .split(/\r?\n/u)
+            .map(
+                (line) =>
+                    line.trim()
+            )
+            .filter(Boolean)
+            .filter((url) => {
+                if (seen.has(url)) {
+                    return false;
+                }
+
+                seen.add(url);
+                return true;
+            })
+            .map((url) => ({
+                title: "",
+                url
+            }));
+    }
+
     async function generateWordByAI(
         word,
         readingHint = "",
-        contextHint = ""
+        contextHint = "",
+        sources = []
     ) {
         const response =
             await fetch(
@@ -2110,7 +2223,8 @@ const AddWords = (() => {
                     body: JSON.stringify({
                         word,
                         readingHint,
-                        contextHint
+                        contextHint,
+                        sources
                     })
                 }
             );

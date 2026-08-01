@@ -171,6 +171,23 @@ function normalizeStandardWord(
                 ? [...source.quizTypes]
                 : [],
 
+       sources:
+            Array.isArray(
+                source.sources
+            )
+                ? [...source.sources]
+                : [],
+
+        comparisonNote:
+            String(
+                source.comparisonNote ||
+                ""
+            ).trim(),
+
+        needsReview:
+            source.needsReview !==
+            false,
+
         source:
             "standard",
 
@@ -228,6 +245,37 @@ function normalizeStandardWord(
                 )
                     ? [...item.quizTypes]
                     : [],
+
+             sources:
+                Array.isArray(
+                    item.sources
+                )
+                    ? item.sources.map(
+                        (source) => ({
+                            title:
+                                String(
+                                    source?.title ||
+                                    ""
+                                ).trim(),
+
+                            url:
+                                String(
+                                    source?.url ||
+                                    ""
+                                ).trim()
+                        })
+                    )
+                    : [],
+
+            comparisonNote:
+                String(
+                    item.comparisonNote ||
+                    ""
+                ).trim(),
+
+            needsReview:
+                item.needsReview !==
+                false,
 
             source:
                 "custom",

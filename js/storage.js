@@ -126,6 +126,30 @@ const Storage = (() => {
             };
         }
 
+                migrated.customWords =
+                migrated.customWords.map(
+                    (item) => ({
+                        ...item,
+
+                        sources:
+                            Array.isArray(
+                                item.sources
+                            )
+                                ? item.sources
+                                : [],
+
+                        comparisonNote:
+                            String(
+                                item.comparisonNote ||
+                                ""
+                            ),
+
+                        needsReview:
+                            item.needsReview !==
+                            false
+                    })
+                );
+
         return migrated;
     }
 
@@ -793,6 +817,10 @@ const Storage = (() => {
                 category: "",
                 quizTypes: [],
 
+                sources: [],
+                comparisonNote: "",
+                needsReview: true,
+
                 status:
                     "pending",
 
@@ -924,6 +952,37 @@ const Storage = (() => {
                         ...changes.quizTypes
                     ]
                     : [],
+
+             sources:
+                Array.isArray(
+                    changes.sources
+                )
+                    ? changes.sources.map(
+                        (source) => ({
+                            title:
+                                String(
+                                    source?.title ||
+                                    ""
+                                ).trim(),
+
+                            url:
+                                String(
+                                    source?.url ||
+                                    ""
+                                ).trim()
+                        })
+                    )
+                    : [],
+
+            comparisonNote:
+                String(
+                    changes.comparisonNote ||
+                    ""
+                ).trim(),
+
+            needsReview:
+                changes.needsReview !==
+                false,
 
             updatedAt:
                 Date.now()
