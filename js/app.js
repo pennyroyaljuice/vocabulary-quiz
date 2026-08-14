@@ -120,19 +120,34 @@ const App = (() => {
             });
     }
 
-function normalizeStandardWord(
-    item,
-    override = null
-) {
-    const source = {
-        ...item,
-        ...(
-            override &&
-            typeof override === "object"
-                ? override
-                : {}
-        )
-    };
+    async function reloadWords() {
+        words =
+            await loadWords();
+
+        updateHeaderWordCount();
+
+        Quiz.initialize(
+            words
+        );
+
+        return [
+            ...words
+        ];
+    }
+
+    function normalizeStandardWord(
+        item,
+        override = null
+    ) {
+        const source = {
+            ...item,
+            ...(
+                override &&
+                typeof override === "object"
+                    ? override
+                    : {}
+            )
+        };
 
     return {
         id:
@@ -1291,6 +1306,8 @@ function normalizeStandardWord(
     return {
         init,
         startQuiz,
+        reloadWords,
+
         getWords() {
             return [...words];
         }

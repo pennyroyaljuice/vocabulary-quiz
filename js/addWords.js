@@ -1439,11 +1439,13 @@ const AddWords = (() => {
         location.reload();
     }
 
-    function saveCustomWord(
+    async function saveCustomWord(
         container,
         wordId,
         finalize
-    ) {
+    )
+            
+        {
         const card =
             container.querySelector(
                 `[data-custom-word-card="${CSS.escape(
@@ -1593,11 +1595,16 @@ const AddWords = (() => {
         );
 
         if (finalize) {
+            await App.reloadWords();
+
             alert(
-                `「${word}」をクイズへ追加しました。ページを再読み込みすると反映されます。`
+                `「${word}」をクイズへ追加しました。`
             );
 
-            location.reload();
+            Router.show(
+                "addWords"
+            );
+
             return;
         }
 
