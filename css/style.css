@@ -1466,7 +1466,7 @@ html[data-theme="dark"] .wrong-item {
 
 .words-textarea {
     width: 100%;
-    min-height: 220px;
+    min-height: 72px;
     padding: 15px 16px;
     resize: vertical;
     border: 2px solid #dfe5f5;
@@ -2020,4 +2020,10 @@ html[data-theme="dark"]
 
 .input-format-help code {
     font-weight: 700;
+}
+
+.auto-resize-textarea {
+    min-height: 72px;
+    max-height: 320px;
+    overflow-y: auto;
 }

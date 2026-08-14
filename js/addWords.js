@@ -63,8 +63,8 @@ const AddWords = (() => {
 
                 <textarea
                     id="newWordsInput"
-                    class="words-textarea"
-                    rows="8"
+                    class="words-textarea auto-resize-textarea"
+                    rows="2"
                     placeholder="語彙を入力してください"
                 ></textarea>
 
@@ -1040,6 +1040,28 @@ const AddWords = (() => {
             container.querySelector(
                 "#newWordsInput"
             );
+        
+        const newWordsInput =
+            container.querySelector(
+                "#newWordsInput"
+            );
+
+        if (newWordsInput) {
+            const resizeTextarea = () => {
+                newWordsInput.style.height =
+                    "auto";
+
+                newWordsInput.style.height =
+                    `${newWordsInput.scrollHeight}px`;
+            };
+
+            newWordsInput.addEventListener(
+                "input",
+                resizeTextarea
+            );
+
+            resizeTextarea();
+        }
 
         const resultBox =
             container.querySelector(
