@@ -915,11 +915,22 @@ const AddWords = (() => {
             }
         );
 
+        if (
+            generated.needsReview &&
+            generated.comparisonNote
+        ) {
+            showMessage(
+                message,
+                `AIが確認事項を検出しました。\n${generated.comparisonNote}`,
+                "warning"
+            );
+        } else {
             showMessage(
                 message,
                 "AI生成が完了しました。内容を確認してください。",
                 "success"
             );
+        }
         } catch (error) {
             console.error(error);
 
