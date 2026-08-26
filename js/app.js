@@ -7,6 +7,7 @@ const AI_API_URL =
 
 const App = (() => {
     let words = [];
+    let standardSourceWords = [];
 
     async function init() {
         try {
@@ -55,6 +56,33 @@ const App = (() => {
             throw new Error(
                 "words.json の形式が不正です。"
             );
+        }
+
+        standardSourceWords =
+            sourceWords.map(
+                (item) => ({
+                    ...item
+                })
+            );
+
+        const storageData =
+            Storage.load();
+
+        if (
+            Array.isArray(
+                storageData.vocabulary
+            )
+        ) {
+            return storageData.vocabulary
+                .filter(
+                    (item) =>
+                        item &&
+                        item.word &&
+                        item.meaning
+                )
+                .map(
+                    normalizeCustomWord
+                );
         }
 
         const wordOverrides =
@@ -1310,6 +1338,14 @@ const App = (() => {
 
         getWords() {
             return [...words];
+        },
+
+        getStandardSourceWords() {
+            return standardSourceWords.map(
+                (item) => ({
+                    ...item
+                })
+            );
         }
     };
 })();

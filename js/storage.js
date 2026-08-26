@@ -103,11 +103,31 @@ const Storage = (() => {
                         ? source.wordOverrides
                         : {},
 
-            hiddenWordIds:
-                source &&
-                Array.isArray(source.hiddenWordIds)
-                ? source.hiddenWordIds.map(String)
-                : []
+        hiddenWordIds:
+                    source &&
+                    Array.isArray(source.hiddenWordIds)
+                        ? source.hiddenWordIds.map(String)
+                        : [],
+
+                vocabulary:
+                    source &&
+                    Array.isArray(source.vocabulary)
+                        ? source.vocabulary
+                        : null,
+
+                pendingWords:
+                    source &&
+                    Array.isArray(source.pendingWords)
+                        ? source.pendingWords
+                        : [],
+
+                unifiedVocabularyVersion:
+                    source &&
+                    Number.isFinite(
+                        source.unifiedVocabularyVersion
+                    )
+                        ? source.unifiedVocabularyVersion
+                        : 0
         };
 
         // 旧版では darkMode が boolean の場合がある
@@ -685,6 +705,279 @@ const Storage = (() => {
         };
 }
 
+    function migrateToUnifiedVocabulary(
+        standardWords
+    ) {
+        const data =
+            load();
+
+        // すでに移行済みなら何もしない
+        if (
+            Array.isArray(
+                data.vocabulary
+            )
+        ) {
+            return {
+                migrated: false,
+                vocabulary:
+                    data.vocabulary,
+                pendingWords:
+                    Array.isArray(
+                        data.pendingWords
+                    )
+                        ? data.pendingWords
+                        : []
+            };
+        }
+
+        const vocabulary =
+            buildUnifiedVocabulary(
+                standardWords
+            );
+
+        const pendingWords =
+            buildPendingWords();
+
+        save({
+            ...data,
+
+            vocabulary,
+            pendingWords,
+
+            unifiedVocabularyVersion: 1
+        });
+
+        return {
+            migrated: true,
+            vocabulary,
+            pendingWords
+        };
+    }
+
+    function buildPendingWords() {
+        const data =
+            load();
+
+        return (
+            Array.isArray(
+                data.customWords
+            )
+                ? data.customWords
+                : []
+        )
+            .filter(
+                item =>
+                    item.status !== "ready" ||
+                    !item.word ||
+                    !item.meaning
+            )
+            .map(
+                item => ({
+                    ...item
+                })
+            );
+    }
+
+    function buildUnifiedVocabulary(
+        standardWords
+    ) {
+        const data =
+            load();
+
+        const overrides =
+            data.wordOverrides || {};
+
+        const hiddenIds =
+            new Set(
+                (
+                    data.hiddenWordIds ||
+                    []
+                ).map(String)
+            );
+
+        const result = [];
+        const seen =
+            new Set();
+
+        for (
+            const standardItem
+            of (
+                Array.isArray(
+                    standardWords
+                )
+                    ? standardWords
+                    : []
+            )
+        ) {
+            const id =
+                String(
+                    standardItem.id
+                );
+
+            if (
+                hiddenIds.has(id)
+            ) {
+                continue;
+            }
+
+            const override =
+                overrides[id];
+
+            const source = {
+                ...standardItem,
+                ...(
+                    override &&
+                    typeof override ===
+                        "object"
+                        ? override
+                        : {}
+                )
+            };
+
+            const word =
+                cleanWordName(
+                    source.word
+                );
+
+            const key =
+                normalizeWordKey(
+                    word
+                );
+
+            if (
+                !key ||
+                seen.has(key)
+            ) {
+                continue;
+            }
+
+            seen.add(key);
+
+            result.push({
+                id:
+                    createCustomWordId(),
+
+                word,
+
+                reading:
+                    String(
+                        source.reading ||
+                        ""
+                    ).trim(),
+
+                readingHint:
+                    String(
+                        source.reading ||
+                        ""
+                    ).trim(),
+
+                contextHint:
+                    "",
+
+                meaning:
+                    String(
+                        source.meaning ||
+                        ""
+                    ).trim(),
+
+                description:
+                    String(
+                        source.description ||
+                        ""
+                    ).trim(),
+
+                category:
+                    String(
+                        source.category ||
+                        "未分類"
+                    ).trim(),
+
+                quizTypes:
+                    Array.isArray(
+                        source.quizTypes
+                    )
+                        ? [
+                            ...source.quizTypes
+                        ]
+                        : [],
+
+                sources:
+                    Array.isArray(
+                        source.sources
+                    )
+                        ? [
+                            ...source.sources
+                        ]
+                        : [],
+
+                comparisonNote:
+                    String(
+                        source.comparisonNote ||
+                        ""
+                    ).trim(),
+
+                needsReview:
+                    source.needsReview ===
+                    true,
+
+                status:
+                    "ready",
+
+                createdAt:
+                    Date.now(),
+
+                updatedAt:
+                    override?.updatedAt ||
+                    null
+            });
+        }
+
+    for (
+        const customItem
+        of (
+            Array.isArray(
+                data.customWords
+            )
+                ? data.customWords
+                : []
+        )
+    ) {
+        if (
+            customItem.status !== "ready" ||
+            !customItem.word ||
+            !customItem.meaning
+        ) {
+            continue;
+        }
+
+        const key =
+            normalizeWordKey(
+                customItem.word
+            );
+
+        if (
+            !key ||
+            seen.has(key)
+        ) {
+            continue;
+        }
+
+        seen.add(key);
+
+        result.push({
+            ...customItem,
+
+            id:
+                String(
+                    customItem.id ||
+                    createCustomWordId()
+                )
+        });
+    }
+
+        return result;
+    }
+
     function getWordUpdateTime(
         item
     ) {
@@ -1141,6 +1434,9 @@ const Storage = (() => {
         export: exportData,
         exportBackup,
         mergeBackup,
+        buildUnifiedVocabulary,
+        buildPendingWords,
+        migrateToUnifiedVocabulary,
         import: importData,
         reset
     };
