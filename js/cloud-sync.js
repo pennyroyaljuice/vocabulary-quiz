@@ -167,5 +167,4 @@ async function downloadBackup() {
     uploadBackup,
     downloadBackup
 };
-    };
 })();
