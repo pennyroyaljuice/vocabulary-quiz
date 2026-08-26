@@ -224,7 +224,33 @@ const Settings = (() => {
                     >
                         バックアップを統合する
                     </button>
+                </div>
 
+                <div class="cloud-sync-key">
+                    <label for="cloudSyncSecretInput">
+                        同期キー
+                    </label>
+
+                    <input
+                        id="cloudSyncSecretInput"
+                        type="password"
+                        autocomplete="off"
+                        placeholder="同期キーを入力"
+                        value="${Utils.escapeAttribute(
+                            CloudSync.getSecret()
+                        )}"
+                    >
+
+                    <button
+                        id="saveCloudSyncSecretButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        同期キーを保存
+                    </button>
+                </div>
+
+                <div class="settings-button-grid">
                     <button
                         id="uploadCloudBackupButton"
                         class="menuButton"
@@ -471,6 +497,41 @@ container
         importInput.addEventListener(
             "change",
             importLearningData
+        );
+
+        const cloudSyncSecretInput =
+            container.querySelector(
+                "#cloudSyncSecretInput"
+            );
+
+        const saveCloudSyncSecretButton =
+            container.querySelector(
+                "#saveCloudSyncSecretButton"
+            );
+
+        saveCloudSyncSecretButton.addEventListener(
+            "click",
+            () => {
+                const secret =
+                    cloudSyncSecretInput.value
+                        .trim();
+
+                if (!secret) {
+                    alert(
+                        "同期キーを入力してください。"
+                    );
+
+                    return;
+                }
+
+                CloudSync.setSecret(
+                    secret
+                );
+
+                alert(
+                    "同期キーをこの端末に保存しました。"
+                );
+            }
         );
 
         const uploadCloudButton =
