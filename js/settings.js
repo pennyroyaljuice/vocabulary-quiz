@@ -224,6 +224,23 @@ const Settings = (() => {
                     >
                         バックアップを統合する
                     </button>
+
+                    <button
+                        id="uploadCloudBackupButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        クラウドに保存
+                    </button>
+
+                    <button
+                        id="downloadCloudBackupButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        クラウドから取得して統合
+                    </button>
+
                     <input
                         id="importDataInput"
                         class="hidden"
@@ -456,6 +473,26 @@ container
             importLearningData
         );
 
+        const uploadCloudButton =
+            container.querySelector(
+                "#uploadCloudBackupButton"
+            );
+
+        uploadCloudButton.addEventListener(
+            "click",
+            uploadCloudBackup
+        );
+
+        const downloadCloudButton =
+            container.querySelector(
+                "#downloadCloudBackupButton"
+            );
+
+        downloadCloudButton.addEventListener(
+            "click",
+            downloadCloudBackup
+        );
+
         container
             .querySelector(
                 "#resetDataButton"
@@ -464,6 +501,105 @@ container
                 "click",
                 resetLearningData
             );
+    }
+
+    async function uploadCloudBackup() {
+        const confirmed =
+            confirm(
+                "現在の学習データをクラウドへ保存しますか？\nクラウド上のバックアップは現在の端末データで更新されます。"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const result =
+                await CloudSync.uploadBackup();
+
+            const savedAt =
+                result.cloudSavedAt
+                    ? new Date(
+                        result.cloudSavedAt
+                    ).toLocaleString()
+                    : "";
+
+            alert(
+                savedAt
+                    ? `クラウドへ保存しました。\n${savedAt}`
+                    : "クラウドへ保存しました。"
+            );
+        } catch (error) {
+            console.error(error);
+
+            alert(
+                error.message ||
+                "クラウドへの保存に失敗しました。"
+            );
+        }
+    }
+
+    async function downloadCloudBackup() {
+        const confirmed =
+            confirm(
+                "クラウド上のバックアップを現在の端末へ統合しますか？\n現在の追加語彙は削除されません。"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const result =
+                await CloudSync.downloadBackup();
+
+            if (!result.exists) {
+                alert(
+                    "クラウドにバックアップがありません。"
+                );
+
+                return;
+            }
+
+            const customWords =
+                result.mergeResult.customWords;
+
+            const wordOverrides =
+                result.mergeResult.wordOverrides;
+
+            const hiddenWordIds =
+                result.mergeResult.hiddenWordIds;
+
+            alert(
+                [
+                    "クラウドデータを統合しました。",
+                    "",
+                    "追加語彙",
+                    `新規追加：${customWords.addedCount}語`,
+                    `更新：${customWords.updatedCount}語`,
+                    `変更なし：${customWords.skippedCount}語`,
+                    `統合後：${customWords.totalCount}語`,
+                    "",
+                    "標準語彙の編集",
+                    `新規追加：${wordOverrides.addedCount}件`,
+                    `更新：${wordOverrides.updatedCount}件`,
+                    `変更なし：${wordOverrides.skippedCount}件`,
+                    `統合後：${wordOverrides.totalCount}件`,
+                    "",
+                    "非表示語彙",
+                    `統合後：${hiddenWordIds.totalCount}語`
+                ].join("\n")
+            );
+
+            location.reload();
+        } catch (error) {
+            console.error(error);
+
+            alert(
+                error.message ||
+                "クラウドからの取得に失敗しました。"
+            );
+        }
     }
 
     function saveSetting(key, value) {
