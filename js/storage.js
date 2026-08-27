@@ -14,13 +14,38 @@ const Storage = (() => {
     function createDefaultData() {
         return {
             version: STORAGE_VERSION,
+
             stats: {},
+
             settings: {
                 ...DEFAULT_SETTINGS
             },
+
             activity: {},
+
+            /*
+            * 現行形式
+            *
+            * 新規ユーザーは
+            * 何も入っていない語彙帳から開始する。
+            */
+            vocabulary: [],
+
+            pendingWords: [],
+
+            unifiedVocabularyVersion: 1,
+
+            /*
+            * 旧形式
+            *
+            * v1バックアップや
+            * 既存ユーザーの移行互換用として
+            * 当面残す。
+            */
             customWords: [],
+
             wordOverrides: {},
+
             hiddenWordIds: []
         };
     }

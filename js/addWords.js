@@ -1,10 +1,8 @@
 "use strict";
 
 const AddWords = (() => {
-    let standardWords = [];
 
     function render(container, words) {
-        standardWords =
             Array.isArray(words)
                 ? [...words]
                 : [];
@@ -142,9 +140,10 @@ const AddWords = (() => {
                         </h3>
 
                         <p class="page-description">
-                            標準語彙と、確定済みの追加語彙を統合し、
+                            現在の語彙一覧を、
                             1行1語のTXTファイルとして書き出します。
                         </p>
+
                     </div>
 
                     <button
@@ -166,11 +165,6 @@ const AddWords = (() => {
         words,
         wordId
     ) {
-        standardWords =
-            Array.isArray(words)
-                ? [...words]
-                : [];
-
         const item =
             Storage.getPendingWords()
                 .find(
@@ -467,15 +461,6 @@ const AddWords = (() => {
         words,
         wordId
     ) {
-        standardWords =
-            Array.isArray(words)
-                ? words.filter(
-                    (word) =>
-                        word.source ===
-                        "standard"
-                )
-                : [];
-
         const item =
             Array.isArray(words)
                 ? words.find(
@@ -1168,54 +1153,13 @@ const AddWords = (() => {
             return;
         }
 
-        const standardKeys =
-            new Map(
-                standardWords.map(
-                    (item) => [
-                        Storage.normalizeWordKey(
-                            item.word
-                        ),
-                        item.word
-                    ]
-                )
-            );
-
-        const newCandidates = [];
-        const standardDuplicates = [];
-        const customDuplicates = [];
-
-        for (const candidate of candidates) {
-            const key =
-                Storage.normalizeWordKey(
-                    candidate.word
-                );
-
-            if (!key) {
-                continue;
-            }
-
-            if (standardKeys.has(key)) {
-                standardDuplicates.push(
-                    standardKeys.get(key)
-                );
-            } else {
-                newCandidates.push(
-                    candidate
-                );
-            }
-        }
         const result =
             Storage.addUnifiedPendingWords(
-                newCandidates
+                candidates
             );
 
-        customDuplicates.push(
-            ...result.duplicates
-        );
-
         const duplicateCount =
-            standardDuplicates.length +
-            customDuplicates.length;
+            result.duplicates.length;
 
             resultBox.classList.remove(
             "hidden"
@@ -1279,45 +1223,16 @@ const AddWords = (() => {
                                 </div>
                             </div>
 
-                            ${
-                                standardDuplicates.length
-                                    ? `
-                                        <div class="duplicate-group">
-                                            <h4>
-                                                標準語彙に登録済み
-                                            </h4>
-
-                                            ${createSimpleList(
-                                                [
-                                                    ...new Set(
-                                                        standardDuplicates
-                                                    )
-                                                ]
-                                            )}
-                                        </div>
-                                    `
-                                    : ""
-                            }
-
-                            ${
-                                customDuplicates.length
-                                    ? `
-                                        <div class="duplicate-group">
-                                            <h4>
-                                                登録待ち・追加済み語彙に存在
-                                            </h4>
-
-                                            ${createSimpleList(
-                                                [
-                                                    ...new Set(
-                                                        customDuplicates
-                                                    )
-                                                ]
-                                            )}
-                                        </div>
-                                    `
-                                    : ""
-                            }
+                            <div class="duplicate-group">
+                              ${createSimpleList(
+                                     [
+                                        ...new Set(
+                                            result.duplicates
+                                        )
+                                    ]
+                                )}
+                            </div>
+   
                         </section>
                     `
                     : ""
@@ -2377,13 +2292,8 @@ const AddWords = (() => {
     }
 
     function exportMasterText() {
-        const customWords =
-            Storage.getReadyCustomWords();
-
-        const combinedWords = [
-            ...standardWords,
-            ...customWords
-        ];
+        const combinedWords =
+            Storage.getVocabulary();
 
         const seen = new Set();
 

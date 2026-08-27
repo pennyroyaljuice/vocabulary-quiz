@@ -7,7 +7,6 @@ const AI_API_URL =
 
 const App = (() => {
     let words = [];
-    let standardSourceWords = [];
 
     async function init() {
         try {
@@ -30,122 +29,26 @@ const App = (() => {
     }
 
     async function loadWords() {
-        const response =
-            await fetch(
-                "data/words.json",
-                {
-                    cache: "no-store"
-                }
-            );
-
-        if (!response.ok) {
-            throw new Error(
-                `語彙データの読み込みに失敗しました。 HTTP ${response.status}`
-            );
-        }
-
-        const data =
-            await response.json();
-
-        const sourceWords =
-            Array.isArray(data)
-                ? data
-                : data.words;
-
-        if (!Array.isArray(sourceWords)) {
-            throw new Error(
-                "words.json の形式が不正です。"
-            );
-        }
-
-        standardSourceWords =
-            sourceWords.map(
-                (item) => ({
-                    ...item
-                })
-            );
-
         const storageData =
             Storage.load();
 
-        if (
+        const vocabulary =
             Array.isArray(
                 storageData.vocabulary
             )
-        ) {
-            return storageData.vocabulary
-                .filter(
-                    (item) =>
-                        item &&
-                        item.word &&
-                        item.meaning
-                )
-                .map(
-                    normalizeCustomWord
-                );
-        }
+                ? storageData.vocabulary
+                : [];
 
-        const wordOverrides =
-            Storage.getWordOverrides();
-
-        const standardWords =
-            sourceWords.map(
-                (item) =>
-                    normalizeStandardWord(
-                        item,
-                        wordOverrides[
-                            String(item.id)
-                        ] || null
-                    )
-            );
-
-        const customWords =
-            Storage.getCustomWords()
-                .filter(
-                    (item) =>
-                        item.status === "ready" &&
-                        item.word &&
-                        item.meaning
-                )
-                .map(
-                    normalizeCustomWord
-                );
-
-        const hiddenWordIds =
-            new Set(
-                Storage.getHiddenWordIds()
-                    .map(String)
-            );
-
-        const seen =
-            new Set();
-
-        return [
-            ...standardWords,
-            ...customWords
-        ]
+        return vocabulary
             .filter(
                 (item) =>
-                    !hiddenWordIds.has(
-                        String(item.id)
-                    )
+                    item &&
+                    item.word &&
+                    item.meaning
             )
-            .filter((item) => {
-                const key =
-                    Storage.normalizeWordKey(
-                        item.word
-                    );
-
-                if (
-                    !key ||
-                    seen.has(key)
-                ) {
-                    return false;
-                }
-
-                seen.add(key);
-                return true;
-            });
+            .map(
+                normalizeCustomWord
+            );
     }
 
     async function reloadWords() {
@@ -162,92 +65,6 @@ const App = (() => {
             ...words
         ];
     }
-
-    function normalizeStandardWord(
-        item,
-        override = null
-    ) {
-        const source = {
-            ...item,
-            ...(
-                override &&
-                typeof override === "object"
-                    ? override
-                    : {}
-            )
-        };
-
-    return {
-        id:
-            String(item.id),
-
-        word:
-            String(
-                source.word || ""
-            ).trim(),
-
-        reading:
-            String(
-                source.reading || ""
-            ).trim(),
-
-        meaning:
-            String(
-                source.meaning || ""
-            ).trim(),
-
-        description:
-            String(
-                source.description || ""
-            ).trim(),
-
-        category:
-            String(
-                source.category ||
-                "未分類"
-            ).trim(),
-
-        quizTypes:
-            Array.isArray(
-                source.quizTypes
-            )
-                ? [...source.quizTypes]
-                : [],
-
-       sources:
-            Array.isArray(
-                source.sources
-            )
-                ? [...source.sources]
-                : [],
-
-        comparisonNote:
-            String(
-                source.comparisonNote ||
-                ""
-            ).trim(),
-
-        needsReview:
-            source.needsReview !==
-            false,
-
-        source:
-            "standard",
-
-        status:
-            "ready",
-
-        createdAt:
-            null,
-
-        updatedAt:
-            override?.updatedAt ||
-            null,
-
-        overridden:
-            Boolean(override)
-    };
-}
 
     function normalizeCustomWord(
         item
@@ -511,7 +328,7 @@ const App = (() => {
 
                 <p>
                     苦手な語や、まだ出題されていない語を
-                    優先して5問出題します。
+                    優先して${dailyGoal}問出題します。
                 </p>
 
                 <button
@@ -1339,14 +1156,6 @@ const App = (() => {
         getWords() {
             return [...words];
         },
-
-        getStandardSourceWords() {
-            return standardSourceWords.map(
-                (item) => ({
-                    ...item
-                })
-            );
-        }
     };
 })();
 

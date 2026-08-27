@@ -41,34 +41,34 @@ const Settings = (() => {
                     通常クイズで出題する問題数を選択します。
                 </p>
 
-                <div class="settings-options">
-                    ${createRadioOption(
-                        "questionCount",
-                        "10",
-                        "10問",
-                        String(
-                            settings.questionCount || 10
-                        ) === "10"
-                    )}
+          <div class="settings-options">
+            ${createRadioOption(
+                "questionCount",
+                "5",
+                "5問",
+                String(
+                    settings.questionCount || 10
+                ) === "5"
+            )}
 
-                    ${createRadioOption(
-                        "questionCount",
-                        "20",
-                        "20問",
-                        String(
-                            settings.questionCount || 10
-                        ) === "20"
-                    )}
+            ${createRadioOption(
+                "questionCount",
+                "10",
+                "10問",
+                String(
+                    settings.questionCount || 10
+                ) === "10"
+            )}
 
-                    ${createRadioOption(
-                        "questionCount",
-                        "30",
-                        "30問",
-                        String(
-                            settings.questionCount || 10
-                        ) === "30"
-                    )}
-                </div>
+            ${createRadioOption(
+                "questionCount",
+                "20",
+                "20問",
+                String(
+                    settings.questionCount || 10
+                ) === "20"
+            )}
+        </div>
             </section>
 
             <section class="card settings-section">
@@ -168,43 +168,13 @@ const Settings = (() => {
                 </label>
             </section>
 
-        <section class="card settings-section">
-            <h3>
-                標準語彙の管理
-            </h3>
-
-            <p class="settings-description">
-                初期収録された語彙を、自分のリストから非表示にできます。
-                元データは削除されないため、後から復元できます。
-            </p>
-
-            <div class="settings-button-grid">
-                <button
-                    id="hideAllStandardWordsButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    標準語彙をすべて非表示
-                </button>
-
-                <button
-                    id="restoreHiddenWordsButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    非表示語彙をすべて復元
-                </button>
-            </div>
-        </section>
-
             <section class="card settings-section">
                 <h3>
                     学習データ
                 </h3>
 
                 <p class="settings-description">
-                    追加語彙、標準語彙の編集、非表示語彙、
-                    学習履歴、設定をJSONファイルへ保存します。
+                    語彙、登録待ち語彙、学習履歴、設定をJSONファイルへ保存します。
                     読み込み時は、現在の語彙データを残したまま統合します。
                 </p>
 
@@ -336,61 +306,6 @@ const Settings = (() => {
             .addEventListener(
                 "click",
                 () => Router.show("home")
-            );
-
-container
-    .querySelector(
-        "#hideAllStandardWordsButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-            const words =
-                App.getWords()
-                    .filter(
-                        (word) =>
-                            !String(word.id)
-                                .startsWith("custom-")
-                    );
-
-            const confirmed =
-                confirm(
-                    `標準語彙${words.length}語をすべて非表示にしますか？\n追加したカスタム語彙は残ります。`
-                );
-
-            if (!confirmed) {
-                return;
-            }
-
-            Storage.hideAllStandardWords(
-                words.map(
-                    (word) => word.id
-                )
-            );
-
-            location.reload();
-        }
-    );
-
-        container
-            .querySelector(
-                "#restoreHiddenWordsButton"
-            )
-            .addEventListener(
-                "click",
-                () => {
-                    const confirmed =
-                        confirm(
-                            "非表示にした標準語彙をすべて復元しますか？"
-                        );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-                    Storage.restoreAllHiddenWords();
-                    location.reload();
-                }
             );
 
         container
