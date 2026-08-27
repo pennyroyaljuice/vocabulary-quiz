@@ -298,7 +298,7 @@ const Storage = (() => {
 
         const backup = {
             backupFormatVersion:
-                1,
+                2,
 
             exportedAt:
                 new Date()
@@ -317,6 +317,28 @@ const Storage = (() => {
                 activity:
                     data.activity,
 
+                // 新しい統合語彙形式
+                vocabulary:
+                    Array.isArray(
+                        data.vocabulary
+                    )
+                        ? data.vocabulary
+                        : [],
+
+                pendingWords:
+                    Array.isArray(
+                        data.pendingWords
+                    )
+                        ? data.pendingWords
+                        : [],
+
+                unifiedVocabularyVersion:
+                    Number(
+                        data.unifiedVocabularyVersion
+                    ) || 0,
+
+                // 旧形式も当面残す
+                // 古いバックアップとの互換性・緊急復旧用
                 customWords:
                     data.customWords,
 
@@ -336,374 +358,557 @@ const Storage = (() => {
     }
 
     function mergeBackup(
-    backupSource
-) {
-    const backup =
-        typeof backupSource === "string"
-            ? JSON.parse(backupSource)
-            : backupSource;
-
-    if (
-        !backup ||
-        typeof backup !== "object" ||
-        Array.isArray(backup)
+        backupSource
     ) {
-        throw new Error(
-            "バックアップ形式が不正です。"
-        );
-    }
+        const backup =
+            typeof backupSource === "string"
+                ? JSON.parse(backupSource)
+                : backupSource;
 
-    if (
-        !backup.data ||
-        typeof backup.data !== "object" ||
-        Array.isArray(backup.data)
-    ) {
-        throw new Error(
-            "バックアップデータが見つかりません。"
-        );
-    }
-
-    const importedWords =
-        Array.isArray(
-            backup.data.customWords
-        )
-            ? backup.data.customWords
-            : [];
-
-    const data =
-        load();
-
-    const localWords =
-        Array.isArray(data.customWords)
-            ? data.customWords
-            : [];
-
-    const wordsByKey =
-        new Map();
-
-    const usedIds =
-        new Set(
-            localWords.map(
-                (item) =>
-                    String(item.id)
-            )
-        );
-
-    for (const item of localWords) {
-        const key =
-            normalizeWordKey(
-                item.word
-            );
-
-        if (!key) {
-            continue;
-        }
-
-        wordsByKey.set(
-            key,
-            {
-                ...item
-            }
-        );
-    }
-
-    let addedCount = 0;
-    let updatedCount = 0;
-    let skippedCount = 0;
-
-    for (
-        const importedItem
-        of importedWords
-    ) {
         if (
-            !importedItem ||
-            typeof importedItem !==
-                "object"
+            !backup ||
+            typeof backup !== "object" ||
+            Array.isArray(backup)
         ) {
-            skippedCount += 1;
-            continue;
-        }
-
-        const word =
-            cleanWordName(
-                importedItem.word
+            throw new Error(
+                "バックアップ形式が不正です。"
             );
-
-        const key =
-            normalizeWordKey(word);
-
-        if (!key) {
-            skippedCount += 1;
-            continue;
         }
 
-        const existing =
-            wordsByKey.get(key);
+        if (
+            !backup.data ||
+            typeof backup.data !== "object" ||
+            Array.isArray(backup.data)
+        ) {
+            throw new Error(
+                "バックアップデータが見つかりません。"
+            );
+        }
 
-        if (existing) {
-            const localTime =
-                getWordUpdateTime(
-                    existing
+        const data =
+            load();
+
+        /*
+        * ==================================================
+        * 新形式 vocabulary
+        * ==================================================
+        */
+
+        const importedVocabulary =
+            Array.isArray(
+                backup.data.vocabulary
+            )
+                ? backup.data.vocabulary
+                : [];
+
+        const localVocabulary =
+            Array.isArray(
+                data.vocabulary
+            )
+                ? data.vocabulary
+                : [];
+
+        const vocabularyByKey =
+            new Map();
+
+        const usedVocabularyIds =
+            new Set();
+
+        for (const item of localVocabulary) {
+            if (
+                !item ||
+                typeof item !== "object"
+            ) {
+                continue;
+            }
+
+            const key =
+                normalizeWordKey(
+                    item.word
                 );
 
-            const importedTime =
-                getWordUpdateTime(
-                    importedItem
+            if (!key) {
+                continue;
+            }
+
+            vocabularyByKey.set(
+                key,
+                {
+                    ...item
+                }
+            );
+
+            usedVocabularyIds.add(
+                String(item.id)
+            );
+        }
+
+        let vocabularyAddedCount = 0;
+        let vocabularyUpdatedCount = 0;
+        let vocabularySkippedCount = 0;
+
+        for (
+            const importedItem
+            of importedVocabulary
+        ) {
+            if (
+                !importedItem ||
+                typeof importedItem !==
+                    "object"
+            ) {
+                vocabularySkippedCount += 1;
+                continue;
+            }
+
+            const word =
+                cleanWordName(
+                    importedItem.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (!key) {
+                vocabularySkippedCount += 1;
+                continue;
+            }
+
+            const existing =
+                vocabularyByKey.get(key);
+
+            if (existing) {
+                const localTime =
+                    getWordUpdateTime(
+                        existing
+                    );
+
+                const importedTime =
+                    getWordUpdateTime(
+                        importedItem
+                    );
+
+                if (
+                    importedTime >
+                    localTime
+                ) {
+                    vocabularyByKey.set(
+                        key,
+                        {
+                            ...existing,
+                            ...importedItem,
+
+                            // 同一語ならローカルIDを維持
+                            id:
+                                existing.id,
+
+                            word,
+
+                            status:
+                                "ready"
+                        }
+                    );
+
+                    vocabularyUpdatedCount += 1;
+                } else {
+                    vocabularySkippedCount += 1;
+                }
+
+                continue;
+            }
+
+            let importedId =
+                String(
+                    importedItem.id || ""
                 );
 
             if (
-                importedTime >
-                localTime
+                !importedId ||
+                usedVocabularyIds.has(
+                    importedId
+                )
             ) {
-                wordsByKey.set(
-                    key,
-                    {
-                        ...existing,
-                        ...importedItem,
-
-                        // 同じ語彙の場合は、
-                        // 現在の端末側のIDを維持する
-                        id:
-                            existing.id,
-
-                        word
-                    }
-                );
-
-                updatedCount += 1;
-            } else {
-                skippedCount += 1;
+                importedId =
+                    createCustomWordId();
             }
 
-            continue;
-        }
+            vocabularyByKey.set(
+                key,
+                {
+                    ...importedItem,
 
-        let importedId =
-            String(
-                importedItem.id || ""
+                    id:
+                        importedId,
+
+                    word,
+
+                    status:
+                        "ready"
+                }
             );
 
-        if (
-            !importedId ||
-            usedIds.has(importedId)
-        ) {
-            importedId =
-                createCustomWordId();
+            usedVocabularyIds.add(
+                importedId
+            );
+
+            vocabularyAddedCount += 1;
         }
 
-        const newItem = {
-            ...importedItem,
-            id:
-                importedId,
-            word,
+        data.vocabulary =
+            [...vocabularyByKey.values()];
 
-            reading:
+        /*
+        * ==================================================
+        * 新形式 pendingWords
+        * ==================================================
+        */
+
+        const importedPendingWords =
+            Array.isArray(
+                backup.data.pendingWords
+            )
+                ? backup.data.pendingWords
+                : [];
+
+        const localPendingWords =
+            Array.isArray(
+                data.pendingWords
+            )
+                ? data.pendingWords
+                : [];
+
+        const pendingByKey =
+            new Map();
+
+        const usedPendingIds =
+            new Set();
+
+        for (
+            const item
+            of localPendingWords
+        ) {
+            if (
+                !item ||
+                typeof item !== "object"
+            ) {
+                continue;
+            }
+
+            const key =
+                normalizeWordKey(
+                    item.word
+                );
+
+            if (!key) {
+                continue;
+            }
+
+            /*
+            * すでに正式語彙に存在する語は
+            * pendingには残さない
+            */
+            if (
+                vocabularyByKey.has(key)
+            ) {
+                continue;
+            }
+
+            pendingByKey.set(
+                key,
+                {
+                    ...item
+                }
+            );
+
+            usedPendingIds.add(
+                String(item.id)
+            );
+        }
+
+        let pendingAddedCount = 0;
+        let pendingUpdatedCount = 0;
+        let pendingSkippedCount = 0;
+
+        for (
+            const importedItem
+            of importedPendingWords
+        ) {
+            if (
+                !importedItem ||
+                typeof importedItem !==
+                    "object"
+            ) {
+                pendingSkippedCount += 1;
+                continue;
+            }
+
+            const word =
+                cleanWordName(
+                    importedItem.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (!key) {
+                pendingSkippedCount += 1;
+                continue;
+            }
+
+            /*
+            * 正式語彙にあるものを
+            * pendingへ戻さない
+            */
+            if (
+                vocabularyByKey.has(key)
+            ) {
+                pendingSkippedCount += 1;
+                continue;
+            }
+
+            const existing =
+                pendingByKey.get(key);
+
+            if (existing) {
+                const localTime =
+                    getWordUpdateTime(
+                        existing
+                    );
+
+                const importedTime =
+                    getWordUpdateTime(
+                        importedItem
+                    );
+
+                if (
+                    importedTime >
+                    localTime
+                ) {
+                    pendingByKey.set(
+                        key,
+                        {
+                            ...existing,
+                            ...importedItem,
+
+                            id:
+                                existing.id,
+
+                            word,
+
+                            status:
+                                importedItem.status ||
+                                "pending"
+                        }
+                    );
+
+                    pendingUpdatedCount += 1;
+                } else {
+                    pendingSkippedCount += 1;
+                }
+
+                continue;
+            }
+
+            let importedId =
                 String(
-                    importedItem.reading ||
-                    ""
-                ).trim(),
+                    importedItem.id || ""
+                );
 
-            readingHint:
-                String(
-                    importedItem
-                        .readingHint ||
-                    importedItem.reading ||
-                    ""
-                ).trim(),
-
-            contextHint:
-                String(
-                    importedItem
-                        .contextHint ||
-                    ""
-                ).trim(),
-
-            meaning:
-                String(
-                    importedItem.meaning ||
-                    ""
-                ).trim(),
-
-            description:
-                String(
-                    importedItem
-                        .description ||
-                    ""
-                ).trim(),
-
-            category:
-                String(
-                    importedItem.category ||
-                    ""
-                ).trim(),
-
-            quizTypes:
-                Array.isArray(
-                    importedItem.quizTypes
+            if (
+                !importedId ||
+                usedPendingIds.has(
+                    importedId
+                ) ||
+                usedVocabularyIds.has(
+                    importedId
                 )
-                    ? [
-                        ...importedItem.quizTypes
-                    ]
-                    : [],
+            ) {
+                importedId =
+                    createCustomWordId();
+            }
 
-            status:
-                importedItem.status ||
-                "pending",
+            pendingByKey.set(
+                key,
+                {
+                    ...importedItem,
 
-            createdAt:
-                Number(
-                    importedItem.createdAt
-                ) ||
-                Date.now(),
+                    id:
+                        importedId,
 
-            updatedAt:
-                Number(
-                    importedItem.updatedAt
-                ) ||
-                null
-        };
+                    word,
 
-        wordsByKey.set(
-            key,
-            newItem
-        );
+                    status:
+                        importedItem.status ||
+                        "pending"
+                }
+            );
 
-        usedIds.add(
-            importedId
-        );
+            usedPendingIds.add(
+                importedId
+            );
 
-        addedCount += 1;
-    }
+            pendingAddedCount += 1;
+        }
 
-    data.customWords =
-        [...wordsByKey.values()];
+        data.pendingWords =
+            [...pendingByKey.values()];
 
-        const importedOverrides =
+        /*
+        * ==================================================
+        * 学習データ
+        * ==================================================
+        */
+
+        if (
+            backup.data.stats &&
+            typeof backup.data.stats ===
+                "object" &&
+            !Array.isArray(
+                backup.data.stats
+            )
+        ) {
+            data.stats = {
+                ...data.stats,
+                ...backup.data.stats
+            };
+        }
+
+        if (
+            backup.data.activity &&
+            typeof backup.data.activity ===
+                "object" &&
+            !Array.isArray(
+                backup.data.activity
+            )
+        ) {
+            data.activity = {
+                ...data.activity,
+                ...backup.data.activity
+            };
+        }
+
+        if (
+            backup.data.settings &&
+            typeof backup.data.settings ===
+                "object" &&
+            !Array.isArray(
+                backup.data.settings
+            )
+        ) {
+            data.settings = {
+                ...data.settings,
+                ...backup.data.settings
+            };
+        }
+
+        /*
+        * ==================================================
+        * 旧形式
+        *
+        * 当面そのまま保持する。
+        * v1バックアップの移行にも使用できる。
+        * ==================================================
+        */
+
+        if (
+            Array.isArray(
+                backup.data.customWords
+            )
+        ) {
+            data.customWords =
+                backup.data.customWords;
+        }
+
+        if (
             backup.data.wordOverrides &&
             typeof backup.data.wordOverrides ===
                 "object" &&
             !Array.isArray(
                 backup.data.wordOverrides
             )
-                ? backup.data.wordOverrides
-                : {};
-
-        let overrideAddedCount = 0;
-        let overrideUpdatedCount = 0;
-        let overrideSkippedCount = 0;
-
-        for (
-            const [
-                wordId,
-                importedOverride
-            ]
-            of Object.entries(
-                importedOverrides
-            )
         ) {
-            if (
-                !importedOverride ||
-                typeof importedOverride !==
-                    "object" ||
-                Array.isArray(
-                    importedOverride
-                )
-            ) {
-                overrideSkippedCount += 1;
-                continue;
-            }
-
-            const key =
-                String(wordId);
-
-            const localOverride =
-                data.wordOverrides[key];
-
-            if (!localOverride) {
-                data.wordOverrides[key] = {
-                    ...importedOverride
-                };
-
-                overrideAddedCount += 1;
-                continue;
-            }
-
-            const localTime =
-                Number(
-                    localOverride.updatedAt
-                ) || 0;
-
-            const importedTime =
-                Number(
-                    importedOverride.updatedAt
-                ) || 0;
-
-            if (
-                importedTime >
-                localTime
-            ) {
-                data.wordOverrides[key] = {
-                    ...localOverride,
-                    ...importedOverride
-                };
-
-                overrideUpdatedCount += 1;
-            } else {
-                overrideSkippedCount += 1;
-            }
+            data.wordOverrides = {
+                ...data.wordOverrides,
+                ...backup.data.wordOverrides
+            };
         }
 
-        const importedHiddenIds =
+        if (
             Array.isArray(
                 backup.data.hiddenWordIds
             )
-                ? backup.data.hiddenWordIds
-                : [];
+        ) {
+            data.hiddenWordIds = [
+                ...new Set([
+                    ...data.hiddenWordIds.map(
+                        String
+                    ),
 
-        data.hiddenWordIds = [
-            ...new Set([
-                ...data.hiddenWordIds.map(
-                    String
-                ),
-                ...importedHiddenIds.map(
-                    String
-                )
-            ])
-        ];
+                    ...backup.data.hiddenWordIds.map(
+                        String
+                    )
+                ])
+            ];
+        }
 
-    save(data);
+        /*
+        * 新形式を使用したことを記録
+        */
+        if (
+            importedVocabulary.length ||
+            Array.isArray(
+                backup.data.vocabulary
+            )
+        ) {
+            data.unifiedVocabularyVersion =
+                Math.max(
+                    Number(
+                        data.unifiedVocabularyVersion
+                    ) || 0,
+
+                    Number(
+                        backup.data
+                            .unifiedVocabularyVersion
+                    ) || 1
+                );
+        }
+
+        save(data);
 
         return {
-            customWords: {
-                addedCount,
-                updatedCount,
-                skippedCount,
-                totalCount:
-                    data.customWords.length
-            },
+            backupFormatVersion:
+                Number(
+                    backup.backupFormatVersion
+                ) || 1,
 
-            wordOverrides: {
+            vocabulary: {
                 addedCount:
-                    overrideAddedCount,
+                    vocabularyAddedCount,
 
                 updatedCount:
-                    overrideUpdatedCount,
+                    vocabularyUpdatedCount,
 
                 skippedCount:
-                    overrideSkippedCount,
+                    vocabularySkippedCount,
 
                 totalCount:
-                    Object.keys(
-                        data.wordOverrides
-                    ).length
+                    data.vocabulary.length
             },
 
-            hiddenWordIds: {
+            pendingWords: {
+                addedCount:
+                    pendingAddedCount,
+
+                updatedCount:
+                    pendingUpdatedCount,
+
+                skippedCount:
+                    pendingSkippedCount,
+
                 totalCount:
-                    data.hiddenWordIds.length
+                    data.pendingWords.length
             }
         };
-}
+    }
 
     function migrateToUnifiedVocabulary(
         standardWords
