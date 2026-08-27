@@ -7,6 +7,9 @@ const CloudSync = (() => {
     const SECRET_STORAGE_KEY =
         "vocabularyQuizSyncSecret";
 
+    const LAST_SYNC_STORAGE_KEY =
+         "vocabularyQuizLastSyncedAt";
+
     function getEndpoint() {
         return ENDPOINT;
     }
@@ -35,6 +38,27 @@ const CloudSync = (() => {
         localStorage.setItem(
             SECRET_STORAGE_KEY,
             normalized
+        );
+    }
+
+    function getLastSyncedAt() {
+        return (
+            localStorage.getItem(
+                LAST_SYNC_STORAGE_KEY
+            ) || null
+        );
+    }
+
+    function setLastSyncedAt(
+        timestamp
+    ) {
+        if (!timestamp) {
+            return;
+        }
+
+        localStorage.setItem(
+            LAST_SYNC_STORAGE_KEY,
+            timestamp
         );
     }
 
@@ -83,73 +107,128 @@ const CloudSync = (() => {
             );
         }
 
+        setLastSyncedAt(
+            result.cloudSavedAt
+        );
+
         return result;
     }
 
-async function downloadBackup() {
-    const secret =
-        getSecret();
+    async function checkCloudBackup() {
+        const secret =
+            getSecret();
 
-    if (!secret) {
-        throw new Error(
-            "クラウド同期用のキーが設定されていません。"
-        );
-    }
+        if (!secret) {
+            return {
+                exists: false,
+                cloudSavedAt: null
+            };
+        }
 
-    const response =
-        await fetch(
-            ENDPOINT,
-            {
-                method:
-                    "GET",
+        const response =
+            await fetch(
+                ENDPOINT,
+                {
+                    method: "GET",
 
-                headers: {
-                    "X-Sync-Secret":
-                        secret
+                    headers: {
+                        "X-Sync-Secret":
+                            secret
+                    }
                 }
-            }
-        );
+            );
 
-    const result =
-        await readJsonResponse(
-            response
-        );
+        const result =
+            await readJsonResponse(
+                response
+            );
 
-    if (!response.ok) {
-        throw new Error(
-            result?.error ||
-            `クラウド取得に失敗しました。 HTTP ${response.status}`
-        );
-    }
+        if (!response.ok) {
+            throw new Error(
+                result?.error ||
+                `クラウド確認に失敗しました。 HTTP ${response.status}`
+            );
+        }
 
-    if (
-        !result?.exists ||
-        !result?.backup
-    ) {
         return {
             exists:
-                false,
+                Boolean(result?.exists),
 
-            mergeResult:
+            cloudSavedAt:
+                result?.cloudSavedAt ||
                 null
         };
     }
 
-    const mergeResult =
-        Storage.mergeBackup(
-            result.backup
+    async function downloadBackup() {
+        const secret =
+            getSecret();
+
+        if (!secret) {
+            throw new Error(
+                "クラウド同期用のキーが設定されていません。"
+            );
+        }
+
+        const response =
+            await fetch(
+                ENDPOINT,
+                {
+                    method:
+                        "GET",
+
+                    headers: {
+                        "X-Sync-Secret":
+                            secret
+                    }
+                }
+            );
+
+        const result =
+            await readJsonResponse(
+                response
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                result?.error ||
+                `クラウド取得に失敗しました。 HTTP ${response.status}`
+            );
+        }
+
+        if (
+            !result?.exists ||
+            !result?.backup
+        ) {
+            return {
+                exists:
+                    false,
+
+                mergeResult:
+                    null
+            };
+        }
+
+        const mergeResult =
+            Storage.mergeBackup(
+                result.backup
+            );
+
+        setLastSyncedAt(
+            result.cloudSavedAt
         );
 
-    return {
-        exists:
-            true,
+        return {
+            exists:
+                true,
 
-        backup:
-            result.backup,
+            backup:
+                result.backup,
 
-        mergeResult
-    };
-}
+            mergeResult
+        };
+        
+    }
     async function readJsonResponse(
         response
     ) {
@@ -165,6 +244,9 @@ async function downloadBackup() {
     getSecret,
     setSecret,
     uploadBackup,
-    downloadBackup
+    downloadBackup,
+    checkCloudBackup,
+    getLastSyncedAt,
+    setLastSyncedAt,
 };
 })();

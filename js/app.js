@@ -317,6 +317,12 @@ const App = (() => {
         getRecommendedWords(dailyGoal);
 
         container.innerHTML = `
+
+            <div
+                id="cloudUpdateNotice"
+                class="hidden"
+            ></div>
+
             <section class="card home-card">
                 <p class="eyebrow">
                     PERSONAL VOCABULARY TRAINER
@@ -556,6 +562,205 @@ const App = (() => {
                         "settings"
                     )
             );
+
+            checkCloudUpdate(
+                container
+            );
+    }
+
+    async function checkCloudUpdate(
+        container
+    ) {
+        /*
+        * 同期キーが設定されていなければ
+        * 何もしない
+        */
+        if (!CloudSync.getSecret()) {
+            return;
+        }
+
+        try {
+            const cloud =
+                await CloudSync
+                    .checkCloudBackup();
+
+            if (
+                !cloud.exists ||
+                !cloud.cloudSavedAt
+            ) {
+                return;
+            }
+
+            const lastSyncedAt =
+                CloudSync
+                    .getLastSyncedAt();
+
+            const cloudTime =
+                Date.parse(
+                    cloud.cloudSavedAt
+                );
+
+            const localTime =
+                lastSyncedAt
+                    ? Date.parse(
+                        lastSyncedAt
+                    )
+                    : 0;
+
+            if (
+                !Number.isFinite(
+                    cloudTime
+                ) ||
+                cloudTime <= localTime
+            ) {
+                return;
+            }
+
+            /*
+            * 非同期処理中に別画面へ
+            * 移動していた場合は表示しない
+            */
+            const notice =
+                container.querySelector(
+                    "#cloudUpdateNotice"
+                );
+
+            if (!notice) {
+                return;
+            }
+
+   notice.classList.remove(
+        "hidden"
+    );
+
+    notice.innerHTML = `
+        <div class="cloud-update-overlay">
+            <section
+                class="card cloud-update-popup"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="cloudUpdateTitle"
+            >
+                <p class="eyebrow">
+                    CLOUD SYNC
+                </p>
+
+                <h3 id="cloudUpdateTitle">
+                    クラウドに新しいデータがあります
+                </h3>
+
+                <p>
+                    別の端末で更新されたデータを
+                    この端末へ同期できます。
+                </p>
+
+                <div class="cloud-update-actions">
+                    <button
+                        id="dismissCloudUpdateButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        あとで
+                    </button>
+
+                    <button
+                        id="syncCloudUpdateButton"
+                        class="primary"
+                        type="button"
+                    >
+                        今すぐ同期
+                    </button>
+                </div>
+            </section>
+        </div>
+    `;
+
+    bindCloudUpdateNotice(
+        notice
+    );
+        } catch (error) {
+            /*
+            * ホームを開いただけで
+            * エラー画面にはしない
+            */
+            console.warn(
+                "クラウド更新確認に失敗しました。",
+                error
+            );
+        }
+    }
+
+    function bindCloudUpdateNotice(
+        notice
+    ) {
+        const dismissButton =
+            notice.querySelector(
+                "#dismissCloudUpdateButton"
+            );
+
+        const syncButton =
+            notice.querySelector(
+                "#syncCloudUpdateButton"
+            );
+
+        dismissButton.addEventListener(
+            "click",
+            () => {
+                notice.classList.add(
+                    "hidden"
+                );
+            }
+        );
+
+        syncButton.addEventListener(
+            "click",
+            async () => {
+                syncButton.disabled =
+                    true;
+
+                syncButton.textContent =
+                    "同期中...";
+
+                try {
+                    const result =
+                        await CloudSync
+                            .downloadBackup();
+
+                    if (!result.exists) {
+                        alert(
+                            "クラウドデータが見つかりませんでした。"
+                        );
+
+                        return;
+                    }
+
+                    await reloadWords();
+
+                    alert(
+                        "クラウドの最新データを同期しました。"
+                    );
+
+                    Router.show(
+                        "home"
+                    );
+                } catch (error) {
+                    console.error(
+                        error
+                    );
+
+                    alert(
+                        error.message ||
+                        "クラウド同期に失敗しました。"
+                    );
+
+                    syncButton.disabled =
+                        false;
+
+                    syncButton.textContent =
+                        "今すぐ同期";
+                }
+            }
+        );
     }
 
     function createStatCard(

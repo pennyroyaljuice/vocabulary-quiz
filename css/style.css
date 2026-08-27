@@ -2031,3 +2031,32 @@ html[data-theme="dark"]
 .custom-word-message {
     white-space: pre-line;
 }
+
+.cloud-update-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.cloud-update-popup {
+    width: min(100%, 460px);
+    margin: 0;
+}
+
+.cloud-update-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.cloud-update-actions button {
+    flex: 1;
+}
