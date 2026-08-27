@@ -20,9 +20,6 @@ const AddWords = (() => {
             Storage.getVocabulary();
 
         container.innerHTML = `
-
-    container.innerHTML = `
-        container.innerHTML = `
             <section class="card">
                 <div class="page-heading">
                     <div>
@@ -454,9 +451,9 @@ const AddWords = (() => {
             .addEventListener(
                 "click",
                 () => {
-                    Storage.removeCustomWord(
-                        item.id
-                    );
+                Storage.removePendingWord(
+                    item.id
+                );
 
                     Router.show(
                         "addWords"
@@ -1035,6 +1032,86 @@ const AddWords = (() => {
                     )
                 );
             });
+
+        container
+            .querySelectorAll(
+                "[data-delete-vocabulary-word]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    async () => {
+                        const wordId =
+                            button.dataset
+                                .deleteVocabularyWord;
+
+                        const item =
+                            Storage.getVocabulary()
+                                .find(
+                                    (word) =>
+                                        String(word.id) ===
+                                        String(wordId)
+                                );
+
+                        if (!item) {
+                            return;
+                        }
+
+                        const confirmed =
+                            confirm(
+                                `「${item.word}」を一覧から外しますか？`
+                            );
+
+                        if (!confirmed) {
+                            return;
+                        }
+
+                     const removed =
+                            Storage.removeVocabularyWord(
+                                wordId
+                            );
+
+                        console.log(
+                            "削除結果:",
+                            removed
+                        );
+
+                        console.log(
+                            "reload前:",
+                            Storage.getVocabulary()
+                                .find(
+                                    word =>
+                                        String(word.id) ===
+                                        String(wordId)
+                                )
+                        );
+
+                        if (!removed) {
+                            alert(
+                                "削除する語彙が見つかりませんでした。"
+                            );
+                            return;
+                        }
+
+                        await App.reloadWords();
+
+                        console.log(
+                            "reload後:",
+                            Storage.getVocabulary()
+                                .find(
+                                    word =>
+                                        String(word.id) ===
+                                        String(wordId)
+                                )
+                        );
+
+                        renderPage(
+                            container
+                        );
+                    }
+                );
+            });
+
     }
 
     function registerWords(container) {
@@ -1313,16 +1390,14 @@ const AddWords = (() => {
             return;
         }
 
-        if (
-            item.source ===
-            "standard"
-        ) {
-            Storage.hideWord(
+        const removed =
+            Storage.removeVocabularyWord(
                 item.id
             );
-        } else {
-            Storage.removeCustomWord(
-                item.id
+
+        if (!removed) {
+            throw new Error(
+                "削除する語彙が見つかりません。"
             );
         }
 
@@ -1655,20 +1730,8 @@ const AddWords = (() => {
         const key =
             Storage.normalizeWordKey(word);
 
-        const standardMatch =
-            standardWords.find(
-                (item) =>
-                    Storage.normalizeWordKey(
-                        item.word
-                    ) === key
-            );
-
-        if (standardMatch) {
-            return standardMatch.word;
-        }
-
-        const customMatch =
-            Storage.getCustomWords()
+        const vocabularyMatch =
+            Storage.getVocabulary()
                 .find(
                     (item) =>
                         String(item.id) !==
@@ -1678,8 +1741,23 @@ const AddWords = (() => {
                         ) === key
                 );
 
-        return customMatch
-            ? customMatch.word
+        if (vocabularyMatch) {
+            return vocabularyMatch.word;
+        }
+
+        const pendingMatch =
+            Storage.getPendingWords()
+                .find(
+                    (item) =>
+                        String(item.id) !==
+                            String(currentId) &&
+                        Storage.normalizeWordKey(
+                            item.word
+                        ) === key
+                );
+
+        return pendingMatch
+            ? pendingMatch.word
             : "";
     }
 
@@ -1914,8 +1992,8 @@ const AddWords = (() => {
         return `
             <article
                 class="custom-word-editor"
-                data-custom-word-card="${Utils.escapeAttribute(
-                    item.id
+                    data-delete-custom-word="${Utils.escapeAttribute(
+                        item.id
                 )}"
             >
                 <div class="confirmation-card-heading">
@@ -2048,7 +2126,7 @@ const AddWords = (() => {
                     <button
                         class="delete-word-button"
                         type="button"
-                        data-delete-custom-word="${Utils.escapeAttribute(
+                        data-delete-vocabulary-word="${Utils.escapeAttribute(
                             item.id
                         )}"
                     >
@@ -2117,8 +2195,9 @@ const AddWords = (() => {
                                 <button
                                     class="delete-word-button"
                                     type="button"
-                                    data-delete-custom-word="${Utils.escapeAttribute(
-                                        item.id
+
+                            data-delete-vocabulary-word="${Utils.escapeAttribute(
+                                item.id
                                     )}"
                                 >
                                     削除

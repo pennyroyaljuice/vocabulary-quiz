@@ -743,18 +743,33 @@ const Dictionary = (() => {
             )
             .addEventListener(
                 "click",
-                () => {
+                async () => {
                     const confirmed =
                         confirm(
-                            `「${word.word}」を自分の語彙リストから外しますか？\n後から設定画面で復元できます。`
+                            `「${word.word}」を自分の語彙リストから外しますか？`
                         );
 
                     if (!confirmed) {
                         return;
                     }
 
-                    Storage.hideWord(word.id);
-                    location.reload();
+                    const removed =
+                        Storage.removeVocabularyWord(
+                            word.id
+                        );
+
+                    if (!removed) {
+                        alert(
+                            "削除する語彙が見つかりませんでした。"
+                        );
+                        return;
+                    }
+
+                    await App.reloadWords();
+
+                    Router.show(
+                        "dictionary"
+                    );
                 }
             );
 
