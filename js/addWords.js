@@ -462,13 +462,12 @@ const AddWords = (() => {
         wordId
     ) {
         const item =
-            Array.isArray(words)
-                ? words.find(
+            Storage.getVocabulary()
+                .find(
                     (word) =>
                         String(word.id) ===
                         String(wordId)
-                )
-                : null;
+                );
 
         if (!item) {
             container.innerHTML = `
@@ -506,11 +505,6 @@ const AddWords = (() => {
             Array.isArray(item.quizTypes)
                 ? item.quizTypes
                 : [];
-
-        const sourceLabel =
-            item.source === "standard"
-                ? "標準語彙"
-                : "追加語彙";
 
         container.innerHTML = `
             <section class="card">
@@ -557,10 +551,6 @@ const AddWords = (() => {
                             )}
                         </h3>
                     </div>
-
-                    <span class="pending-status">
-                        ${sourceLabel}
-                    </span>
                 </div>
 
                 <div class="custom-word-fields">
@@ -655,21 +645,6 @@ const AddWords = (() => {
                 >
                     一覧から外す
                 </button>
-
-                    ${
-                        item.source === "standard" &&
-                        item.overridden
-                            ? `
-                                <button
-                                    id="restoreStandardWordButton"
-                                    class="menuButton"
-                                    type="button"
-                                >
-                                    標準内容へ戻す
-                                </button>
-                            `
-                            : ""
-                    }
                 </div>
             </section>
         `;
@@ -714,33 +689,6 @@ const AddWords = (() => {
                         item
                     )
             );
-
-        const restoreButton =
-            container.querySelector(
-                "#restoreStandardWordButton"
-            );
-
-        if (restoreButton) {
-            restoreButton.addEventListener(
-                "click",
-                () => {
-                    const confirmed =
-                        confirm(
-                            "この標準語彙への修正を取り消し、元の内容へ戻しますか？"
-                        );
-
-                    if (!confirmed) {
-                        return;
-                    }
-
-                    Storage.removeWordOverride(
-                        item.id
-                    );
-
-                    location.reload();
-                }
-            );
-        }
     }
 
     async function generateAndFillWord(
