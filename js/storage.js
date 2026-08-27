@@ -390,7 +390,113 @@ const Storage = (() => {
 
         /*
         * ==================================================
-        * 新形式 vocabulary
+        * バックアップ形式を判定
+        * ==================================================
+        */
+
+        const backupVersion =
+            Number(
+                backup.backupFormatVersion
+            ) || 1;
+
+        const isLegacyBackup =
+            backupVersion < 2;
+
+        /*
+        * ==================================================
+        * v1 → v2 変換
+        *
+        * v1では customWords が追加語彙本体。
+        *
+        * ・意味あり
+        * ・quizTypesあり
+        *      → 正式語彙
+        *
+        * それ以外
+        *      → 登録待ち
+        * ==================================================
+        */
+
+        const legacyCustomWords =
+            isLegacyBackup &&
+            Array.isArray(
+                backup.data.customWords
+            )
+                ? backup.data.customWords
+                : [];
+
+        const legacyReadyWords =
+            legacyCustomWords.filter(
+                (item) => {
+                    if (
+                        !item ||
+                        typeof item !== "object"
+                    ) {
+                        return false;
+                    }
+
+                    const word =
+                        cleanWordName(
+                            item.word
+                        );
+
+                    const meaning =
+                        String(
+                            item.meaning || ""
+                        ).trim();
+
+                    const quizTypes =
+                        Array.isArray(
+                            item.quizTypes
+                        )
+                            ? item.quizTypes
+                            : [];
+
+                    return Boolean(
+                        word &&
+                        meaning &&
+                        quizTypes.length > 0
+                    );
+                }
+            );
+
+        const legacyReadyKeys =
+            new Set(
+                legacyReadyWords.map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                )
+            );
+
+        const legacyPendingWords =
+            legacyCustomWords.filter(
+                (item) => {
+                    if (
+                        !item ||
+                        typeof item !== "object"
+                    ) {
+                        return false;
+                    }
+
+                    const key =
+                        normalizeWordKey(
+                            item.word
+                        );
+
+                    return (
+                        key &&
+                        !legacyReadyKeys.has(
+                            key
+                        )
+                    );
+                }
+            );
+
+        /*
+        * ==================================================
+        * 正式語彙 vocabulary
         * ==================================================
         */
 
@@ -399,7 +505,7 @@ const Storage = (() => {
                 backup.data.vocabulary
             )
                 ? backup.data.vocabulary
-                : [];
+                : legacyReadyWords;
 
         const localVocabulary =
             Array.isArray(
@@ -414,7 +520,10 @@ const Storage = (() => {
         const usedVocabularyIds =
             new Set();
 
-        for (const item of localVocabulary) {
+        for (
+            const item
+            of localVocabulary
+        ) {
             if (
                 !item ||
                 typeof item !== "object"
@@ -497,7 +606,7 @@ const Storage = (() => {
                             ...existing,
                             ...importedItem,
 
-                            // 同一語ならローカルIDを維持
+                            // 同じ語ならローカルIDを維持
                             id:
                                 existing.id,
 
@@ -558,7 +667,7 @@ const Storage = (() => {
 
         /*
         * ==================================================
-        * 新形式 pendingWords
+        * 登録待ち pendingWords
         * ==================================================
         */
 
@@ -567,7 +676,7 @@ const Storage = (() => {
                 backup.data.pendingWords
             )
                 ? backup.data.pendingWords
-                : [];
+                : legacyPendingWords;
 
         const localPendingWords =
             Array.isArray(
@@ -603,7 +712,7 @@ const Storage = (() => {
             }
 
             /*
-            * すでに正式語彙に存在する語は
+            * すでに正式語彙に存在するなら
             * pendingには残さない
             */
             if (
@@ -655,7 +764,7 @@ const Storage = (() => {
             }
 
             /*
-            * 正式語彙にあるものを
+            * 正式語彙に存在するものを
             * pendingへ戻さない
             */
             if (
@@ -737,7 +846,6 @@ const Storage = (() => {
                     word,
 
                     status:
-                        importedItem.status ||
                         "pending"
                 }
             );
@@ -754,7 +862,7 @@ const Storage = (() => {
 
         /*
         * ==================================================
-        * 学習データ
+        * 学習履歴
         * ==================================================
         */
 
@@ -772,6 +880,12 @@ const Storage = (() => {
             };
         }
 
+        /*
+        * ==================================================
+        * 日別学習履歴
+        * ==================================================
+        */
+
         if (
             backup.data.activity &&
             typeof backup.data.activity ===
@@ -785,6 +899,12 @@ const Storage = (() => {
                 ...backup.data.activity
             };
         }
+
+        /*
+        * ==================================================
+        * 設定
+        * ==================================================
+        */
 
         if (
             backup.data.settings &&
@@ -802,10 +922,10 @@ const Storage = (() => {
 
         /*
         * ==================================================
-        * 旧形式
+        * 旧形式のデータも当面保持
         *
-        * 当面そのまま保持する。
-        * v1バックアップの移行にも使用できる。
+        * 完全移行が確認できるまでは
+        * customWords等を消さない。
         * ==================================================
         */
 
@@ -814,8 +934,70 @@ const Storage = (() => {
                 backup.data.customWords
             )
         ) {
+            /*
+            * 既存customWordsを消さず、
+            * 語句単位で統合する。
+            */
+            const customByKey =
+                new Map();
+
+            for (
+                const item
+                of (
+                    Array.isArray(
+                        data.customWords
+                    )
+                        ? data.customWords
+                        : []
+                )
+            ) {
+                const key =
+                    normalizeWordKey(
+                        item?.word
+                    );
+
+                if (key) {
+                    customByKey.set(
+                        key,
+                        item
+                    );
+                }
+            }
+
+            for (
+                const item
+                of backup.data.customWords
+            ) {
+                const key =
+                    normalizeWordKey(
+                        item?.word
+                    );
+
+                if (!key) {
+                    continue;
+                }
+
+                const existing =
+                    customByKey.get(key);
+
+                if (
+                    !existing ||
+                    getWordUpdateTime(item) >
+                        getWordUpdateTime(
+                            existing
+                        )
+                ) {
+                    customByKey.set(
+                        key,
+                        {
+                            ...item
+                        }
+                    );
+                }
+            }
+
             data.customWords =
-                backup.data.customWords;
+                [...customByKey.values()];
         }
 
         if (
@@ -851,34 +1033,44 @@ const Storage = (() => {
         }
 
         /*
-        * 新形式を使用したことを記録
+        * ==================================================
+        * 統合語彙形式を使用済みにする
+        * ==================================================
         */
-        if (
-            importedVocabulary.length ||
-            Array.isArray(
-                backup.data.vocabulary
-            )
-        ) {
-            data.unifiedVocabularyVersion =
-                Math.max(
-                    Number(
-                        data.unifiedVocabularyVersion
-                    ) || 0,
 
-                    Number(
-                        backup.data
-                            .unifiedVocabularyVersion
-                    ) || 1
-                );
-        }
+        data.unifiedVocabularyVersion =
+            Math.max(
+                Number(
+                    data.unifiedVocabularyVersion
+                ) || 0,
+
+                Number(
+                    backup.data
+                        .unifiedVocabularyVersion
+                ) || 1,
+
+                1
+            );
 
         save(data);
 
         return {
             backupFormatVersion:
-                Number(
-                    backup.backupFormatVersion
-                ) || 1,
+                backupVersion,
+
+            legacyMigration:
+                isLegacyBackup,
+
+            legacy: {
+                sourceCount:
+                    legacyCustomWords.length,
+
+                readyCount:
+                    legacyReadyWords.length,
+
+                pendingCount:
+                    legacyPendingWords.length
+            },
 
             vocabulary: {
                 addedCount:

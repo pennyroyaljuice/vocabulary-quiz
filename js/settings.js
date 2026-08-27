@@ -603,7 +603,7 @@ container
     async function downloadCloudBackup() {
         const confirmed =
             confirm(
-                "クラウド上のバックアップを現在の端末へ統合しますか？\n現在の追加語彙は削除されません。"
+                "クラウド上のバックアップを現在の端末へ統合しますか？\n現在の語彙は削除されません。"
             );
 
         if (!confirmed) {
@@ -622,34 +622,43 @@ container
                 return;
             }
 
-            const customWords =
-                result.mergeResult.customWords;
+            const mergeResult =
+                result.mergeResult;
 
-            const wordOverrides =
-                result.mergeResult.wordOverrides;
+            const vocabulary =
+                mergeResult.vocabulary;
 
-            const hiddenWordIds =
-                result.mergeResult.hiddenWordIds;
+            const pendingWords =
+                mergeResult.pendingWords;
+
+            const lines = [
+                "クラウドデータを統合しました。",
+                "",
+                "正式語彙",
+                `新規追加：${vocabulary.addedCount}語`,
+                `更新：${vocabulary.updatedCount}語`,
+                `変更なし：${vocabulary.skippedCount}語`,
+                `統合後：${vocabulary.totalCount}語`,
+                "",
+                "登録待ち",
+                `新規追加：${pendingWords.addedCount}語`,
+                `更新：${pendingWords.updatedCount}語`,
+                `変更なし：${pendingWords.skippedCount}語`,
+                `統合後：${pendingWords.totalCount}語`
+            ];
+
+            if (mergeResult.legacyMigration) {
+                lines.push(
+                    "",
+                    "旧形式バックアップを新形式へ変換しました。",
+                    `旧追加語彙：${mergeResult.legacy.sourceCount}語`,
+                    `正式語彙へ：${mergeResult.legacy.readyCount}語`,
+                    `登録待ちへ：${mergeResult.legacy.pendingCount}語`
+                );
+            }
 
             alert(
-                [
-                    "クラウドデータを統合しました。",
-                    "",
-                    "追加語彙",
-                    `新規追加：${customWords.addedCount}語`,
-                    `更新：${customWords.updatedCount}語`,
-                    `変更なし：${customWords.skippedCount}語`,
-                    `統合後：${customWords.totalCount}語`,
-                    "",
-                    "標準語彙の編集",
-                    `新規追加：${wordOverrides.addedCount}件`,
-                    `更新：${wordOverrides.updatedCount}件`,
-                    `変更なし：${wordOverrides.skippedCount}件`,
-                    `統合後：${wordOverrides.totalCount}件`,
-                    "",
-                    "非表示語彙",
-                    `統合後：${hiddenWordIds.totalCount}語`
-                ].join("\n")
+                lines.join("\n")
             );
 
             location.reload();
@@ -729,7 +738,7 @@ container
         try {
             const confirmed =
                 confirm(
-                    "選択したバックアップを現在の語彙データへ統合します。\n現在の追加語彙は削除されません。\n続行しますか？"
+                    "選択したバックアップを現在の語彙データへ統合します。\n現在の語彙は削除されません。\n続行しますか？"
                 );
 
             if (!confirmed) {
@@ -751,34 +760,40 @@ container
                     parsed
                 );
 
-            const customWords =
-                result.customWords;
+            const vocabulary =
+                result.vocabulary;
 
-            const wordOverrides =
-                result.wordOverrides;
+            const pendingWords =
+                result.pendingWords;
 
-            const hiddenWordIds =
-                result.hiddenWordIds;
+            const lines = [
+                "バックアップを統合しました。",
+                "",
+                "正式語彙",
+                `新規追加：${vocabulary.addedCount}語`,
+                `更新：${vocabulary.updatedCount}語`,
+                `変更なし：${vocabulary.skippedCount}語`,
+                `統合後：${vocabulary.totalCount}語`,
+                "",
+                "登録待ち",
+                `新規追加：${pendingWords.addedCount}語`,
+                `更新：${pendingWords.updatedCount}語`,
+                `変更なし：${pendingWords.skippedCount}語`,
+                `統合後：${pendingWords.totalCount}語`
+            ];
+
+            if (result.legacyMigration) {
+                lines.push(
+                    "",
+                    "旧形式バックアップを新形式へ変換しました。",
+                    `旧追加語彙：${result.legacy.sourceCount}語`,
+                    `正式語彙へ：${result.legacy.readyCount}語`,
+                    `登録待ちへ：${result.legacy.pendingCount}語`
+                );
+            }
 
             alert(
-                [
-                    "バックアップを統合しました。",
-                    "",
-                    "追加語彙",
-                    `新規追加：${customWords.addedCount}語`,
-                    `更新：${customWords.updatedCount}語`,
-                    `変更なし：${customWords.skippedCount}語`,
-                    `統合後：${customWords.totalCount}語`,
-                    "",
-                    "標準語彙の編集",
-                    `新規追加：${wordOverrides.addedCount}件`,
-                    `更新：${wordOverrides.updatedCount}件`,
-                    `変更なし：${wordOverrides.skippedCount}件`,
-                    `統合後：${wordOverrides.totalCount}件`,
-                    "",
-                    "非表示語彙",
-                    `統合後：${hiddenWordIds.totalCount}語`
-                ].join("\n")
+                lines.join("\n")
             );
 
             location.reload();
@@ -813,10 +828,14 @@ container
             );
         }
 
-        if (
+        const version =
             Number(
                 backup.backupFormatVersion
-            ) !== 1
+            );
+
+        if (
+            version !== 1 &&
+            version !== 2
         ) {
             throw new Error(
                 "対応していないバックアップ形式です。"
@@ -837,6 +856,30 @@ container
         }
 
         if (
+            backup.data.vocabulary !==
+                undefined &&
+            !Array.isArray(
+                backup.data.vocabulary
+            )
+        ) {
+            throw new Error(
+                "正式語彙データの形式が不正です。"
+            );
+        }
+
+        if (
+            backup.data.pendingWords !==
+                undefined &&
+            !Array.isArray(
+                backup.data.pendingWords
+            )
+        ) {
+            throw new Error(
+                "登録待ち語彙データの形式が不正です。"
+            );
+        }
+
+        if (
             backup.data.customWords !==
                 undefined &&
             !Array.isArray(
@@ -844,7 +887,7 @@ container
             )
         ) {
             throw new Error(
-                "追加語彙の形式が不正です。"
+                "旧追加語彙データの形式が不正です。"
             );
         }
 
@@ -865,7 +908,7 @@ container
             )
         ) {
             throw new Error(
-                "標準語彙編集データの形式が不正です。"
+                "旧語彙編集データの形式が不正です。"
             );
         }
 
@@ -878,7 +921,7 @@ container
             )
         ) {
             throw new Error(
-                "非表示語彙データの形式が不正です。"
+                "旧非表示語彙データの形式が不正です。"
             );
         }
     }
