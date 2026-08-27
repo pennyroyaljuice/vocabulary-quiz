@@ -562,16 +562,6 @@ const Settings = (() => {
                 `統合後：${pendingWords.totalCount}語`
             ];
 
-            if (mergeResult.legacyMigration) {
-                lines.push(
-                    "",
-                    "旧形式バックアップを新形式へ変換しました。",
-                    `旧追加語彙：${mergeResult.legacy.sourceCount}語`,
-                    `正式語彙へ：${mergeResult.legacy.readyCount}語`,
-                    `登録待ちへ：${mergeResult.legacy.pendingCount}語`
-                );
-            }
-
             alert(
                 lines.join("\n")
             );
@@ -697,16 +687,6 @@ const Settings = (() => {
                 `統合後：${pendingWords.totalCount}語`
             ];
 
-            if (result.legacyMigration) {
-                lines.push(
-                    "",
-                    "旧形式バックアップを新形式へ変換しました。",
-                    `旧追加語彙：${result.legacy.sourceCount}語`,
-                    `正式語彙へ：${result.legacy.readyCount}語`,
-                    `登録待ちへ：${result.legacy.pendingCount}語`
-                );
-            }
-
             alert(
                 lines.join("\n")
             );
@@ -748,10 +728,7 @@ const Settings = (() => {
                 backup.backupFormatVersion
             );
 
-        if (
-            version !== 1 &&
-            version !== 2
-        ) {
+        if (version !== 2) {
             throw new Error(
                 "対応していないバックアップ形式です。"
             );
@@ -791,52 +768,6 @@ const Settings = (() => {
         ) {
             throw new Error(
                 "登録待ち語彙データの形式が不正です。"
-            );
-        }
-
-        if (
-            backup.data.customWords !==
-                undefined &&
-            !Array.isArray(
-                backup.data.customWords
-            )
-        ) {
-            throw new Error(
-                "旧追加語彙データの形式が不正です。"
-            );
-        }
-
-        if (
-            backup.data.wordOverrides !==
-                undefined &&
-            (
-                typeof backup.data
-                    .wordOverrides !==
-                    "object" ||
-                backup.data
-                    .wordOverrides ===
-                    null ||
-                Array.isArray(
-                    backup.data
-                        .wordOverrides
-                )
-            )
-        ) {
-            throw new Error(
-                "旧語彙編集データの形式が不正です。"
-            );
-        }
-
-        if (
-            backup.data.hiddenWordIds !==
-                undefined &&
-            !Array.isArray(
-                backup.data
-                    .hiddenWordIds
-            )
-        ) {
-            throw new Error(
-                "旧非表示語彙データの形式が不正です。"
             );
         }
     }
