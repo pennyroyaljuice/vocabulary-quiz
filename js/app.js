@@ -572,10 +572,16 @@ const App = (() => {
 
             if (
                 !cloud.exists ||
-                !cloud.cloudSavedAt
+                !cloud.cloudSavedAt ||
+                !cloud.backup
             ) {
                 return;
             }
+
+            const preview =
+                Storage.previewBackupMerge(
+                    cloud.backup
+                );
 
             const lastSyncedAt =
                 CloudSync
@@ -636,9 +642,208 @@ const App = (() => {
                 </h3>
 
                 <p>
-                    別の端末で更新されたデータを
-                    この端末へ同期できます。
+                    同期すると、この端末に以下の変更が反映されます。
                 </p>
+
+                <div class="cloud-update-summary">
+                    ${
+                        preview.vocabulary.added.length
+                            ? `
+                                <p>
+                                    新しい語彙：
+                                    <strong>
+                                        ${preview.vocabulary.added.length}語
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.vocabulary.updated.length
+                            ? `
+                                <p>
+                                    更新される語彙：
+                                    <strong>
+                                        ${preview.vocabulary.updated.length}語
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.pendingWords.added.length
+                            ? `
+                                <p>
+                                    新しい登録待ち：
+                                    <strong>
+                                        ${preview.pendingWords.added.length}語
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.pendingWords.updated.length
+                            ? `
+                                <p>
+                                    更新される登録待ち：
+                                    <strong>
+                                        ${preview.pendingWords.updated.length}語
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.statsChangedCount
+                            ? `
+                                <p>
+                                    学習履歴：
+                                    <strong>
+                                        ${preview.statsChangedCount}語
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.activityChangedCount
+                            ? `
+                                <p>
+                                    学習日データ：
+                                    <strong>
+                                        ${preview.activityChangedCount}件
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    ${
+                        preview.settingsChanged.length
+                            ? `
+                                <p>
+                                    設定：
+                                    <strong>
+                                        ${preview.settingsChanged.length}件
+                                    </strong>
+                                </p>
+                            `
+                            : ""
+                    }
+                </div>
+
+                ${
+                    preview.vocabulary.added.length ||
+                    preview.vocabulary.updated.length ||
+                    preview.pendingWords.added.length ||
+                    preview.pendingWords.updated.length
+                        ? `
+                            <details class="cloud-update-details">
+                                <summary>
+                                    語彙の詳細を見る
+                                </summary>
+
+                                ${
+                                    preview.vocabulary.added.length
+                                        ? `
+                                            <div>
+                                                <strong>
+                                                    追加される語彙
+                                                </strong>
+
+                                                <p>
+                                                    ${preview.vocabulary.added
+                                                        .map(
+                                                            (word) =>
+                                                                Utils.escapeHtml(
+                                                                    word
+                                                                )
+                                                        )
+                                                        .join("、")}
+                                                </p>
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    preview.vocabulary.updated.length
+                                        ? `
+                                            <div>
+                                                <strong>
+                                                    更新される語彙
+                                                </strong>
+
+                                                <p>
+                                                    ${preview.vocabulary.updated
+                                                        .map(
+                                                            (word) =>
+                                                                Utils.escapeHtml(
+                                                                    word
+                                                                )
+                                                        )
+                                                        .join("、")}
+                                                </p>
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    preview.pendingWords.added.length
+                                        ? `
+                                            <div>
+                                                <strong>
+                                                    追加される登録待ち
+                                                </strong>
+
+                                                <p>
+                                                    ${preview.pendingWords.added
+                                                        .map(
+                                                            (word) =>
+                                                                Utils.escapeHtml(
+                                                                    word
+                                                                )
+                                                        )
+                                                        .join("、")}
+                                                </p>
+                                            </div>
+                                        `
+                                        : ""
+                                }
+
+                                ${
+                                    preview.pendingWords.updated.length
+                                        ? `
+                                            <div>
+                                                <strong>
+                                                    更新される登録待ち
+                                                </strong>
+
+                                                <p>
+                                                    ${preview.pendingWords.updated
+                                                        .map(
+                                                            (word) =>
+                                                                Utils.escapeHtml(
+                                                                    word
+                                                                )
+                                                        )
+                                                        .join("、")}
+                                                </p>
+                                            </div>
+                                        `
+                                        : ""
+                                }
+                            </details>
+                        `
+                        : ""
+                }
 
                 <div class="cloud-update-actions">
                     <button

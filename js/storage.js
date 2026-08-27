@@ -305,6 +305,304 @@ const Storage = (() => {
         );
     }
 
+    function previewBackupMerge(
+        backupSource
+    ) {
+        const backup =
+            typeof backupSource === "string"
+                ? JSON.parse(backupSource)
+                : backupSource;
+
+        if (
+            !backup ||
+            typeof backup !== "object" ||
+            !backup.data ||
+            typeof backup.data !== "object"
+        ) {
+            throw new Error(
+                "バックアップ形式が不正です。"
+            );
+        }
+
+        const data =
+            load();
+
+        const result = {
+            vocabulary: {
+                added: [],
+                updated: []
+            },
+
+            pendingWords: {
+                added: [],
+                updated: []
+            },
+
+            statsChangedCount: 0,
+            activityChangedCount: 0,
+            settingsChanged: []
+        };
+
+        /*
+        * 正式語彙
+        */
+        const localVocabularyByKey =
+            new Map(
+                (
+                    Array.isArray(
+                        data.vocabulary
+                    )
+                        ? data.vocabulary
+                        : []
+                ).map(
+                    (item) => [
+                        normalizeWordKey(
+                            item.word
+                        ),
+                        item
+                    ]
+                )
+            );
+
+        for (
+            const importedItem
+            of (
+                Array.isArray(
+                    backup.data.vocabulary
+                )
+                    ? backup.data.vocabulary
+                    : []
+            )
+        ) {
+            if (
+                !importedItem ||
+                typeof importedItem !==
+                    "object"
+            ) {
+                continue;
+            }
+
+            const word =
+                cleanWordName(
+                    importedItem.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (!key) {
+                continue;
+            }
+
+            const existing =
+                localVocabularyByKey.get(
+                    key
+                );
+
+            if (!existing) {
+                result.vocabulary.added.push(
+                    word
+                );
+
+                continue;
+            }
+
+            if (
+                getWordUpdateTime(
+                    importedItem
+                ) >
+                getWordUpdateTime(
+                    existing
+                )
+            ) {
+                result.vocabulary.updated.push(
+                    word
+                );
+            }
+        }
+
+        /*
+        * 登録待ち
+        */
+        const localPendingByKey =
+            new Map(
+                (
+                    Array.isArray(
+                        data.pendingWords
+                    )
+                        ? data.pendingWords
+                        : []
+                ).map(
+                    (item) => [
+                        normalizeWordKey(
+                            item.word
+                        ),
+                        item
+                    ]
+                )
+            );
+
+        const vocabularyKeys =
+            new Set(
+                (
+                    Array.isArray(
+                        data.vocabulary
+                    )
+                        ? data.vocabulary
+                        : []
+                ).map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                )
+            );
+
+        for (
+            const importedItem
+            of (
+                Array.isArray(
+                    backup.data.pendingWords
+                )
+                    ? backup.data.pendingWords
+                    : []
+            )
+        ) {
+            if (
+                !importedItem ||
+                typeof importedItem !==
+                    "object"
+            ) {
+                continue;
+            }
+
+            const word =
+                cleanWordName(
+                    importedItem.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (
+                !key ||
+                vocabularyKeys.has(key)
+            ) {
+                continue;
+            }
+
+            const existing =
+                localPendingByKey.get(
+                    key
+                );
+
+            if (!existing) {
+                result.pendingWords.added.push(
+                    word
+                );
+
+                continue;
+            }
+
+            if (
+                getWordUpdateTime(
+                    importedItem
+                ) >
+                getWordUpdateTime(
+                    existing
+                )
+            ) {
+                result.pendingWords.updated.push(
+                    word
+                );
+            }
+        }
+
+        /*
+        * 学習履歴
+        */
+        const importedStats =
+            backup.data.stats &&
+            typeof backup.data.stats ===
+                "object"
+                ? backup.data.stats
+                : {};
+
+        for (
+            const [key, value]
+            of Object.entries(
+                importedStats
+            )
+        ) {
+            if (
+                JSON.stringify(
+                    data.stats?.[key]
+                ) !==
+                JSON.stringify(value)
+            ) {
+                result.statsChangedCount +=
+                    1;
+            }
+        }
+
+        /*
+        * 日別学習履歴
+        */
+        const importedActivity =
+            backup.data.activity &&
+            typeof backup.data.activity ===
+                "object"
+                ? backup.data.activity
+                : {};
+
+        for (
+            const [key, value]
+            of Object.entries(
+                importedActivity
+            )
+        ) {
+            if (
+                JSON.stringify(
+                    data.activity?.[key]
+                ) !==
+                JSON.stringify(value)
+            ) {
+                result.activityChangedCount +=
+                    1;
+            }
+        }
+
+        /*
+        * 設定
+        */
+        const importedSettings =
+            backup.data.settings &&
+            typeof backup.data.settings ===
+                "object"
+                ? backup.data.settings
+                : {};
+
+        for (
+            const [key, value]
+            of Object.entries(
+                importedSettings
+            )
+        ) {
+            if (
+                JSON.stringify(
+                    data.settings?.[key]
+                ) !==
+                JSON.stringify(value)
+            ) {
+                result.settingsChanged.push(
+                    key
+                );
+            }
+        }
+
+        return result;
+    }
+
     function mergeBackup(
         backupSource
     ) {
@@ -1353,6 +1651,7 @@ return {
     export: exportData,
     exportBackup,
     mergeBackup,
+    previewBackupMerge,
 
     import: importData,
     reset

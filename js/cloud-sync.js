@@ -150,14 +150,19 @@ const CloudSync = (() => {
             );
         }
 
-        return {
-            exists:
-                Boolean(result?.exists),
+    return {
+        exists:
+            Boolean(result?.exists),
 
-            cloudSavedAt:
-                result?.cloudSavedAt ||
-                null
-        };
+        cloudSavedAt:
+            result?.cloudSavedAt ||
+            null,
+
+        backup:
+            result?.backup ||
+            null
+    };
+
     }
 
     async function downloadBackup() {
