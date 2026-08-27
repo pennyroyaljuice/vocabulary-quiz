@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.8.0";
+const APP_VERSION = "0.9.0";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
