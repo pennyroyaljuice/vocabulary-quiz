@@ -1446,39 +1446,30 @@ const AddWords = (() => {
             updatedAt:
                 Date.now()
         };
-                if (
-            originalItem.source ===
-            "standard"
-        ) {
-            Storage.updateWordOverride(
-                originalItem.id,
-                changes
-            );
-        } else {
-            Storage.updateCustomWord(
-                originalItem.id,
-                {
-                    ...changes,
-                    status:
-                        "ready"
-                }
-            );
-        }
-
-        alert(
-            `「${word}」の変更を保存しました。`
+        
+        Storage.updateVocabularyWord(
+            originalItem.id,
+            {
+                ...changes,
+                status: "ready"
+            }
         );
 
-        location.reload();
-    }
+                alert(
+                    `「${word}」の変更を保存しました。`
+                );
 
-    async function saveCustomWord(
-        container,
-        wordId,
-        finalize
-    )
+                location.reload();
+            }
+
+            async function saveCustomWord(
+                container,
+                wordId,
+                finalize
+            )
             
         {
+
         const card =
             container.querySelector(
                 `[data-custom-word-card="${CSS.escape(

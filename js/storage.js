@@ -778,6 +778,104 @@ const Storage = (() => {
             );
     }
 
+    function getVocabulary() {
+    const data = load();
+
+    return Array.isArray(data.vocabulary)
+        ? data.vocabulary.map(
+            (item) => ({
+                ...item
+            })
+        )
+        : [];
+}
+
+    function getPendingWords() {
+        const data = load();
+
+        return Array.isArray(data.pendingWords)
+            ? data.pendingWords.map(
+                (item) => ({
+                    ...item
+                })
+            )
+            : [];
+    }
+
+    function updateVocabularyWord(
+        wordId,
+        changes
+    ) {
+        const data = load();
+
+        if (!Array.isArray(data.vocabulary)) {
+            throw new Error(
+                "統合語彙データがまだ作成されていません。"
+            );
+        }
+
+        const index =
+            data.vocabulary.findIndex(
+                (item) =>
+                    String(item.id) ===
+                    String(wordId)
+            );
+
+        if (index < 0) {
+            throw new Error(
+                "語彙が見つかりません。"
+            );
+        }
+
+        data.vocabulary[index] = {
+            ...data.vocabulary[index],
+            ...changes,
+
+            id:
+                data.vocabulary[index].id,
+
+            updatedAt:
+                Date.now()
+        };
+
+        save(data);
+
+        return {
+            ...data.vocabulary[index]
+        };
+    }
+
+    function removeVocabularyWord(
+        wordId
+    ) {
+        const data = load();
+
+        if (!Array.isArray(data.vocabulary)) {
+            return false;
+        }
+
+        const before =
+            data.vocabulary.length;
+
+        data.vocabulary =
+            data.vocabulary.filter(
+                (item) =>
+                    String(item.id) !==
+                    String(wordId)
+            );
+
+        if (
+            data.vocabulary.length ===
+            before
+        ) {
+            return false;
+        }
+
+        save(data);
+
+        return true;
+    }
+
     function buildUnifiedVocabulary(
         standardWords
     ) {
@@ -1409,6 +1507,10 @@ const Storage = (() => {
     return {
         load,
         save,
+        getVocabulary,
+        getPendingWords,
+        updateVocabularyWord,
+        removeVocabularyWord,
         getStats,
         getWordStats,
         getSettings,
