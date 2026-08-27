@@ -218,7 +218,31 @@ const Settings = (() => {
                     >
                         同期キーを保存
                     </button>
-                </div>
+
+                    <button
+                        id="generateCloudSyncSecretButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        新しい同期キーを生成
+                    </button>
+
+                    <button
+                        id="copyCloudSyncSecretButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        同期キーをコピー
+                    </button>
+
+                    <button
+                        id="toggleCloudSyncSecretButton"
+                        class="menuButton"
+                        type="button"
+                    >
+                        同期キーを表示
+                    </button>
+                 </div>
 
                 <div class="settings-button-grid">
                     <button
@@ -446,6 +470,126 @@ const Settings = (() => {
                 alert(
                     "同期キーをこの端末に保存しました。"
                 );
+            }
+        );
+
+        const generateCloudSyncSecretButton =
+            container.querySelector(
+                "#generateCloudSyncSecretButton"
+            );
+
+        generateCloudSyncSecretButton.addEventListener(
+            "click",
+            () => {
+        const currentSecret =
+            CloudSync.getSecret();
+
+        const confirmed =
+            confirm(
+                currentSecret
+                    ? (
+                        "新しい同期キーを生成しますか？\n\n" +
+                        "新しい同期キーは、現在とは別のクラウドデータ領域を使用します。\n" +
+                        "現在の同期キーを控えていない場合、元のクラウドデータへ戻れなくなる可能性があります。"
+                    )
+                    : (
+                        "新しい同期キーを生成しますか？\n\n" +
+                        "このキーがあなたのクラウドデータを識別するために使われます。"
+                    )
+            );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                const randomBytes =
+                    new Uint8Array(16);
+
+                crypto.getRandomValues(
+                    randomBytes
+                );
+
+                const newSecret =
+                    Array.from(
+                        randomBytes,
+                        (byte) =>
+                            byte
+                                .toString(16)
+                                .padStart(2, "0")
+                    ).join("");
+
+                cloudSyncSecretInput.value =
+                    newSecret;
+
+                CloudSync.setSecret(
+                    newSecret
+                );
+
+                alert(
+                    "新しい同期キーを生成し、この端末に保存しました。\nこのキーは他の端末で同期するときに必要です。"
+                );
+            }
+        );
+
+        const copyCloudSyncSecretButton =
+            container.querySelector(
+                "#copyCloudSyncSecretButton"
+            );
+
+        copyCloudSyncSecretButton.addEventListener(
+            "click",
+            async () => {
+                const secret =
+                    cloudSyncSecretInput.value
+                        .trim();
+
+                if (!secret) {
+                    alert(
+                        "コピーする同期キーがありません。"
+                    );
+
+                    return;
+                }
+
+                try {
+                    await navigator.clipboard.writeText(
+                        secret
+                    );
+
+                    alert(
+                        "同期キーをコピーしました。"
+                    );
+                } catch (error) {
+                    console.error(error);
+
+                    alert(
+                        "同期キーをコピーできませんでした。"
+                    );
+                }
+            }
+        );
+
+        const toggleCloudSyncSecretButton =
+            container.querySelector(
+                "#toggleCloudSyncSecretButton"
+            );
+
+        toggleCloudSyncSecretButton.addEventListener(
+            "click",
+            () => {
+                const isHidden =
+                    cloudSyncSecretInput.type ===
+                    "password";
+
+                cloudSyncSecretInput.type =
+                    isHidden
+                        ? "text"
+                        : "password";
+
+                toggleCloudSyncSecretButton.textContent =
+                    isHidden
+                        ? "同期キーを隠す"
+                        : "同期キーを表示";
             }
         );
 
