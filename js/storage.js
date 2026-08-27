@@ -1504,6 +1504,298 @@ const Storage = (() => {
         return `${year}-${month}-${day}`;
     }
 
+    function finalizePendingWord(
+        wordId,
+        changes
+    ) {
+        const data = load();
+
+        if (!Array.isArray(data.vocabulary)) {
+            throw new Error(
+                "統合語彙データがまだ作成されていません。"
+            );
+        }
+
+        const pendingIndex =
+            data.pendingWords.findIndex(
+                (item) =>
+                    String(item.id) ===
+                    String(wordId)
+            );
+
+        if (pendingIndex < 0) {
+            throw new Error(
+                "登録待ち語彙が見つかりません。"
+            );
+        }
+
+        const original =
+            data.pendingWords[pendingIndex];
+
+        const word =
+            cleanWordName(
+                changes.word ||
+                original.word
+            );
+
+        const key =
+            normalizeWordKey(word);
+
+        const duplicate =
+            data.vocabulary.find(
+                (item) =>
+                    normalizeWordKey(
+                        item.word
+                    ) === key
+            );
+
+        if (duplicate) {
+            throw new Error(
+                `「${duplicate.word}」はすでに登録されています。`
+            );
+        }
+
+        const finalized = {
+            ...original,
+            ...changes,
+
+            id:
+                original.id,
+
+            word,
+
+            status:
+                "ready",
+
+            updatedAt:
+                Date.now()
+        };
+
+        data.pendingWords.splice(
+            pendingIndex,
+            1
+        );
+
+        data.vocabulary.push(
+            finalized
+        );
+
+        save(data);
+
+        return {
+            ...finalized
+        };
+    }
+
+    function addUnifiedPendingWords(
+        entries
+    ) {
+        const data =
+            load();
+
+        if (
+            !Array.isArray(
+                data.vocabulary
+            )
+        ) {
+            throw new Error(
+                "統合語彙データがまだ作成されていません。"
+            );
+        }
+
+        if (
+            !Array.isArray(
+                data.pendingWords
+            )
+        ) {
+            data.pendingWords = [];
+        }
+
+        const existingKeys =
+            new Set([
+                ...data.vocabulary.map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                ),
+
+                ...data.pendingWords.map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                )
+            ]);
+
+        const added = [];
+        const duplicates = [];
+
+        for (const source of entries) {
+            const entry =
+                typeof source === "string"
+                    ? {
+                        word: source,
+                        readingHint: "",
+                        contextHint: ""
+                    }
+                    : source;
+
+            const word =
+                cleanWordName(
+                    entry.word
+                );
+
+            const key =
+                normalizeWordKey(
+                    word
+                );
+
+            if (!key) {
+                continue;
+            }
+
+            if (
+                existingKeys.has(key)
+            ) {
+                duplicates.push(
+                    word
+                );
+
+                continue;
+            }
+
+            const readingHint =
+                String(
+                    entry.readingHint ||
+                    ""
+                ).trim();
+
+            const contextHint =
+                String(
+                    entry.contextHint ||
+                    ""
+                ).trim();
+
+            const item = {
+                id:
+                    createCustomWordId(),
+
+                word,
+
+                reading:
+                    readingHint,
+
+                readingHint,
+
+                contextHint,
+
+                meaning: "",
+                description: "",
+                category: "",
+                quizTypes: [],
+
+                sources: [],
+                comparisonNote: "",
+                needsReview: true,
+
+                status:
+                    "pending",
+
+                createdAt:
+                    Date.now(),
+
+                updatedAt:
+                    null
+            };
+
+            data.pendingWords.push(
+                item
+            );
+
+            existingKeys.add(
+                key
+            );
+
+            added.push({
+                ...item
+            });
+        }
+
+        save(data);
+
+        return {
+            added,
+            duplicates
+        };
+    }
+
+    function updatePendingWord(
+        wordId,
+        changes
+    ) {
+        const data =
+            load();
+
+        const index =
+            data.pendingWords.findIndex(
+                (item) =>
+                    String(item.id) ===
+                    String(wordId)
+            );
+
+        if (index < 0) {
+            throw new Error(
+                "登録待ち語彙が見つかりません。"
+            );
+        }
+
+        data.pendingWords[index] = {
+            ...data.pendingWords[index],
+            ...changes,
+
+            id:
+                data.pendingWords[index].id,
+
+            updatedAt:
+                Date.now()
+        };
+
+        save(data);
+
+        return {
+            ...data.pendingWords[index]
+        };
+    }
+
+    function removePendingWord(
+        wordId
+    ) {
+        const data =
+            load();
+
+        const before =
+            data.pendingWords.length;
+
+        data.pendingWords =
+            data.pendingWords.filter(
+                (item) =>
+                    String(item.id) !==
+                    String(wordId)
+            );
+
+        if (
+            data.pendingWords.length ===
+            before
+        ) {
+            return false;
+        }
+
+        save(data);
+
+        return true;
+    }
+
     return {
         load,
         save,
@@ -1533,6 +1825,10 @@ const Storage = (() => {
         getWordOverride,
         updateWordOverride,
         removeWordOverride,
+        finalizePendingWord,
+        addUnifiedPendingWords,
+        updatePendingWord,
+        removePendingWord,
         export: exportData,
         exportBackup,
         mergeBackup,

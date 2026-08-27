@@ -13,21 +13,15 @@ const AddWords = (() => {
     }
 
     function renderPage(container) {
-        const customWords =
-            Storage.getCustomWords();
-
         const pendingWords =
-            customWords.filter(
-                (item) =>
-                    item.status !== "ready"
-            );
+            Storage.getPendingWords();
 
         const readyWords =
-            customWords.filter(
-                (item) =>
-                    item.status === "ready"
-            );
+            Storage.getVocabulary();
 
+        container.innerHTML = `
+
+    container.innerHTML = `
         container.innerHTML = `
             <section class="card">
                 <div class="page-heading">
@@ -181,7 +175,7 @@ const AddWords = (() => {
                 : [];
 
         const item =
-            Storage.getCustomWords()
+            Storage.getPendingWords()
                 .find(
                     (word) =>
                         String(word.id) ===
@@ -890,7 +884,7 @@ const AddWords = (() => {
                     );
             });
 
-        Storage.updateCustomWord(
+        Storage.updatePendingWord(
             wordId,
             {
                 ...generated,
@@ -908,10 +902,7 @@ const AddWords = (() => {
                     word,
 
                 status:
-                    "generated",
-
-                updatedAt:
-                    Date.now()
+                    "generated"
             }
         );
 
@@ -1137,7 +1128,7 @@ const AddWords = (() => {
             }
         }
         const result =
-            Storage.addPendingWords(
+            Storage.addUnifiedPendingWords(
                 newCandidates
             );
 
@@ -1446,7 +1437,7 @@ const AddWords = (() => {
             updatedAt:
                 Date.now()
         };
-        
+
         Storage.updateVocabularyWord(
             originalItem.id,
             {
@@ -1595,28 +1586,46 @@ const AddWords = (() => {
                 return;
             }
 
-        Storage.updateCustomWord(
-            wordId,
-            {
+            const changes = {
                 word,
                 reading,
+
                 readingHint:
                     reading,
+
                 contextHint,
-                sources,
+
                 meaning,
                 description,
+
                 category:
                     category || "未分類",
+
                 quizTypes,
+
+                sources,
+
                 status:
                     finalize
                         ? "ready"
-                        : "pending",
-                updatedAt:
-                    Date.now()
-            }
-        );
+                        : "pending"
+            };
+
+        if (finalize) {
+            Storage.finalizePendingWord(
+                wordId,
+                changes
+            );
+        } else {
+            Storage.updatePendingWord(
+                wordId,
+                {
+                    ...changes,
+                    status:
+                        "pending"
+                }
+            );
+        }
 
         if (finalize) {
             await App.reloadWords();
@@ -1721,7 +1730,7 @@ const AddWords = (() => {
         container,
         wordId
     ) {
-        Storage.removeCustomWord(
+        Storage.removePendingWord(
             wordId
         );
 
@@ -1737,11 +1746,7 @@ const AddWords = (() => {
     ) {
 
         const pendingWords =
-            Storage.getCustomWords()
-                .filter(
-                    (item) =>
-                        item.status !== "ready"
-                );
+             Storage.getPendingWords();
 
         const countElement =
             container.querySelector(
