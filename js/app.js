@@ -329,7 +329,7 @@ const App = (() => {
                 </p>
 
                 <h2>
-                    今日のおすすめ復習
+                    今日のクイズ
                 </h2>
 
                 <p>
@@ -342,7 +342,7 @@ const App = (() => {
                     class="primary"
                     type="button"
                 >
-                 今日の${dailyGoal}問
+                  クイズを始める
                 </button>
             </section>
 
@@ -405,14 +405,7 @@ const App = (() => {
     </section>
 
             <section class="card home-menu">
-                <button
-                    id="startQuiz"
-                    class="menuButton"
-                    type="button"
-                >
-                    クイズ開始
-                </button>
-
+            
                 <button
                     id="reviewButton"
                     class="menuButton"
@@ -504,13 +497,6 @@ const App = (() => {
             .addEventListener(
                 "click",
                 () => Router.show("addWords")
-            );
-
-        container
-            .querySelector("#startQuiz")
-            .addEventListener(
-                "click",
-                () => startQuiz()
             );
 
         container
