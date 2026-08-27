@@ -463,6 +463,14 @@ const Settings = (() => {
                     return;
                 }
 
+                if (!/^[0-9a-f]{32}$/i.test(secret)) {
+                    alert(
+                        "同期キーは32文字の英数字（0〜9、a〜f）で入力してください。"
+                    );
+
+                    return;
+                }
+
                 CloudSync.setSecret(
                     secret
                 );
