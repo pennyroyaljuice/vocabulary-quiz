@@ -212,30 +212,13 @@ const Settings = (() => {
                     </button>
                  </div>
 
-                <div class="settings-button-grid">
-                    <button
-                        id="uploadCloudBackupButton"
-                        class="menuButton"
-                        type="button"
-                    >
-                        クラウドに保存
-                    </button>
+                <input
+                    id="importDataInput"
+                    class="hidden"
+                    type="file"
+                    accept="application/json,.json"
+                >
 
-                    <button
-                        id="downloadCloudBackupButton"
-                        class="menuButton"
-                        type="button"
-                    >
-                        クラウドから取得して統合
-                    </button>
-
-                    <input
-                        id="importDataInput"
-                        class="hidden"
-                        type="file"
-                        accept="application/json,.json"
-                    >
-                </div>
             </section>
 
             <section class="card settings-section danger-zone">
@@ -555,26 +538,6 @@ const Settings = (() => {
             }
         );
 
-        const uploadCloudButton =
-            container.querySelector(
-                "#uploadCloudBackupButton"
-            );
-
-        uploadCloudButton.addEventListener(
-            "click",
-            uploadCloudBackup
-        );
-
-        const downloadCloudButton =
-            container.querySelector(
-                "#downloadCloudBackupButton"
-            );
-
-        downloadCloudButton.addEventListener(
-            "click",
-            downloadCloudBackup
-        );
-
         container
             .querySelector(
                 "#resetDataButton"
@@ -583,104 +546,6 @@ const Settings = (() => {
                 "click",
                 resetLearningData
             );
-    }
-
-    async function uploadCloudBackup() {
-        const confirmed =
-            confirm(
-                "現在の学習データをクラウドへ保存しますか？\nクラウド上のバックアップは現在の端末データで更新されます。"
-            );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            const result =
-                await CloudSync.uploadBackup();
-
-            const savedAt =
-                result.cloudSavedAt
-                    ? new Date(
-                        result.cloudSavedAt
-                    ).toLocaleString()
-                    : "";
-
-            alert(
-                savedAt
-                    ? `クラウドへ保存しました。\n${savedAt}`
-                    : "クラウドへ保存しました。"
-            );
-        } catch (error) {
-            console.error(error);
-
-            alert(
-                error.message ||
-                "クラウドへの保存に失敗しました。"
-            );
-        }
-    }
-
-    async function downloadCloudBackup() {
-        const confirmed =
-            confirm(
-                "クラウド上のバックアップを現在の端末へ統合しますか？\n現在の語彙は削除されません。"
-            );
-
-        if (!confirmed) {
-            return;
-        }
-
-        try {
-            const result =
-                await CloudSync.downloadBackup();
-
-            if (!result.exists) {
-                alert(
-                    "クラウドにバックアップがありません。"
-                );
-
-                return;
-            }
-
-            const mergeResult =
-                result.mergeResult;
-
-            const vocabulary =
-                mergeResult.vocabulary;
-
-            const pendingWords =
-                mergeResult.pendingWords;
-
-            const lines = [
-                "クラウドデータを統合しました。",
-                "",
-                "正式語彙",
-                `新規追加：${vocabulary.addedCount}語`,
-                `更新：${vocabulary.updatedCount}語`,
-                `変更なし：${vocabulary.skippedCount}語`,
-                `統合後：${vocabulary.totalCount}語`,
-                "",
-                "登録待ち",
-                `新規追加：${pendingWords.addedCount}語`,
-                `更新：${pendingWords.updatedCount}語`,
-                `変更なし：${pendingWords.skippedCount}語`,
-                `統合後：${pendingWords.totalCount}語`
-            ];
-
-            alert(
-                lines.join("\n")
-            );
-
-            location.reload();
-        } catch (error) {
-            console.error(error);
-
-            alert(
-                error.message ||
-                "クラウドからの取得に失敗しました。"
-            );
-        }
     }
 
     function saveSetting(key, value) {
