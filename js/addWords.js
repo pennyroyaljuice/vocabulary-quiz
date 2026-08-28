@@ -684,10 +684,11 @@ const AddWords = (() => {
             .addEventListener(
                 "click",
                 () =>
-                    saveUnifiedWord(
-                        container,
-                        item
-                    )
+                saveUnifiedWord(
+                    container,
+                    item,
+                    params
+                )
             );
 
         container
@@ -1283,9 +1284,10 @@ const AddWords = (() => {
         location.reload();
     }
 
-    function saveUnifiedWord(
+    async function saveUnifiedWord(
         container,
-        originalItem
+        originalItem,
+        params = {}
     ) {
         const card =
             container.querySelector(
@@ -1396,11 +1398,21 @@ const AddWords = (() => {
             }
         );
 
-                alert(
-                    `「${word}」の変更を保存しました。`
-                );
+        alert(
+            `「${word}」の変更を保存しました。`
+        );
 
-                location.reload();
+        if (
+            params.returnTo ===
+            "quiz"
+        ) {
+            await App.resumeQuizAfterEdit();
+
+            return;
+        }
+
+        location.reload();
+
             }
 
             async function saveCustomWord(

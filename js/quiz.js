@@ -14,6 +14,7 @@ const Quiz = (() => {
     let answers = [];
     let startedAt = null;
     let answered = false;
+    let currentQuestionIsRecheck = false;
 
     function initialize(wordData) {
         if (!Array.isArray(wordData)) {
@@ -79,6 +80,7 @@ const Quiz = (() => {
         answers = [];
         startedAt = Date.now();
         answered = false;
+        currentQuestionIsRecheck = false;
 
         return getCurrentQuestion();
     }
@@ -345,41 +347,114 @@ function calculateWeight(word, previousIds = []) {
 
         return true;
     }
+
     function createWordToMeaningQuestion(word) {
-        const distractors = selectMeaningDistractors(word, 3);
-        const choices = Utils.shuffle([
-            word.meaning,
-            ...distractors.map((item) => item.meaning)
-        ]);
+        const distractors =
+            selectMeaningDistractors(
+                word,
+                3
+            );
+
+        const choiceWords =
+            Utils.shuffle([
+                word,
+                ...distractors
+            ]);
+
+        const choices =
+            choiceWords.map(
+                (item) =>
+                    item.meaning
+            );
 
         return {
-            id: createQuestionId(word.id),
+            id:
+                createQuestionId(
+                    word.id
+                ),
+
             word,
-            type: QUESTION_TYPES.WORD_TO_MEANING,
-            typeLabel: "意味問題",
-            prompt: "次の言葉の意味として最も適切なものは？",
-            text: word.word,
+
+            type:
+                QUESTION_TYPES
+                    .WORD_TO_MEANING,
+
+            typeLabel:
+                "意味問題",
+
+            prompt:
+                "次の言葉の意味として最も適切なものは？",
+
+            text:
+                word.word,
+
             choices,
-            correctAnswer: word.meaning
+
+            choiceWords:
+                choiceWords.map(
+                    (item) => ({
+                        id: item.id,
+                        word: item.word
+                    })
+                ),
+
+            correctAnswer:
+                word.meaning
         };
     }
 
     function createMeaningToWordQuestion(word) {
-        const distractors = selectWordDistractors(word, 3);
-        const choices = Utils.shuffle([
-            word.word,
-            ...distractors.map((item) => item.word)
-        ]);
+        const distractors =
+            selectWordDistractors(
+                word,
+                3
+            );
+
+        const choiceWords =
+            Utils.shuffle([
+                word,
+                ...distractors
+            ]);
+
+        const choices =
+            choiceWords.map(
+                (item) =>
+                    item.word
+            );
 
         return {
-            id: createQuestionId(word.id),
+            id:
+                createQuestionId(
+                    word.id
+                ),
+
             word,
-            type: QUESTION_TYPES.MEANING_TO_WORD,
-            typeLabel: "単語問題",
-            prompt: "次の意味に当てはまる言葉は？",
-            text: word.meaning,
+
+            type:
+                QUESTION_TYPES
+                    .MEANING_TO_WORD,
+
+            typeLabel:
+                "単語問題",
+
+            prompt:
+                "次の意味に当てはまる言葉は？",
+
+            text:
+                word.meaning,
+
             choices,
-            correctAnswer: word.word
+
+            choiceWords:
+                choiceWords.map(
+                    (item) => ({
+                        id: item.id,
+                        word: item.word
+                    })
+                ),
+
+            correctAnswer:
+                word.word
         };
     }
 
@@ -390,22 +465,52 @@ function calculateWeight(word, previousIds = []) {
                 3
             );
 
-        const choices = Utils.shuffle([
-            word.reading,
-            ...distractors.map(
-                (item) => item.reading
-            )
-        ]);
+        const choiceWords =
+            Utils.shuffle([
+                word,
+                ...distractors
+            ]);
+
+        const choices =
+            choiceWords.map(
+                (item) =>
+                    item.reading
+            );
 
         return {
-            id: createQuestionId(word.id),
+            id:
+                createQuestionId(
+                    word.id
+                ),
+
             word,
-            type: QUESTION_TYPES.READING,
-            typeLabel: "読み問題",
-            prompt: "次の言葉の読みとして正しいものは？",
-            text: maskOkurigana(word.word),
+
+            type:
+                QUESTION_TYPES.READING,
+
+            typeLabel:
+                "読み問題",
+
+            prompt:
+                "次の言葉の読みとして正しいものは？",
+
+            text:
+                maskOkurigana(
+                    word.word
+                ),
+
             choices,
-            correctAnswer: word.reading
+
+            choiceWords:
+                choiceWords.map(
+                    (item) => ({
+                        id: item.id,
+                        word: item.word
+                    })
+                ),
+
+            correctAnswer:
+                word.reading
         };
     }
 
@@ -761,19 +866,21 @@ function calculateWeight(word, previousIds = []) {
             return null;
         }
 
-        answered = true;
+    answered = true;
 
         const isCorrect =
             selectedAnswer === question.correctAnswer;
 
-        if (isCorrect) {
-            score += 1;
-        }
+        if (!currentQuestionIsRecheck) {
+            if (isCorrect) {
+                score += 1;
+            }
 
-        Storage.updateStats(
-            question.word.id,
-            isCorrect
-        );
+            Storage.updateStats(
+                question.word.id,
+                isCorrect
+            );
+        }
 
         const answerRecord = {
             questionId: question.id,
@@ -789,7 +896,9 @@ function calculateWeight(word, previousIds = []) {
             category: question.word.category || ""
         };
 
-        answers.push(answerRecord);
+        if (!currentQuestionIsRecheck) {
+            answers.push(answerRecord);
+        }
 
         return {
             correct: isCorrect,
@@ -808,6 +917,7 @@ function calculateWeight(word, previousIds = []) {
 
         currentIndex += 1;
         answered = false;
+        currentQuestionIsRecheck = false;
 
         if (currentIndex >= questions.length) {
             return null;
@@ -815,6 +925,47 @@ function calculateWeight(word, previousIds = []) {
 
         return getCurrentQuestion();
     }
+
+    function recreateCurrentQuestion(
+            updatedWords
+        ) {
+            const currentQuestion =
+                questions[currentIndex];
+
+            if (!currentQuestion) {
+                return null;
+            }
+
+            if (Array.isArray(updatedWords)) {
+                words =
+                    deduplicateWords(
+                        updatedWords
+                    );
+            }
+
+            const latestWord =
+                words.find(
+                    (word) =>
+                        String(word.id) ===
+                        String(
+                            currentQuestion.word.id
+                        )
+                );
+
+            if (!latestWord) {
+                return null;
+            }
+
+            questions[currentIndex] =
+                createQuestion(
+                    latestWord
+                );
+
+            answered = false;
+            currentQuestionIsRecheck = true;
+
+            return getCurrentQuestion();
+        }
 
     function getCurrentQuestion() {
         const question = questions[currentIndex];
@@ -893,17 +1044,18 @@ function calculateWeight(word, previousIds = []) {
         }
     }
 
-    return {
-        QUESTION_TYPES,
-        initialize,
-        start,
-        answer,
-        next,
-        getCurrentQuestion,
-        getResult,
-        getWords,
-        getQuestionCount,
-        isFinished,
-        calculateWeight
+return {
+    QUESTION_TYPES,
+    initialize,
+    start,
+    answer,
+    next,
+    recreateCurrentQuestion,
+    getCurrentQuestion,
+    getResult,
+    getWords,
+    getQuestionCount,
+    isFinished,
+    calculateWeight
     };
 })();

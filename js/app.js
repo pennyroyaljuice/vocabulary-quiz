@@ -52,6 +52,23 @@ const App = (() => {
             );
     }
 
+    async function resumeQuizAfterEdit() {
+        words =
+            await loadWords();
+
+        updateHeaderWordCount();
+
+        quizAnswerViewState = null;
+
+        Quiz.recreateCurrentQuestion(
+            words
+        );
+
+        Router.show(
+            "quiz"
+        );
+    }
+
     async function reloadWords() {
         words =
             await loadWords();
@@ -1379,7 +1396,11 @@ const App = (() => {
                 result.reading,
 
             description:
-                result.description
+                result.description,
+
+            choiceWords:
+                Quiz.getCurrentQuestion()
+                    ?.choiceWords || []
         };
 
         renderQuizAnswerState(
@@ -1429,26 +1450,27 @@ const App = (() => {
             "hidden"
         );
 
-        const storedWord =
-            Storage.getVocabulary()
-                .find(
-                    (word) =>
-                        String(word.id) ===
-                        String(state.wordId)
-                ) ||
-            state.word;
+    const vocabulary =
+        Storage.getVocabulary();
 
-        const quizTypes =
-            Array.isArray(
-                storedWord.quizTypes
-            )
-                ? storedWord.quizTypes
-                : [];
+    const storedWord =
+        vocabulary.find(
+            (word) =>
+                String(word.id) ===
+                String(state.wordId)
+        ) ||
+        state.word;
 
-        const readingEnabled =
-            quizTypes.includes(
-                "reading"
-            );
+    const questionWords =
+        (state.choiceWords || [])
+            .map((choiceWord) => {
+                return vocabulary.find(
+                    (item) =>
+                        String(item.id) ===
+                        String(choiceWord.id)
+                );
+            })
+            .filter(Boolean);
 
         answerBox.innerHTML = `
             <h3 class="${
@@ -1498,74 +1520,144 @@ const App = (() => {
                     : ""
             }
 
-            <div class="quiz-word-actions">
-                <button
-                    id="quizEditWordButton"
-                    class="menuButton compact-button"
-                    type="button"
-                >
-                    編集
-                </button>
+        <button
+            id="nextButton"
+            class="nextButton"
+            type="button"
+        >
+            次の問題へ
+        </button>
 
-                <button
-                    id="quizReadingToggleButton"
-                    class="menuButton compact-button"
-                    type="button"
-                >
-                    読 ${
-                        readingEnabled
-                            ? "ON"
-                            : "OFF"
-                    }
-                </button>
-            </div>
+        <div class="quiz-question-words">
+            <p class="quiz-question-words-label">
+                この問題の語彙一覧
+            </p>
 
-            <button
-                id="nextButton"
-                class="nextButton"
-                type="button"
-            >
-                次の問題へ
-            </button>
+            ${questionWords
+                .map((word) => {
+                    const quizTypes =
+                        Array.isArray(
+                            word.quizTypes
+                        )
+                            ? word.quizTypes
+                            : [];
+
+                    const readingEnabled =
+                        quizTypes.includes(
+                            "reading"
+                        );
+
+                    const canUseReading =
+                        Boolean(word.reading) &&
+                        /[\u3400-\u9FFF々〆ヵヶ]/u.test(
+                            word.word
+                        );
+
+                    return `
+                        <div class="quiz-question-word-row">
+                            <span class="quiz-question-word-name">
+                                ${Utils.escapeHtml(
+                                    word.word
+                                )}
+                            </span>
+
+                            <button
+                                class="menuButton compact-button quiz-choice-edit-button"
+                                type="button"
+                                data-word-id="${Utils.escapeAttribute(
+                                    String(word.id)
+                                )}"
+                            >
+                                編集
+                            </button>
+
+                        <button
+                              class="
+                                    menuButton
+                                    compact-button
+                                    quiz-choice-reading-button
+                                    ${
+                                        canUseReading
+                                            ? (
+                                                readingEnabled
+                                                    ? "reading-on"
+                                                    : "reading-off"
+                                            )
+                                            : "reading-unavailable"
+                                    }
+                                "
+                                type="button"
+                                data-word-id="${Utils.escapeAttribute(
+                                    String(word.id)
+                                )}"
+                                ${
+                                    canUseReading
+                                        ? ""
+                                        : "disabled"
+                                }
+                                aria-pressed="${
+                                    canUseReading
+                                        ? String(readingEnabled)
+                                        : "false"
+                                }"
+                            >
+                                ${
+                                    canUseReading
+                                        ? (
+                                            readingEnabled
+                                                ? "読 ✓"
+                                                : "読 ×"
+                                        )
+                                        : "―"
+                                }
+                            </button>
+                        </div>
+                    `;
+                })
+                .join("")}
+        </div>
+
         `;
 
-        answerBox
-            .querySelector(
-                "#quizEditWordButton"
-            )
-            .addEventListener(
+answerBox
+    .querySelectorAll(
+        ".quiz-choice-edit-button"
+    )
+    .forEach((button) => {
+        button.addEventListener(
+            "click",
+            () => {
+                Router.show(
+                    "editWord",
+                    {
+                        wordId:
+                            button.dataset.wordId,
+
+                        returnTo:
+                            "quiz"
+                    }
+                );
+            }
+        );
+    });
+
+    answerBox
+        .querySelectorAll(
+            ".quiz-choice-reading-button"
+        )
+        .forEach((button) => {
+            button.addEventListener(
                 "click",
                 () => {
-                    Router.show(
-                        "editWord",
-                        {
-                            wordId:
-                                state.wordId,
+                    const wordId =
+                        button.dataset.wordId;
 
-                            returnTo:
-                                "quiz"
-                        }
-                    );
-                }
-            );
-
-        answerBox
-            .querySelector(
-                "#quizReadingToggleButton"
-            )
-            .addEventListener(
-                "click",
-                () => {
                     const currentWord =
                         Storage.getVocabulary()
                             .find(
                                 (word) =>
-                                    String(
-                                        word.id
-                                    ) ===
-                                    String(
-                                        state.wordId
-                                    )
+                                    String(word.id) ===
+                                    String(wordId)
                             );
 
                     if (!currentWord) {
@@ -1577,8 +1669,8 @@ const App = (() => {
                             currentWord.quizTypes
                         )
                             ? [
-                                  ...currentWord.quizTypes
-                              ]
+                                ...currentWord.quizTypes
+                            ]
                             : [];
 
                     const hasReading =
@@ -1589,17 +1681,17 @@ const App = (() => {
                     const nextTypes =
                         hasReading
                             ? currentTypes.filter(
-                                  (type) =>
-                                      type !==
-                                      "reading"
-                              )
+                                (type) =>
+                                    type !==
+                                    "reading"
+                            )
                             : [
-                                  ...currentTypes,
-                                  "reading"
-                              ];
+                                ...currentTypes,
+                                "reading"
+                            ];
 
                     Storage.updateVocabularyWord(
-                        state.wordId,
+                        wordId,
                         {
                             quizTypes:
                                 nextTypes
@@ -1612,6 +1704,7 @@ const App = (() => {
                     );
                 }
             );
+        });
 
         answerBox
             .querySelector(
@@ -1930,6 +2023,7 @@ const App = (() => {
         init,
         startQuiz,
         reloadWords,
+        resumeQuizAfterEdit,
 
         getWords() {
             return [...words];
