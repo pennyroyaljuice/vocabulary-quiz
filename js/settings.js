@@ -400,9 +400,9 @@ const Settings = (() => {
                     return;
                 }
 
-                if (!/^[0-9a-f]{32}$/i.test(secret)) {
+                if (!/^[A-Za-z0-9]{32}$/.test(secret)) {
                     alert(
-                        "同期キーは32文字の英数字（0〜9、a〜f）で入力してください。"
+                        "同期キーは32文字の英数字で入力してください。"
                     );
 
                     return;

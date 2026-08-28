@@ -575,37 +575,37 @@ const Dictionary = (() => {
                     </span>
                 </button>
 
-                <button
-                    type="button"
-                    class="reading-toggle ${
-                        canUseReading
-                            ? (
-                                readingEnabled
-                                    ? "reading-on"
-                                    : "reading-off"
-                            )
-                            : "reading-unavailable"
-                    }"
-                    data-reading-toggle="${Utils.escapeAttribute(
-                        String(word.id)
-                    )}"
-                    ${canUseReading ? "" : "disabled"}
-                    aria-pressed="${
-                        canUseReading
-                            ? String(readingEnabled)
-                            : "false"
-                    }"
-                >
-                    ${
-                        canUseReading
-                            ? (
-                                readingEnabled
-                                    ? "読 ✓"
-                                    : "読 ×"
-                            )
-                            : "―"
-                    }
-                </button>
+                    <button
+                        type="button"
+                        class="reading-toggle ${
+                            canUseReading
+                                ? (
+                                    readingEnabled
+                                        ? "reading-on"
+                                        : "reading-off"
+                                )
+                                : "reading-unavailable"
+                        }"
+                        data-reading-word-id="${Utils.escapeAttribute(
+                            String(word.id)
+                        )}"
+                        ${canUseReading ? "" : "disabled"}
+                        aria-pressed="${
+                            canUseReading
+                                ? String(readingEnabled)
+                                : "false"
+                        }"
+                    >
+                        ${
+                            canUseReading
+                                ? (
+                                    readingEnabled
+                                        ? "読 ✓"
+                                        : "読 ×"
+                                )
+                                : "―"
+                        }
+                    </button>
             </div>
         `;
     }
