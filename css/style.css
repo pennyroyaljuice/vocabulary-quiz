@@ -2091,3 +2091,16 @@ html[data-theme="dark"]
     opacity: 0.25;
     cursor: not-allowed;
 }
+
+.quiz-word-actions {
+    display: flex;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.quiz-word-actions .compact-button {
+    flex: 1;
+    width: auto;
+    margin: 0;
+    padding: 8px 12px;
+}

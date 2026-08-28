@@ -459,7 +459,8 @@ const AddWords = (() => {
     function renderUnifiedEditor(
         container,
         words,
-        wordId
+        wordId,
+        params = {}
     ) {
         const item =
             Storage.getVocabulary()
@@ -655,14 +656,25 @@ const AddWords = (() => {
             )
             .addEventListener(
                 "click",
-                () =>
+                () => {
+                    if (
+                        params.returnTo ===
+                        "quiz"
+                    ) {
+                        Router.show(
+                            "quiz"
+                        );
+                        return;
+                    }
+
                     Router.show(
                         "dictionary",
                         {
                             wordId:
                                 item.id
                         }
-                    )
+                    );
+                }
             );
 
         container

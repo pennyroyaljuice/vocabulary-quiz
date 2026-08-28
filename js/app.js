@@ -7,6 +7,7 @@ const AI_API_URL =
 
 const App = (() => {
     let words = [];
+    let quizAnswerViewState = null;
 
     async function init() {
         try {
@@ -205,7 +206,8 @@ const App = (() => {
                 AddWords.renderUnifiedEditor(
                     container,
                     words,
-                    params.wordId
+                    params.wordId,
+                    params
                 )
         );
 
@@ -1193,6 +1195,8 @@ const App = (() => {
     }
 
     function startQuiz(options = {}) {
+        quizAnswerViewState = null;
+
         Quiz.start(options);
 
         Router.show("quiz");
@@ -1325,9 +1329,22 @@ const App = (() => {
                         )
                 );
             });
+
+         if (
+            quizAnswerViewState &&
+            String(
+                quizAnswerViewState.wordId
+            ) ===
+                String(question.word.id)
+        ) {
+            renderQuizAnswerState(
+                container,
+                quizAnswerViewState
+            );
+        }
     }
 
-    function answerQuestion(
+      function answerQuestion(
         selectedAnswer,
         container
     ) {
@@ -1340,6 +1357,41 @@ const App = (() => {
             return;
         }
 
+        quizAnswerViewState = {
+            wordId:
+                result.word.id,
+
+            selectedAnswer,
+
+            correct:
+                result.correct,
+
+            correctAnswer:
+                result.correctAnswer,
+
+            word:
+                result.word,
+
+            meaning:
+                result.meaning,
+
+            reading:
+                result.reading,
+
+            description:
+                result.description
+        };
+
+        renderQuizAnswerState(
+            container,
+            quizAnswerViewState
+        );
+    }
+
+    function renderQuizAnswerState(
+        container,
+        state
+    ) {
         const buttons =
             container.querySelectorAll(
                 ".choice"
@@ -1350,7 +1402,7 @@ const App = (() => {
 
             if (
                 button.dataset.value ===
-                result.correctAnswer
+                state.correctAnswer
             ) {
                 button.classList.add(
                     "correct"
@@ -1358,9 +1410,9 @@ const App = (() => {
             }
 
             if (
-                !result.correct &&
+                !state.correct &&
                 button.dataset.value ===
-                    selectedAnswer
+                    state.selectedAnswer
             ) {
                 button.classList.add(
                     "wrong"
@@ -1377,14 +1429,35 @@ const App = (() => {
             "hidden"
         );
 
+        const storedWord =
+            Storage.getVocabulary()
+                .find(
+                    (word) =>
+                        String(word.id) ===
+                        String(state.wordId)
+                ) ||
+            state.word;
+
+        const quizTypes =
+            Array.isArray(
+                storedWord.quizTypes
+            )
+                ? storedWord.quizTypes
+                : [];
+
+        const readingEnabled =
+            quizTypes.includes(
+                "reading"
+            );
+
         answerBox.innerHTML = `
             <h3 class="${
-                result.correct
+                state.correct
                     ? "correct-text"
                     : "wrong-text"
             }">
                 ${
-                    result.correct
+                    state.correct
                         ? "正解"
                         : "不正解"
                 }
@@ -1393,14 +1466,14 @@ const App = (() => {
             <p class="answer-word">
                 <strong>
                     ${Utils.escapeHtml(
-                        result.word.word
+                        storedWord.word
                     )}
                 </strong>
 
                 ${
-                    result.word.reading
+                    storedWord.reading
                         ? `（${Utils.escapeHtml(
-                              result.word.reading
+                              storedWord.reading
                           )}）`
                         : ""
                 }
@@ -1408,21 +1481,44 @@ const App = (() => {
 
             <p class="answerMeaning">
                 ${Utils.escapeHtml(
-                    result.meaning
+                    storedWord.meaning ||
+                    state.meaning
                 )}
             </p>
 
             ${
-                result.description
+                storedWord.description
                     ? `
                         <p class="answer-description">
                             ${Utils.escapeHtml(
-                                result.description
+                                storedWord.description
                             )}
                         </p>
                     `
                     : ""
             }
+
+            <div class="quiz-word-actions">
+                <button
+                    id="quizEditWordButton"
+                    class="menuButton compact-button"
+                    type="button"
+                >
+                    編集
+                </button>
+
+                <button
+                    id="quizReadingToggleButton"
+                    class="menuButton compact-button"
+                    type="button"
+                >
+                    読 ${
+                        readingEnabled
+                            ? "ON"
+                            : "OFF"
+                    }
+                </button>
+            </div>
 
             <button
                 id="nextButton"
@@ -1435,6 +1531,90 @@ const App = (() => {
 
         answerBox
             .querySelector(
+                "#quizEditWordButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    Router.show(
+                        "editWord",
+                        {
+                            wordId:
+                                state.wordId,
+
+                            returnTo:
+                                "quiz"
+                        }
+                    );
+                }
+            );
+
+        answerBox
+            .querySelector(
+                "#quizReadingToggleButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    const currentWord =
+                        Storage.getVocabulary()
+                            .find(
+                                (word) =>
+                                    String(
+                                        word.id
+                                    ) ===
+                                    String(
+                                        state.wordId
+                                    )
+                            );
+
+                    if (!currentWord) {
+                        return;
+                    }
+
+                    const currentTypes =
+                        Array.isArray(
+                            currentWord.quizTypes
+                        )
+                            ? [
+                                  ...currentWord.quizTypes
+                              ]
+                            : [];
+
+                    const hasReading =
+                        currentTypes.includes(
+                            "reading"
+                        );
+
+                    const nextTypes =
+                        hasReading
+                            ? currentTypes.filter(
+                                  (type) =>
+                                      type !==
+                                      "reading"
+                              )
+                            : [
+                                  ...currentTypes,
+                                  "reading"
+                              ];
+
+                    Storage.updateVocabularyWord(
+                        state.wordId,
+                        {
+                            quizTypes:
+                                nextTypes
+                        }
+                    );
+
+                    renderQuizAnswerState(
+                        container,
+                        state
+                    );
+                }
+            );
+
+        answerBox
+            .querySelector(
                 "#nextButton"
             )
             .addEventListener(
@@ -1444,6 +1624,8 @@ const App = (() => {
     }
 
     function moveToNextQuestion() {
+        quizAnswerViewState = null;
+
         const nextQuestion =
             Quiz.next();
 
