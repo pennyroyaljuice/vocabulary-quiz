@@ -578,28 +578,33 @@ const Dictionary = (() => {
                 <button
                     type="button"
                     class="reading-toggle ${
-                        readingEnabled
-                            ? "active"
-                            : ""
-                    }"
-                    data-reading-word-id="${Utils.escapeAttribute(word.id)}"
-                    ${canUseReading ? "" : "disabled"}
-                    title="${
                         canUseReading
                             ? (
                                 readingEnabled
-                                    ? "読み問題をOFFにする"
-                                    : "読み問題をONにする"
+                                    ? "reading-on"
+                                    : "reading-off"
                             )
-                            : "読み問題には使用できません"
+                            : "reading-unavailable"
                     }"
+                    data-reading-toggle="${Utils.escapeAttribute(
+                        String(word.id)
+                    )}"
+                    ${canUseReading ? "" : "disabled"}
                     aria-pressed="${
-                        readingEnabled
-                            ? "true"
+                        canUseReading
+                            ? String(readingEnabled)
                             : "false"
                     }"
                 >
-                    読
+                    ${
+                        canUseReading
+                            ? (
+                                readingEnabled
+                                    ? "読 ✓"
+                                    : "読 ×"
+                            )
+                            : "―"
+                    }
                 </button>
             </div>
         `;
