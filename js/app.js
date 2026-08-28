@@ -313,9 +313,6 @@ const App = (() => {
                 100
             );
 
-    const dailyWords =
-        getRecommendedWords(dailyGoal);
-
         container.innerHTML = `
 
             <div
@@ -455,6 +452,68 @@ const App = (() => {
                 </button>
             </section>
 
+            <section class="card home-cloud-sync">
+                <div class="home-cloud-sync-heading">
+                    <div>
+                        <p class="eyebrow">
+                            CLOUD SYNC
+                        </p>
+
+                        <h3>
+                            クラウド同期
+                        </h3>
+                    </div>
+
+                    <span
+                        id="homeCloudSyncStatus"
+                        class="muted-text"
+                    >
+                        ${
+                            CloudSync.getSecret()
+                                ? "同期キー設定済み"
+                                : "同期キー未設定"
+                        }
+                    </span>
+                </div>
+
+                ${
+                    CloudSync.getSecret()
+                        ? `
+                            <div class="settings-button-grid">
+                                <button
+                                    id="homeCloudUploadButton"
+                                    class="menuButton"
+                                    type="button"
+                                >
+                                    クラウドへ保存
+                                </button>
+
+                                <button
+                                    id="homeCloudDownloadButton"
+                                    class="menuButton"
+                                    type="button"
+                                >
+                                    クラウドから同期
+                                </button>
+                            </div>
+                        `
+                        : `
+                            <p class="settings-description">
+                                クラウド同期を使うには、
+                                設定画面で同期キーを設定してください。
+                            </p>
+
+                            <button
+                                id="homeCloudSettingsButton"
+                                class="menuButton"
+                                type="button"
+                            >
+                                同期設定を開く
+                            </button>
+                        `
+                }
+            </section>
+
             <section class="card stats">
                 ${createStatCard(
                     "総語彙",
@@ -482,14 +541,7 @@ const App = (() => {
             .querySelector("#dailyButton")
             .addEventListener(
                 "click",
-                () => {
-                    startQuiz({
-                        questionCount:
-                            dailyWords.length,
-                        words:
-                            dailyWords
-                    });
-                }
+                () => startQuiz()
             );
 
         container
@@ -549,10 +601,137 @@ const App = (() => {
                     )
             );
 
-            checkCloudUpdate(
-                container
+        const homeCloudSettingsButton =
+            container.querySelector(
+                "#homeCloudSettingsButton"
             );
-    }
+
+        if (homeCloudSettingsButton) {
+            homeCloudSettingsButton.addEventListener(
+                "click",
+                () => Router.show("settings")
+            );
+        }
+
+        const homeCloudUploadButton =
+            container.querySelector(
+                "#homeCloudUploadButton"
+            );
+
+        if (homeCloudUploadButton) {
+            homeCloudUploadButton.addEventListener(
+                "click",
+                () => uploadCloudBackupFromHome(
+                    homeCloudUploadButton
+                )
+            );
+        }
+
+        const homeCloudDownloadButton =
+            container.querySelector(
+                "#homeCloudDownloadButton"
+            );
+
+        if (homeCloudDownloadButton) {
+            homeCloudDownloadButton.addEventListener(
+                "click",
+                () => previewCloudBackupFromHome(
+                    container,
+                    homeCloudDownloadButton
+                )
+            );
+        }
+
+        checkCloudUpdate(
+            container
+        );
+        }
+
+        async function uploadCloudBackupFromHome(
+            button
+        ) {
+            const confirmed =
+                confirm(
+                    "この端末の現在のデータをクラウドへ保存します。\nよろしいですか？"
+                );
+
+            if (!confirmed) {
+                return;
+            }
+
+            const originalText =
+                button.textContent;
+
+            button.disabled = true;
+            button.textContent =
+                "保存中...";
+
+            try {
+                await CloudSync.uploadBackup();
+
+                alert(
+                    "クラウドへ保存しました。"
+                );
+
+                Router.show("home");
+            } catch (error) {
+                console.error(error);
+
+                alert(
+                    error.message ||
+                    "クラウドへの保存に失敗しました。"
+                );
+
+                button.disabled = false;
+                button.textContent =
+                    originalText;
+            }
+        }
+
+        async function previewCloudBackupFromHome(
+            container,
+            button
+        ) {
+            const originalText =
+                button.textContent;
+
+            button.disabled = true;
+            button.textContent =
+                "確認中...";
+
+            try {
+                const cloud =
+                    await CloudSync
+                        .checkCloudBackup();
+
+                if (
+                    !cloud.exists ||
+                    !cloud.backup
+                ) {
+                    alert(
+                        "クラウドデータが見つかりませんでした。"
+                    );
+
+                    return;
+                }
+
+                showCloudMergePreview(
+                    container,
+                    cloud
+                );
+            } catch (error) {
+                console.error(error);
+
+                alert(
+                    error.message ||
+                    "クラウドデータの確認に失敗しました。"
+                );
+            } finally {
+                button.disabled = false;
+                button.textContent =
+                    originalText;
+            }
+        }
 
     async function checkCloudUpdate(
         container
@@ -577,11 +756,6 @@ const App = (() => {
             ) {
                 return;
             }
-
-            const preview =
-                Storage.previewBackupMerge(
-                    cloud.backup
-                );
 
             const lastSyncedAt =
                 CloudSync
@@ -612,263 +786,11 @@ const App = (() => {
             * 非同期処理中に別画面へ
             * 移動していた場合は表示しない
             */
-            const notice =
-                container.querySelector(
-                    "#cloudUpdateNotice"
-                );
+        showCloudMergePreview(
+            container,
+            cloud
+        );
 
-            if (!notice) {
-                return;
-            }
-
-   notice.classList.remove(
-        "hidden"
-    );
-
-    notice.innerHTML = `
-        <div class="cloud-update-overlay">
-            <section
-                class="card cloud-update-popup"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="cloudUpdateTitle"
-            >
-                <p class="eyebrow">
-                    CLOUD SYNC
-                </p>
-
-                <h3 id="cloudUpdateTitle">
-                    クラウドに新しいデータがあります
-                </h3>
-
-                <p>
-                    同期すると、この端末に以下の変更が反映されます。
-                </p>
-
-                <div class="cloud-update-summary">
-                    ${
-                        preview.vocabulary.added.length
-                            ? `
-                                <p>
-                                    新しい語彙：
-                                    <strong>
-                                        ${preview.vocabulary.added.length}語
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.vocabulary.updated.length
-                            ? `
-                                <p>
-                                    更新される語彙：
-                                    <strong>
-                                        ${preview.vocabulary.updated.length}語
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.pendingWords.added.length
-                            ? `
-                                <p>
-                                    新しい登録待ち：
-                                    <strong>
-                                        ${preview.pendingWords.added.length}語
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.pendingWords.updated.length
-                            ? `
-                                <p>
-                                    更新される登録待ち：
-                                    <strong>
-                                        ${preview.pendingWords.updated.length}語
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.statsChangedCount
-                            ? `
-                                <p>
-                                    学習履歴：
-                                    <strong>
-                                        ${preview.statsChangedCount}語
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.activityChangedCount
-                            ? `
-                                <p>
-                                    学習日データ：
-                                    <strong>
-                                        ${preview.activityChangedCount}件
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-
-                    ${
-                        preview.settingsChanged.length
-                            ? `
-                                <p>
-                                    設定：
-                                    <strong>
-                                        ${preview.settingsChanged.length}件
-                                    </strong>
-                                </p>
-                            `
-                            : ""
-                    }
-                </div>
-
-                ${
-                    preview.vocabulary.added.length ||
-                    preview.vocabulary.updated.length ||
-                    preview.pendingWords.added.length ||
-                    preview.pendingWords.updated.length
-                        ? `
-                            <details class="cloud-update-details">
-                                <summary>
-                                    語彙の詳細を見る
-                                </summary>
-
-                                ${
-                                    preview.vocabulary.added.length
-                                        ? `
-                                            <div>
-                                                <strong>
-                                                    追加される語彙
-                                                </strong>
-
-                                                <p>
-                                                    ${preview.vocabulary.added
-                                                        .map(
-                                                            (word) =>
-                                                                Utils.escapeHtml(
-                                                                    word
-                                                                )
-                                                        )
-                                                        .join("、")}
-                                                </p>
-                                            </div>
-                                        `
-                                        : ""
-                                }
-
-                                ${
-                                    preview.vocabulary.updated.length
-                                        ? `
-                                            <div>
-                                                <strong>
-                                                    更新される語彙
-                                                </strong>
-
-                                                <p>
-                                                    ${preview.vocabulary.updated
-                                                        .map(
-                                                            (word) =>
-                                                                Utils.escapeHtml(
-                                                                    word
-                                                                )
-                                                        )
-                                                        .join("、")}
-                                                </p>
-                                            </div>
-                                        `
-                                        : ""
-                                }
-
-                                ${
-                                    preview.pendingWords.added.length
-                                        ? `
-                                            <div>
-                                                <strong>
-                                                    追加される登録待ち
-                                                </strong>
-
-                                                <p>
-                                                    ${preview.pendingWords.added
-                                                        .map(
-                                                            (word) =>
-                                                                Utils.escapeHtml(
-                                                                    word
-                                                                )
-                                                        )
-                                                        .join("、")}
-                                                </p>
-                                            </div>
-                                        `
-                                        : ""
-                                }
-
-                                ${
-                                    preview.pendingWords.updated.length
-                                        ? `
-                                            <div>
-                                                <strong>
-                                                    更新される登録待ち
-                                                </strong>
-
-                                                <p>
-                                                    ${preview.pendingWords.updated
-                                                        .map(
-                                                            (word) =>
-                                                                Utils.escapeHtml(
-                                                                    word
-                                                                )
-                                                        )
-                                                        .join("、")}
-                                                </p>
-                                            </div>
-                                        `
-                                        : ""
-                                }
-                            </details>
-                        `
-                        : ""
-                }
-
-                <div class="cloud-update-actions">
-                    <button
-                        id="dismissCloudUpdateButton"
-                        class="menuButton"
-                        type="button"
-                    >
-                        あとで
-                    </button>
-
-                    <button
-                        id="syncCloudUpdateButton"
-                        class="primary"
-                        type="button"
-                    >
-                        今すぐ同期
-                    </button>
-                </div>
-            </section>
-        </div>
-    `;
-
-    bindCloudUpdateNotice(
-        notice
-    );
         } catch (error) {
             /*
             * ホームを開いただけで
@@ -880,6 +802,299 @@ const App = (() => {
             );
         }
     }
+
+        function showCloudMergePreview(
+            container,
+            cloud
+        ) {
+            const notice =
+                container.querySelector(
+                    "#cloudUpdateNotice"
+                );
+
+            if (
+                !notice ||
+                !cloud?.backup
+            ) {
+                return;
+            }
+
+            const preview =
+                Storage.previewBackupMerge(
+                    cloud.backup
+                );
+
+            const hasChanges =
+                preview.vocabulary.added.length > 0 ||
+                preview.vocabulary.updated.length > 0 ||
+                preview.pendingWords.added.length > 0 ||
+                preview.pendingWords.updated.length > 0 ||
+                preview.statsChangedCount > 0 ||
+                preview.activityChangedCount > 0 ||
+                preview.settingsChanged.length > 0;
+
+            notice.classList.remove(
+                "hidden"
+            );
+
+            notice.innerHTML = `
+                <div class="cloud-update-overlay">
+                    <section
+                        class="card cloud-update-popup"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="cloudUpdateTitle"
+                    >
+                        <p class="eyebrow">
+                            CLOUD SYNC
+                        </p>
+
+                        <h3 id="cloudUpdateTitle">
+                            クラウドデータを同期
+                        </h3>
+
+                        <p>
+                            同期すると、この端末に以下の変更が反映されます。
+                        </p>
+
+                        <div class="cloud-update-summary">
+                         ${
+                                !hasChanges
+                                    ? `
+                                        <p>
+                                            クラウドとこの端末のデータに
+                                            差分はありません。
+                                        </p>
+                                    `
+                                    : ""
+                            }
+                            ${
+                                preview.vocabulary.added.length
+                                    ? `
+                                        <p>
+                                            新しい語彙：
+                                            <strong>
+                                                ${preview.vocabulary.added.length}語
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.vocabulary.updated.length
+                                    ? `
+                                        <p>
+                                            更新される語彙：
+                                            <strong>
+                                                ${preview.vocabulary.updated.length}語
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.pendingWords.added.length
+                                    ? `
+                                        <p>
+                                            新しい登録待ち：
+                                            <strong>
+                                                ${preview.pendingWords.added.length}語
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.pendingWords.updated.length
+                                    ? `
+                                        <p>
+                                            更新される登録待ち：
+                                            <strong>
+                                                ${preview.pendingWords.updated.length}語
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.statsChangedCount
+                                    ? `
+                                        <p>
+                                            学習履歴：
+                                            <strong>
+                                                ${preview.statsChangedCount}語
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.activityChangedCount
+                                    ? `
+                                        <p>
+                                            学習日データ：
+                                            <strong>
+                                                ${preview.activityChangedCount}件
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            ${
+                                preview.settingsChanged.length
+                                    ? `
+                                        <p>
+                                            設定：
+                                            <strong>
+                                                ${preview.settingsChanged.length}件
+                                            </strong>
+                                        </p>
+                                    `
+                                    : ""
+                            }
+                        </div>
+
+                        ${
+                            preview.vocabulary.added.length ||
+                            preview.vocabulary.updated.length ||
+                            preview.pendingWords.added.length ||
+                            preview.pendingWords.updated.length
+                                ? `
+                                    <details class="cloud-update-details">
+                                        <summary>
+                                            語彙の詳細を見る
+                                        </summary>
+
+                                        ${
+                                            preview.vocabulary.added.length
+                                                ? `
+                                                    <div>
+                                                        <strong>
+                                                            追加される語彙
+                                                        </strong>
+                                                        <p>
+                                                            ${preview.vocabulary.added
+                                                                .map(
+                                                                    (word) =>
+                                                                        Utils.escapeHtml(
+                                                                            word
+                                                                        )
+                                                                )
+                                                                .join("、")}
+                                                        </p>
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+                                        ${
+                                            preview.vocabulary.updated.length
+                                                ? `
+                                                    <div>
+                                                        <strong>
+                                                            更新される語彙
+                                                        </strong>
+                                                        <p>
+                                                            ${preview.vocabulary.updated
+                                                                .map(
+                                                                    (word) =>
+                                                                        Utils.escapeHtml(
+                                                                            word
+                                                                        )
+                                                                )
+                                                                .join("、")}
+                                                        </p>
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+                                        ${
+                                            preview.pendingWords.added.length
+                                                ? `
+                                                    <div>
+                                                        <strong>
+                                                            追加される登録待ち
+                                                        </strong>
+                                                        <p>
+                                                            ${preview.pendingWords.added
+                                                                .map(
+                                                                    (word) =>
+                                                                        Utils.escapeHtml(
+                                                                            word
+                                                                        )
+                                                                )
+                                                                .join("、")}
+                                                        </p>
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+
+                                        ${
+                                            preview.pendingWords.updated.length
+                                                ? `
+                                                    <div>
+                                                        <strong>
+                                                            更新される登録待ち
+                                                        </strong>
+                                                        <p>
+                                                            ${preview.pendingWords.updated
+                                                                .map(
+                                                                    (word) =>
+                                                                        Utils.escapeHtml(
+                                                                            word
+                                                                        )
+                                                                )
+                                                                .join("、")}
+                                                        </p>
+                                                    </div>
+                                                `
+                                                : ""
+                                        }
+                                    </details>
+                                `
+                                : ""
+                        }
+
+            <div class="cloud-update-actions">
+                <button
+                    id="dismissCloudUpdateButton"
+                    class="${hasChanges ? "menuButton" : "primary"}"
+                    type="button"
+                >
+                    ${hasChanges ? "キャンセル" : "閉じる"}
+                </button>
+
+                ${
+                    hasChanges
+                        ? `
+                            <button
+                                id="syncCloudUpdateButton"
+                                class="primary"
+                                type="button"
+                            >
+                                同期する
+                            </button>
+                        `
+                        : ""
+                }
+            </div>
+
+                    </section>
+                </div>
+            `;
+
+            bindCloudUpdateNotice(
+                notice
+            );
+        }
 
     function bindCloudUpdateNotice(
         notice
@@ -902,6 +1117,10 @@ const App = (() => {
                 );
             }
         );
+
+        if (!syncButton) {
+            return;
+        }
 
         syncButton.addEventListener(
             "click",
@@ -948,7 +1167,7 @@ const App = (() => {
                         false;
 
                     syncButton.textContent =
-                        "今すぐ同期";
+                        "同期する";
                 }
             }
         );
@@ -971,25 +1190,6 @@ const App = (() => {
                 </strong>
             </article>
         `;
-    }
-
-    function getRecommendedWords(count) {
-        return [...words]
-            .map((word) => ({
-                word,
-                weight:
-                    Quiz.calculateWeight(
-                        word
-                    )
-            }))
-            .sort(
-                (a, b) =>
-                    b.weight - a.weight
-            )
-            .slice(0, count)
-            .map(
-                (item) => item.word
-            );
     }
 
     function startQuiz(options = {}) {
