@@ -71,12 +71,7 @@ const Quiz = (() => {
         );
 
         questions = selectedWords.map((word) =>
-            createQuestion(word, {
-                readingQuiz:
-                    options.readingQuiz ??
-                    settings.readingQuiz ??
-                    true
-            })
+            createQuestion(word)
         );
 
         currentIndex = 0;
@@ -252,15 +247,16 @@ function calculateWeight(word, previousIds = []) {
         return items[items.length - 1];
     }
 
-    function createQuestion(word, options = {}) {
-        const availableTypes = getAvailableQuestionTypes(
-            word,
-            options.readingQuiz
-        );
+    function createQuestion(word) {
+        const availableTypes =
+            getAvailableQuestionTypes(word);
 
         const type =
             availableTypes[
-                Math.floor(Math.random() * availableTypes.length)
+                Math.floor(
+                    Math.random() *
+                    availableTypes.length
+                )
             ];
 
         switch (type) {
@@ -276,43 +272,37 @@ function calculateWeight(word, previousIds = []) {
         }
     }
 
-    function getAvailableQuestionTypes(word, readingQuiz) {
-        if (
-            Array.isArray(word.quizTypes) &&
-            word.quizTypes.length > 0
-        ) {
-            return word.quizTypes.filter((type) => {
-                if (
-                    type === QUESTION_TYPES.READING
-                ) {
-                    return (
-                        readingQuiz &&
-                        canAskReadingQuestion(word)
-                    );
+        function getAvailableQuestionTypes(word) {
+            if (
+                Array.isArray(word.quizTypes) &&
+                word.quizTypes.length > 0
+            ) {
+                const types =
+                    word.quizTypes.filter((type) => {
+                        if (
+                            type ===
+                            QUESTION_TYPES.READING
+                        ) {
+                            return canAskReadingQuestion(
+                                word
+                            );
+                        }
+
+                        return Object.values(
+                            QUESTION_TYPES
+                        ).includes(type);
+                    });
+
+                if (types.length > 0) {
+                    return types;
                 }
+            }
 
-                return Object.values(
-                    QUESTION_TYPES
-                ).includes(type);
-            });
+            return [
+                QUESTION_TYPES.WORD_TO_MEANING,
+                QUESTION_TYPES.MEANING_TO_WORD
+            ];
         }
-
-        const types = [
-            QUESTION_TYPES.WORD_TO_MEANING,
-            QUESTION_TYPES.MEANING_TO_WORD
-        ];
-
-        if (
-            readingQuiz &&
-            canAskReadingQuestion(word)
-        ) {
-            types.push(
-                QUESTION_TYPES.READING
-            );
-        }
-
-        return types;
-    }
 
     function canAskReadingQuestion(word) {
         if (!word.reading) {

@@ -2060,3 +2060,34 @@ html[data-theme="dark"]
 .cloud-update-actions button {
     flex: 1;
 }
+
+.dictionary-item-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.dictionary-item-row .dictionary-item {
+    flex: 1;
+}
+
+.reading-toggle {
+    width: 42px;
+    min-width: 42px;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background: transparent;
+    color: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.reading-toggle.active {
+    background: var(--accent-color);
+    color: white;
+}
+
+.reading-toggle:disabled {
+    opacity: 0.25;
+    cursor: not-allowed;
+}

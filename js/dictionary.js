@@ -245,6 +245,82 @@ const Dictionary = (() => {
                     }
                 );
             });
+
+        container
+            .querySelectorAll(
+                "[data-reading-word-id]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    async () => {
+                        const wordId =
+                            button.dataset
+                                .readingWordId;
+
+                        const word =
+                            allWords.find(
+                                (item) =>
+                                    String(item.id) ===
+                                    String(wordId)
+                            );
+
+                        if (!word) {
+                            return;
+                        }
+
+                        const quizTypes =
+                            Array.isArray(word.quizTypes)
+                                ? [...word.quizTypes]
+                                : [
+                                    "wordToMeaning",
+                                    "meaningToWord"
+                                ];
+
+                        const readingEnabled =
+                            quizTypes.includes(
+                                "reading"
+                            );
+
+                        const nextQuizTypes =
+                            readingEnabled
+                                ? quizTypes.filter(
+                                    (type) =>
+                                        type !==
+                                        "reading"
+                                )
+                                : [
+                                    ...quizTypes,
+                                    "reading"
+                                ];
+
+                        const updated =
+                            Storage.updateVocabularyWord(
+                                word.id,
+                                {
+                                    quizTypes:
+                                        nextQuizTypes
+                                }
+                            );
+
+                        if (!updated) {
+                            alert(
+                                "読み問題の設定を変更できませんでした。"
+                            );
+                            return;
+                        }
+
+                        await App.reloadWords();
+
+                    allWords =
+                        Storage.getVocabulary();
+
+                        updateListArea(
+                            container
+                        );
+                    }
+                );
+            });
     }
 
     function bindKanaButtons(container) {
@@ -449,44 +525,83 @@ const Dictionary = (() => {
                 )
                 : null;
 
+        const readingEnabled =
+            Array.isArray(word.quizTypes) &&
+            word.quizTypes.includes("reading");
+
+        const canUseReading =
+            Boolean(word.reading) &&
+            /[\u3400-\u9FFF々〆ヵヶ]/u.test(
+                word.word
+            );
+
         return `
-            <button
-                type="button"
-                class="dictionary-item"
-                data-word-id="${Utils.escapeAttribute(word.id)}"
-            >
-                <span class="dictionary-word-main">
-                    <strong>
-                        ${Utils.escapeHtml(word.word)}
-                    </strong>
+            <div class="dictionary-item-row">
+                <button
+                    type="button"
+                    class="dictionary-item"
+                    data-word-id="${Utils.escapeAttribute(word.id)}"
+                >
+                    <span class="dictionary-word-main">
+                        <strong>
+                            ${Utils.escapeHtml(word.word)}
+                        </strong>
 
-                    ${
-                        word.reading
-                            ? `
-                                <small>
-                                    ${Utils.escapeHtml(word.reading)}
-                                </small>
-                            `
+                        ${
+                            word.reading
+                                ? `
+                                    <small>
+                                        ${Utils.escapeHtml(word.reading)}
+                                    </small>
+                                `
+                                : ""
+                        }
+                    </span>
+
+                    <span class="dictionary-word-meta">
+                        ${
+                            accuracy === null
+                                ? `
+                                    <span class="status-label unseen">
+                                        未出題
+                                    </span>
+                                `
+                                : `
+                                    <span class="status-label">
+                                        ${accuracy}%
+                                    </span>
+                                `
+                        }
+                    </span>
+                </button>
+
+                <button
+                    type="button"
+                    class="reading-toggle ${
+                        readingEnabled
+                            ? "active"
                             : ""
-                    }
-                </span>
-
-                <span class="dictionary-word-meta">
-                    ${
-                        accuracy === null
-                            ? `
-                                <span class="status-label unseen">
-                                    未出題
-                                </span>
-                            `
-                            : `
-                                <span class="status-label">
-                                    ${accuracy}%
-                                </span>
-                            `
-                    }
-                </span>
-            </button>
+                    }"
+                    data-reading-word-id="${Utils.escapeAttribute(word.id)}"
+                    ${canUseReading ? "" : "disabled"}
+                    title="${
+                        canUseReading
+                            ? (
+                                readingEnabled
+                                    ? "読み問題をOFFにする"
+                                    : "読み問題をONにする"
+                            )
+                            : "読み問題には使用できません"
+                    }"
+                    aria-pressed="${
+                        readingEnabled
+                            ? "true"
+                            : "false"
+                    }"
+                >
+                    読
+                </button>
+            </div>
         `;
     }
 

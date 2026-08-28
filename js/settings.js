@@ -73,38 +73,6 @@ const Settings = (() => {
 
             <section class="card settings-section">
                 <h3>
-                    読み問題
-                </h3>
-
-                <p class="settings-description">
-                    漢字を含む語について、読みを問う問題を出題します。
-                    カタカナ語や英字語の読み問題は出題されません。
-                </p>
-
-                <label class="toggle-row">
-                    <span>
-                        読み問題を出題する
-                    </span>
-
-                    <input
-                        id="readingQuizToggle"
-                        type="checkbox"
-                        ${
-                            settings.readingQuiz !== false
-                                ? "checked"
-                                : ""
-                        }
-                    >
-
-                    <span
-                        class="toggle-switch"
-                        aria-hidden="true"
-                    ></span>
-                </label>
-            </section>
-
-            <section class="card settings-section">
-                <h3>
                     表示テーマ
                 </h3>
 
@@ -347,20 +315,6 @@ const Settings = (() => {
                     }
                 );
             });
-
-        container
-            .querySelector(
-                "#readingQuizToggle"
-            )
-            .addEventListener(
-                "change",
-                (event) => {
-                    saveSetting(
-                        "readingQuiz",
-                        event.target.checked
-                    );
-                }
-            );
 
         container
             .querySelectorAll(
