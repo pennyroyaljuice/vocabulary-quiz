@@ -1,0 +1,48 @@
+{
+  "packId": "intermediate-100",
+  "name": "中級100",
+  "description": "新聞・評論・小説などでよく見かける一段上の語彙。",
+  "version": 1,
+  "words": [
+    {
+      "word": "踏襲",
+      "reading": "とうしゅう",
+      "meaning": "それまでのやり方や方針などを受け継ぎ、そのまま続けること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "形骸化",
+      "reading": "けいがいか",
+      "meaning": "本来の意味や機能が失われ、形だけが残った状態になること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "示唆",
+      "reading": "しさ",
+      "meaning": "直接には言い表さず、それとなく気づかせたり考えさせたりすること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "乖離",
+      "reading": "かいり",
+      "meaning": "互いに離れ、隔たりが生じること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "敷衍",
+      "reading": "ふえん",
+      "meaning": "内容を詳しく説明したり、意味を広げて述べたりすること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    }
+  ]
+}

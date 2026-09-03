@@ -1312,6 +1312,219 @@ const Storage = (() => {
         );
     }
 
+    function addVocabularyPack(pack) {
+        if (
+            !pack ||
+            typeof pack !== "object" ||
+            !pack.packId ||
+            !Array.isArray(pack.words)
+        ) {
+            throw new Error(
+                "語彙パックの形式が不正です。"
+            );
+        }
+
+        const data = load();
+
+        if (!Array.isArray(data.vocabulary)) {
+            data.vocabulary = [];
+        }
+
+        if (!Array.isArray(data.pendingWords)) {
+            data.pendingWords = [];
+        }
+
+        const existingKeys =
+            new Set([
+                ...data.vocabulary.map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                ),
+
+                ...data.pendingWords.map(
+                    (item) =>
+                        normalizeWordKey(
+                            item.word
+                        )
+                )
+            ]);
+
+        const now = Date.now();
+
+        let addedCount = 0;
+        let skippedCount = 0;
+
+        for (const sourceItem of pack.words) {
+            if (
+                !sourceItem ||
+                typeof sourceItem !== "object"
+            ) {
+                skippedCount += 1;
+                continue;
+            }
+
+            const word =
+                cleanWordName(
+                    sourceItem.word
+                );
+
+            const key =
+                normalizeWordKey(word);
+
+            if (
+                !key ||
+                !sourceItem.meaning
+            ) {
+                skippedCount += 1;
+                continue;
+            }
+
+            if (existingKeys.has(key)) {
+                skippedCount += 1;
+                continue;
+            }
+
+            data.vocabulary.push({
+                ...sourceItem,
+
+                id:
+                    createVocabularyId(),
+
+                word,
+
+                packId:
+                    String(pack.packId),
+
+                source:
+                    "pack",
+
+                status:
+                    "ready",
+
+                createdAt:
+                    now,
+
+                updatedAt:
+                    now
+            });
+
+            existingKeys.add(key);
+            addedCount += 1;
+        }
+
+        save(data);
+
+        return {
+            addedCount,
+            skippedCount,
+            totalCount:
+                data.vocabulary.length
+        };
+    }
+
+    function removeVocabularyPack(
+        packId
+    ) {
+        const data = load();
+
+        if (!Array.isArray(data.vocabulary)) {
+            return {
+                removedCount: 0,
+                totalCount: 0
+            };
+        }
+
+        const targetIds =
+            new Set(
+                data.vocabulary
+                    .filter(
+                        (item) =>
+                            String(
+                                item.packId || ""
+                            ) ===
+                            String(packId)
+                    )
+                    .map(
+                        (item) =>
+                            String(item.id)
+                    )
+            );
+
+        if (!targetIds.size) {
+            return {
+                removedCount: 0,
+                totalCount:
+                    data.vocabulary.length
+            };
+        }
+
+        const before =
+            data.vocabulary.length;
+
+        data.vocabulary =
+            data.vocabulary.filter(
+                (item) =>
+                    !targetIds.has(
+                        String(item.id)
+                    )
+            );
+
+        if (
+            !data.stats ||
+            typeof data.stats !== "object"
+        ) {
+            data.stats = {};
+        }
+
+        for (const wordId of targetIds) {
+            delete data.stats[wordId];
+        }
+
+        save(data);
+
+        return {
+            removedCount:
+                before -
+                data.vocabulary.length,
+
+            totalCount:
+                data.vocabulary.length
+        };
+    }
+
+    function getVocabularyPackStatus(
+        packId
+    ) {
+        const data = load();
+
+        const vocabulary =
+            Array.isArray(data.vocabulary)
+                ? data.vocabulary
+                : [];
+
+        const items =
+            vocabulary.filter(
+                (item) =>
+                    String(
+                        item.packId || ""
+                    ) ===
+                    String(packId)
+            );
+
+        return {
+            installedCount:
+                items.length,
+
+            wordIds:
+                items.map(
+                    (item) =>
+                        String(item.id)
+                )
+        };
+    }
+
     function reset() {
         localStorage.removeItem(STORAGE_KEY);
     }
@@ -1634,6 +1847,10 @@ return {
     updateVocabularyWord,
     removeVocabularyWord,
 
+    addVocabularyPack,
+    removeVocabularyPack,
+    getVocabularyPackStatus,
+    
     getStats,
     getWordStats,
     getSettings,

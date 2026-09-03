@@ -1,0 +1,48 @@
+{
+  "packId": "advanced-100",
+  "name": "上級100",
+  "description": "文学・評論・高度な文章の読解に役立つ難度の高い語彙。",
+  "version": 1,
+  "words": [
+    {
+      "word": "韜晦",
+      "reading": "とうかい",
+      "meaning": "自分の才能や立場、本心などを表に出さず隠すこと。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "牽強付会",
+      "reading": "けんきょうふかい",
+      "meaning": "道理に合わないことを無理に結びつけ、自分に都合よく説明すること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "人口に膾炙",
+      "reading": "じんこうにかいしゃ",
+      "meaning": "広く世間の人々に知られ、親しまれていること。",
+      "description": "",
+      "category": "慣用表現",
+      "quizTypes": ["meaning", "word"]
+    },
+    {
+      "word": "換骨奪胎",
+      "reading": "かんこつだったい",
+      "meaning": "既存の作品や表現をもとにしながら、工夫を加えて新しいものとして作り直すこと。",
+      "description": "",
+      "category": "四字熟語",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "晦渋",
+      "reading": "かいじゅう",
+      "meaning": "文章や表現が難解で、意味を理解しにくいこと。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "packId": "beginner-100",
+  "name": "初級100",
+  "description": "日常的な文章やニュースを読むうえで役立つ基本語彙。",
+  "version": 1,
+  "words": [
+    {
+      "word": "懸念",
+      "reading": "けねん",
+      "meaning": "気がかりに思うこと。不安に感じること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "配慮",
+      "reading": "はいりょ",
+      "meaning": "事情や相手の立場などを考えて、心をくばること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "妥当",
+      "reading": "だとう",
+      "meaning": "物事の判断や方法などが適切であること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "促進",
+      "reading": "そくしん",
+      "meaning": "物事が進むように働きかけること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    },
+    {
+      "word": "顕著",
+      "reading": "けんちょ",
+      "meaning": "はっきりと目立って現れていること。",
+      "description": "",
+      "category": "一般",
+      "quizTypes": ["meaning", "word", "reading"]
+    }
+  ]
+}
