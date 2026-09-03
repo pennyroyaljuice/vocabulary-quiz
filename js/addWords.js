@@ -59,7 +59,8 @@ const AddWords = (() => {
 
                 <p class="input-format-help">
                     <strong>入力形式</strong><br>
-                    <code>語彙｜読み｜補足</code><br>
+                    <code>語彙　読み　補足</code><br>
+                    全角スペースまたは半角スペースで区切ります。<br>
                     読み・補足は省略できます。
                 </p>
 
@@ -1231,13 +1232,38 @@ const AddWords = (() => {
 
 
     function parseVocabularyLine(line) {
-        const parts =
-            String(line || "")
-                .split(/[｜|]/u)
-                .map(
-                    (part) =>
-                        part.trim()
-                );
+        const text =
+            String(line || "").trim();
+
+        if (!text) {
+            return {
+                word: "",
+                readingHint: "",
+                contextHint: ""
+            };
+        }
+
+        let parts;
+
+        // ｜ または | がある場合は従来形式を優先
+        if (/[｜|]/u.test(text)) {
+            parts =
+                text
+                    .split(/[｜|]/u)
+                    .map(
+                        (part) =>
+                            part.trim()
+                    );
+        } else {
+            // 全角スペース、または半角スペース2個以上で区切る
+            parts =
+                text
+                    .split(/(?:　+| {2,})/u)
+                    .map(
+                        (part) =>
+                            part.trim()
+                    );
+        }
 
         return {
             word:
@@ -1249,7 +1275,7 @@ const AddWords = (() => {
             contextHint:
                 parts
                     .slice(2)
-                    .join("｜")
+                    .join(" ")
                     .trim()
         };
     }
