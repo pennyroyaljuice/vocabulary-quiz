@@ -8,6 +8,7 @@ const AI_API_URL =
 const App = (() => {
     let words = [];
     let quizAnswerViewState = null;
+    let currentQuizMode = "normal";
 
     async function init() {
         try {
@@ -360,6 +361,25 @@ const App = (() => {
                 >
                   クイズを始める
                 </button>
+
+                <div class="home-quiz-shortcuts">
+                <button
+                    id="weakQuizButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    苦手語クイズ
+                </button>
+
+                <button
+                    id="unseenQuizButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    未出題クイズ
+                </button>
+            </div>
+
             </section>
 
 
@@ -565,6 +585,94 @@ const App = (() => {
             .addEventListener(
                 "click",
                 () => startQuiz()
+            );
+
+        container
+            .querySelector("#weakQuizButton")
+            .addEventListener(
+                "click",
+                () => {
+                    const stats =
+                        Storage.getStats();
+
+                    const weakWords =
+                        words.filter((word) => {
+                            const stat =
+                                stats[word.id] ||
+                                stats[String(word.id)];
+
+                            if (
+                                !stat ||
+                                !stat.asked
+                            ) {
+                                return false;
+                            }
+
+                            const accuracy =
+                                stat.correct /
+                                stat.asked;
+
+                            return (
+                                stat.wrong >= 2 ||
+                                accuracy < 0.6
+                            );
+                        });
+
+                    if (!weakWords.length) {
+                        alert(
+                            "現在、苦手語はありません。"
+                        );
+                        return;
+                    }
+
+                        startQuiz({
+                            mode: "weak",
+                            words: weakWords,
+                            questionCount:
+                                Math.min(
+                                    dailyGoal,
+                                    weakWords.length
+                                )
+                        });
+                }
+            );
+
+        container
+            .querySelector("#unseenQuizButton")
+            .addEventListener(
+                "click",
+                () => {
+                    const stats =
+                        Storage.getStats();
+
+                    const unseenWords =
+                        words.filter((word) => {
+                            const stat =
+                                stats[word.id] ||
+                                stats[String(word.id)];
+
+                            return (
+                                !stat ||
+                                !stat.asked
+                            );
+                        });
+
+                    if (!unseenWords.length) {
+                        alert(
+                            "未出題の語彙はありません。"
+                        );
+                        return;
+                    }
+
+                    startQuiz({
+                        words: unseenWords,
+                        questionCount:
+                            Math.min(
+                                dailyGoal,
+                                unseenWords.length
+                            )
+                    });
+                }
             );
 
         container
@@ -1245,9 +1353,111 @@ const App = (() => {
     function startQuiz(options = {}) {
         quizAnswerViewState = null;
 
+        currentQuizMode =
+            options.mode || "normal";
+
         Quiz.start(options);
 
         Router.show("quiz");
+    }
+
+    function startNextQuiz() {
+        const settings =
+            Storage.getSettings();
+
+        const questionCount =
+            Number(
+                settings.questionCount
+            ) || 10;
+
+        if (currentQuizMode === "unseen") {
+            const stats =
+                Storage.getStats();
+
+            const unseenWords =
+                words.filter((word) => {
+                    const stat =
+                        stats[word.id] ||
+                        stats[String(word.id)];
+
+                    return (
+                        !stat ||
+                        !stat.asked
+                    );
+                });
+
+            if (!unseenWords.length) {
+                alert(
+                    "未出題の語彙をすべて出題しました。"
+                );
+
+                Router.show("home");
+                return;
+            }
+
+            startQuiz({
+                mode: "unseen",
+                words: unseenWords,
+                questionCount:
+                    Math.min(
+                        questionCount,
+                        unseenWords.length
+                    )
+            });
+
+            return;
+        }
+
+        if (currentQuizMode === "weak") {
+            const stats =
+                Storage.getStats();
+
+            const weakWords =
+                words.filter((word) => {
+                    const stat =
+                        stats[word.id] ||
+                        stats[String(word.id)];
+
+                    if (
+                        !stat ||
+                        !stat.asked
+                    ) {
+                        return false;
+                    }
+
+                    const accuracy =
+                        stat.correct /
+                        stat.asked;
+
+                    return (
+                        stat.wrong >= 2 ||
+                        accuracy < 0.6
+                    );
+                });
+
+            if (!weakWords.length) {
+                alert(
+                    "現在、苦手語はありません。"
+                );
+
+                Router.show("home");
+                return;
+            }
+
+            startQuiz({
+                mode: "weak",
+                words: weakWords,
+                questionCount:
+                    Math.min(
+                        questionCount,
+                        weakWords.length
+                    )
+            });
+
+            return;
+        }
+
+        startQuiz();
     }
 
     function renderQuizRoute(container) {
@@ -1891,7 +2101,7 @@ answerBox
             .addEventListener(
                 "click",
                 () =>
-                    startQuiz()
+                    startNextQuiz()
             );
 
         const retryButton =

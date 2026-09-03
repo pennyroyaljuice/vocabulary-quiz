@@ -122,35 +122,6 @@ const Dictionary = (() => {
                     ${filteredWords.length}語
                 </p>
 
-                ${
-                    currentFilter === "weak" &&
-                    filteredWords.length > 0
-                        ? `
-                            <button
-                                id="weakQuizButton"
-                                class="primary"
-                                type="button"
-                            >
-                                苦手だけでクイズ
-                            </button>
-                        `
-                        : ""
-                }
-
-                ${
-                    currentFilter === "unseen" &&
-                    filteredWords.length > 0
-                        ? `
-                            <button
-                                id="unseenQuizButton"
-                                class="primary"
-                                type="button"
-                            >
-                                未出題だけでクイズ
-                            </button>
-                        `
-                        : ""
-                }
             </section>
 
             <nav
@@ -202,70 +173,6 @@ const Dictionary = (() => {
             "click",
             () => Router.show("home")
         );
-
-        const unseenQuizButton =
-            container.querySelector(
-                "#unseenQuizButton"
-            );
-
-        if (unseenQuizButton) {
-            unseenQuizButton.addEventListener(
-                "click",
-                () => {
-                    const unseenWords =
-                        getWordsByFilter("unseen");
-
-                    if (!unseenWords.length) {
-                        return;
-                    }
-
-                    const settings =
-                        Storage.getSettings();
-
-                    App.startQuiz({
-                        words: unseenWords,
-                        questionCount:
-                            Math.min(
-                                settings.questionCount ||
-                                    10,
-                                unseenWords.length
-                            )
-                    });
-                }
-            );
-        }
-
-        const weakQuizButton =
-            container.querySelector(
-                "#weakQuizButton"
-            );
-
-        if (weakQuizButton) {
-            weakQuizButton.addEventListener(
-                "click",
-                () => {
-                   const weakWords =
-                        getWordsByFilter("weak");
-
-                    if (!weakWords.length) {
-                        return;
-                    }
-
-                    const settings =
-                        Storage.getSettings();
-
-                    App.startQuiz({
-                        words: weakWords,
-                        questionCount:
-                            Math.min(
-                                settings.questionCount ||
-                                    10,
-                                weakWords.length
-                            )
-                    });
-                }
-            );
-        }
 
         const searchInput =
             container.querySelector(
@@ -509,34 +416,6 @@ const Dictionary = (() => {
                 }
             })
             .sort(compareWords);
-    }
-
-    function getWordsByFilter(filter) {
-        const stats =
-            Storage.getStats();
-
-        return allWords.filter((word) => {
-            const stat =
-                stats[word.id] ||
-                stats[String(word.id)] ||
-                null;
-
-            switch (filter) {
-                case "mastered":
-                    return isMasteredWord(stat);
-
-                case "weak":
-                    return isWeakWord(stat);
-
-                case "unseen":
-                    return !stat ||
-                        !stat.asked;
-
-                case "all":
-                default:
-                    return true;
-            }
-        });
     }
 
     function matchesQuery(
