@@ -2176,3 +2176,20 @@ html[data-theme="dark"]
 .quiz-question-word-row .quiz-choice-reading-button.reading-on {
     opacity: 1;
 }
+
+.stat-link {
+    appearance: none;
+    width: 100%;
+    font: inherit;
+    text-align: inherit;
+    cursor: pointer;
+}
+
+.stat-link:hover {
+    transform: translateY(-2px);
+}
+
+.stat-link:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}

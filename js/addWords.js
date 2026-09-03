@@ -60,7 +60,7 @@ const AddWords = (() => {
                 <p class="input-format-help">
                     <strong>入力形式</strong><br>
                     <code>語彙　読み　補足</code><br>
-                    全角スペースまたは半角スペースで区切ります。<br>
+                    スペースで区切って記載してください。<br>
                     読み・補足は省略できます。
                 </p>
 

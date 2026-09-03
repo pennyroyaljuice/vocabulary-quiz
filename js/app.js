@@ -533,27 +533,31 @@ const App = (() => {
                 }
             </section>
 
-            <section class="card stats">
-                ${createStatCard(
-                    "総語彙",
-                    summary.total
-                )}
+        <section class="card stats">
+            ${createStatCard(
+                "総語彙",
+                summary.total,
+                "all"
+            )}
 
-                ${createStatCard(
-                    "習得",
-                    summary.mastered
-                )}
+            ${createStatCard(
+                "習得",
+                summary.mastered,
+                "mastered"
+            )}
 
-                ${createStatCard(
-                    "苦手",
-                    summary.weak
-                )}
+            ${createStatCard(
+                "苦手",
+                summary.weak,
+                "weak"
+            )}
 
-                ${createStatCard(
-                    "未出題",
-                    summary.unseen
-                )}
-            </section>
+            ${createStatCard(
+                "未出題",
+                summary.unseen,
+                "unseen"
+            )}
+        </section>
         `;
 
         container
@@ -586,6 +590,26 @@ const App = (() => {
                         "dictionary"
                     )
             );
+
+        container
+            .querySelectorAll(
+                "[data-stat-filter]"
+            )
+            .forEach((button) => {
+                button.addEventListener(
+                    "click",
+                    () => {
+                        Router.show(
+                            "dictionary",
+                            {
+                                filter:
+                                    button.dataset
+                                        .statFilter
+                            }
+                        );
+                    }
+                );
+            });
 
         container
             .querySelector("#rankingButton")
@@ -1194,10 +1218,17 @@ const App = (() => {
 
     function createStatCard(
         label,
-        value
+        value,
+        filter
     ) {
         return `
-            <article class="stat">
+            <button
+                class="stat stat-link"
+                type="button"
+                data-stat-filter="${Utils.escapeAttribute(
+                    filter
+                )}"
+            >
                 <span>
                     ${Utils.escapeHtml(label)}
                 </span>
@@ -1207,7 +1238,7 @@ const App = (() => {
                         String(value)
                     )}
                 </strong>
-            </article>
+            </button>
         `;
     }
 

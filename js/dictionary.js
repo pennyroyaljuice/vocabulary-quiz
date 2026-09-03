@@ -21,7 +21,9 @@ const Dictionary = (() => {
     ];
 
     function render(container, words, params = {}) {
-        allWords = Array.isArray(words) ? [...words] : [];
+        allWords = Array.isArray(words)
+            ? [...words]
+            : [];
 
         if (params.wordId !== undefined) {
             renderDetail(
@@ -30,6 +32,21 @@ const Dictionary = (() => {
             );
             return;
         }
+
+        currentQuery = "";
+
+        const allowedFilters =
+            new Set([
+                "all",
+                "mastered",
+                "weak",
+                "unseen"
+            ]);
+
+        currentFilter =
+            allowedFilters.has(params.filter)
+                ? params.filter
+                : "all";
 
         renderList(container);
     }
@@ -86,6 +103,11 @@ const Dictionary = (() => {
                     )}
 
                     ${createFilterButton(
+                        "mastered",
+                        "習得"
+                    )}    
+
+                    ${createFilterButton(
                         "weak",
                         "苦手"
                     )}
@@ -99,6 +121,36 @@ const Dictionary = (() => {
                 <p class="dictionary-count">
                     ${filteredWords.length}語
                 </p>
+
+                ${
+                    currentFilter === "weak" &&
+                    filteredWords.length > 0
+                        ? `
+                            <button
+                                id="weakQuizButton"
+                                class="primary"
+                                type="button"
+                            >
+                                苦手だけでクイズ
+                            </button>
+                        `
+                        : ""
+                }
+
+                ${
+                    currentFilter === "unseen" &&
+                    filteredWords.length > 0
+                        ? `
+                            <button
+                                id="unseenQuizButton"
+                                class="primary"
+                                type="button"
+                            >
+                                未出題だけでクイズ
+                            </button>
+                        `
+                        : ""
+                }
             </section>
 
             <nav
@@ -150,6 +202,70 @@ const Dictionary = (() => {
             "click",
             () => Router.show("home")
         );
+
+        const unseenQuizButton =
+            container.querySelector(
+                "#unseenQuizButton"
+            );
+
+        if (unseenQuizButton) {
+            unseenQuizButton.addEventListener(
+                "click",
+                () => {
+                    const unseenWords =
+                        getWordsByFilter("unseen");
+
+                    if (!unseenWords.length) {
+                        return;
+                    }
+
+                    const settings =
+                        Storage.getSettings();
+
+                    App.startQuiz({
+                        words: unseenWords,
+                        questionCount:
+                            Math.min(
+                                settings.questionCount ||
+                                    10,
+                                unseenWords.length
+                            )
+                    });
+                }
+            );
+        }
+
+        const weakQuizButton =
+            container.querySelector(
+                "#weakQuizButton"
+            );
+
+        if (weakQuizButton) {
+            weakQuizButton.addEventListener(
+                "click",
+                () => {
+                   const weakWords =
+                        getWordsByFilter("weak");
+
+                    if (!weakWords.length) {
+                        return;
+                    }
+
+                    const settings =
+                        Storage.getSettings();
+
+                    App.startQuiz({
+                        words: weakWords,
+                        questionCount:
+                            Math.min(
+                                settings.questionCount ||
+                                    10,
+                                weakWords.length
+                            )
+                    });
+                }
+            );
+        }
 
         const searchInput =
             container.querySelector(
@@ -373,6 +489,11 @@ const Dictionary = (() => {
                     null;
 
                 switch (currentFilter) {
+                    case "mastered":
+                        return isMasteredWord(
+                            stat
+                        );
+
                     case "weak":
                         return isWeakWord(
                             stat
@@ -388,6 +509,34 @@ const Dictionary = (() => {
                 }
             })
             .sort(compareWords);
+    }
+
+    function getWordsByFilter(filter) {
+        const stats =
+            Storage.getStats();
+
+        return allWords.filter((word) => {
+            const stat =
+                stats[word.id] ||
+                stats[String(word.id)] ||
+                null;
+
+            switch (filter) {
+                case "mastered":
+                    return isMasteredWord(stat);
+
+                case "weak":
+                    return isWeakWord(stat);
+
+                case "unseen":
+                    return !stat ||
+                        !stat.asked;
+
+                case "all":
+                default:
+                    return true;
+            }
+        });
     }
 
     function matchesQuery(
@@ -439,6 +588,22 @@ const Dictionary = (() => {
 
         return stat.wrong >= 2 ||
             accuracy < 0.6;
+    }
+
+    function isMasteredWord(stat) {
+        if (!stat || !stat.asked) {
+            return false;
+        }
+
+        const accuracy =
+            stat.correct /
+            stat.asked;
+
+        return (
+            stat.asked >= 5 &&
+            accuracy >= 0.9 &&
+            stat.streak >= 3
+        );
     }
 
     function createKanaIndex(words) {
