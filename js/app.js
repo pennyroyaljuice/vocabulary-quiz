@@ -157,7 +157,14 @@ const App = (() => {
                 false,
 
             source:
-                "custom",
+                String(
+                    item.source || "custom"
+                ),
+
+            packId:
+                item.packId
+                    ? String(item.packId)
+                    : null,
 
             status:
                 item.status ||
@@ -206,6 +213,14 @@ const App = (() => {
             container,
             words
                           )
+        );
+
+        Router.register(
+            "wordPacks",
+            (container) =>
+                WordPacks.render(
+                    container
+                )
         );
 
         Router.register(
@@ -467,6 +482,14 @@ const App = (() => {
                 </button>
 
                 <button
+                    id="wordPacksButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    語彙パック
+                </button>    
+
+                <button
                     id="rankingButton"
                     class="menuButton"
                     type="button"
@@ -681,6 +704,13 @@ const App = (() => {
                 "click",
                 () => Router.show("addWords")
             );
+
+        container
+            .querySelector("#wordPacksButton")
+            .addEventListener(
+                "click",
+                () => Router.show("wordPacks")
+            ); 
 
         container
             .querySelector("#reviewButton")
