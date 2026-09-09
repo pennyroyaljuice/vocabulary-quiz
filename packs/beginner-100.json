@@ -1,48 +1,1201 @@
 {
   "packId": "beginner-100",
   "name": "初級100",
-  "description": "日常的な文章やニュースを読むうえで役立つ基本語彙。",
+  "description": "普段から本を読む人ならおおむね意味が分かる一方、読書習慣が少ない人にはやや怪しい語を中心に選んだ100語。難読語や文章語も含む。",
   "version": 1,
   "words": [
     {
+      "word": "鑑みる",
+      "meaning": "先例や事情などを考え合わせて判断する。",
+      "reading": "かんがみる",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "折しも",
+      "meaning": "ちょうどその時。時機が偶然重なったことを表す。",
+      "reading": "おりしも",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "担う",
+      "meaning": "責任や役割などを引き受けて受け持つ。",
+      "reading": "になう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
       "word": "懸念",
+      "meaning": "気がかりに思い、悪い結果を心配すること。",
       "reading": "けねん",
-      "meaning": "気がかりに思うこと。不安に感じること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
-      "word": "配慮",
-      "reading": "はいりょ",
-      "meaning": "事情や相手の立場などを考えて、心をくばること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "word": "危惧",
+      "meaning": "好ましくない事態が起こるのではないかと恐れること。",
+      "reading": "きぐ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
-      "word": "妥当",
-      "reading": "だとう",
-      "meaning": "物事の判断や方法などが適切であること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "word": "憂慮",
+      "meaning": "成り行きを深く心配すること。",
+      "reading": "ゆうりょ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
-      "word": "促進",
-      "reading": "そくしん",
-      "meaning": "物事が進むように働きかけること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "word": "是正",
+      "meaning": "悪い点や不適切な状態を正しく改めること。",
+      "reading": "ぜせい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "まんざら",
+      "meaning": "必ずしもそうではない、まったくそうではない、という意味で否定を伴って使うことが多い。",
+      "reading": "",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
     },
     {
       "word": "顕著",
+      "meaning": "はっきりと目立って現れているさま。",
       "reading": "けんちょ",
-      "meaning": "はっきりと目立って現れていること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "如実",
+      "meaning": "実際の状態や事実が、ありのまま明確に現れているさま。",
+      "reading": "にょじつ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "概して",
+      "meaning": "細かな例外を除き、全体として見ると。",
+      "reading": "がいして",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一概に",
+      "meaning": "細かな違いを考えず、すべてを同じように扱うさま。多くは否定を伴う。",
+      "reading": "いちがいに",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "端的",
+      "meaning": "要点をとらえて、はっきりしているさま。",
+      "reading": "たんてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "趣旨",
+      "meaning": "物事を行う目的や、文章・発言で中心となる考え。",
+      "reading": "しゅし",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "論拠",
+      "meaning": "主張や議論を成り立たせる根拠。",
+      "reading": "ろんきょ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "見地",
+      "meaning": "物事を考えたり判断したりする立場や観点。",
+      "reading": "けんち",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "引いては",
+      "meaning": "ある事柄からさらに範囲を広げ、その先の事柄にまで及ぶことを表す。",
+      "reading": "ひいては",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "実態",
+      "meaning": "表面上の姿ではなく、実際の状態やありさま。",
+      "reading": "じったい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "悉く",
+      "meaning": "例外なく、すべて。残らず。",
+      "reading": "ことごとく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "自ずと",
+      "meaning": "人がことさらに働きかけなくても、自然にそうなるさま。",
+      "reading": "おのずと",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "含意",
+      "meaning": "表面には明示されていないが、言葉や事柄の中に含まれている意味。",
+      "reading": "がんい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "示唆",
+      "meaning": "それとなく知らせたり、考える手がかりを与えたりすること。",
+      "reading": "しさ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "言及",
+      "meaning": "ある事柄について話や文章の中で触れること。",
+      "reading": "げんきゅう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "換言",
+      "meaning": "別の言葉に言い換えること。",
+      "reading": "かんげん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "曲解",
+      "meaning": "本来の意味を曲げて解釈すること。",
+      "reading": "きょっかい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "踏襲",
+      "meaning": "それまでのやり方や方針を受け継ぎ、そのまま従うこと。",
+      "reading": "とうしゅう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "折衷",
+      "meaning": "異なる考えや方式からよいところを取り合わせること。",
+      "reading": "せっちゅう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "譲歩",
+      "meaning": "自分の主張の一部を引っ込め、相手に歩み寄ること。",
+      "reading": "じょうほ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "看過",
+      "meaning": "見過ごして、そのままにしておくこと。",
+      "reading": "かんか",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "かねがね",
+      "meaning": "以前からずっと。前々から。",
+      "reading": "",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "黙認",
+      "meaning": "よくないことなどを知りながら、黙って事実上認めること。",
+      "reading": "もくにん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "敢えて",
+      "meaning": "必要がなかったり困難があったりしても、意図して行うさま。",
+      "reading": "あえて",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "是認",
+      "meaning": "正しい、またはよいものとして認めること。",
+      "reading": "ぜにん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "承服",
+      "meaning": "相手の言い分や決定を納得して受け入れること。",
+      "reading": "しょうふく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "懐疑",
+      "meaning": "物事が本当に正しいかどうか疑いを持つこと。",
+      "reading": "かいぎ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "助長",
+      "meaning": "ある傾向をさらに強めること。好ましくない傾向について使うことが多い。",
+      "reading": "じょちょう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "阻害",
+      "meaning": "物事の進行や発達を妨げること。",
+      "reading": "そがい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "押し並べて",
+      "meaning": "全体を一様に見渡して、おおむね。総じて。",
+      "reading": "おしなべて",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "機運",
+      "meaning": "物事を行うのに適した時の流れや、そうしようとする社会的な勢い。",
+      "reading": "きうん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "難色",
+      "meaning": "同意しにくい、不満であるという態度や表情。",
+      "reading": "なんしょく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "物議",
+      "meaning": "世間で起こる議論や批判。特に「物議を醸す」の形で用いる。",
+      "reading": "ぶつぎ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "塩梅",
+      "meaning": "物事の具合や加減。もとは料理の味加減をいう語。",
+      "reading": "あんばい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "膠着",
+      "meaning": "物事が行き詰まり、動きや進展がなくなること。",
+      "reading": "こうちゃく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "拮抗",
+      "meaning": "互いの力がほぼ同じで、張り合っていること。",
+      "reading": "きっこう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "錯綜",
+      "meaning": "物事が複雑に入り組み、整理しにくくなっていること。",
+      "reading": "さくそう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "逼迫",
+      "meaning": "余裕がなくなり、差し迫った状態になること。",
+      "reading": "ひっぱく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "収束",
+      "meaning": "混乱や広がりなどが次第におさまり、一つの状態に落ち着くこと。",
+      "reading": "しゅうそく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "波及",
+      "meaning": "影響が次々と周囲や他の範囲へ及んでいくこと。",
+      "reading": "はきゅう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "顕在化",
+      "meaning": "それまで表面に現れていなかったものが、はっきり現れること。",
+      "reading": "けんざいか",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "形骸化",
+      "meaning": "制度や決まりなどが形だけ残り、実質的な意味や機能を失うこと。",
+      "reading": "けいがいか",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "慣行",
+      "meaning": "社会や組織などで、以前から慣例的に行われているやり方。",
+      "reading": "かんこう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "規範",
+      "meaning": "行動や判断の手本となる基準。",
+      "reading": "きはん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "逸脱",
+      "meaning": "本来の範囲や規則、道筋などから外れること。",
+      "reading": "いつだつ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "遵守",
+      "meaning": "法律や規則などに従い、きちんと守ること。",
+      "reading": "じゅんしゅ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "抵触",
+      "meaning": "規則や法律などに触れて、矛盾したり違反したりすること。",
+      "reading": "ていしょく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "準拠",
+      "meaning": "ある基準や規則をよりどころとして、それに従うこと。",
+      "reading": "じゅんきょ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "傍ら",
+      "meaning": "あることをする一方で、別のこともすること。また、そば。",
+      "reading": "かたわら",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "帰結",
+      "meaning": "議論や出来事が進んだ末に行き着く結論や結果。",
+      "reading": "きけつ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "帰属",
+      "meaning": "人や物が、ある集団・組織・分類などに属すること。",
+      "reading": "きぞく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "契機",
+      "meaning": "物事が始まったり変化したりするきっかけ。",
+      "reading": "けいき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "素地",
+      "meaning": "物事が成り立ったり発展したりするための基礎や下地。",
+      "reading": "そじ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "通念",
+      "meaning": "世間一般に広く受け入れられている考え方。",
+      "reading": "つうねん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "通説",
+      "meaning": "世間やある分野で広く認められている説。",
+      "reading": "つうせつ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "端緒",
+      "meaning": "物事が始まるきっかけや、解決の手がかりとなるもの。",
+      "reading": "たんしょ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "恣意的",
+      "meaning": "客観的な基準によらず、自分の都合や思いつきで判断するさま。",
+      "reading": "しいてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "暫定的",
+      "meaning": "最終的に決めるまでの間、仮に定めておくさま。",
+      "reading": "ざんていてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "抜本的",
+      "meaning": "問題の根本に立ち返って、全面的に改めるさま。",
+      "reading": "ばっぽんてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "漸進的",
+      "meaning": "急激ではなく、少しずつ段階を追って進むさま。",
+      "reading": "ぜんしんてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "画一的",
+      "meaning": "個々の違いを考えず、すべてを同じ型や基準で扱うさま。",
+      "reading": "かくいつてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "包括的",
+      "meaning": "複数の事柄を広くまとめて含んでいるさま。",
+      "reading": "ほうかつてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "網羅的",
+      "meaning": "必要な事柄を広く取り上げ、漏れなく含んでいるさま。",
+      "reading": "もうらてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "多角的",
+      "meaning": "一つだけでなく、さまざまな観点から物事を見るさま。",
+      "reading": "たかくてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一義的",
+      "meaning": "意味や解釈が一つに定まっているさま。また、第一に重視されるさま。",
+      "reading": "いちぎてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "潜在的",
+      "meaning": "表面には現れていないが、内に存在しているさま。",
+      "reading": "せんざいてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "恒常的",
+      "meaning": "一時的ではなく、一定の状態が継続しているさま。",
+      "reading": "こうじょうてき",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一過性",
+      "meaning": "一時的に現れるだけで、長く続かない性質。",
+      "reading": "いっかせい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "悪しからず",
+      "meaning": "悪く思わないでほしい、事情を理解してほしいという意を表す言葉。",
+      "reading": "あしからず",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "喫緊",
+      "meaning": "差し迫っていて、すぐに対応する必要があること。",
+      "reading": "きっきん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "漠然",
+      "meaning": "はっきりせず、ぼんやりしているさま。",
+      "reading": "ばくぜん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "釈然",
+      "meaning": "疑いやわだかまりが解け、すっきり納得するさま。多くは「釈然としない」と使う。",
+      "reading": "しゃくぜん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "判然",
+      "meaning": "はっきりしていて、明確に区別できるさま。",
+      "reading": "はんぜん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "歴然",
+      "meaning": "違いや事実などが、疑う余地なくはっきりしているさま。",
+      "reading": "れきぜん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "依然",
+      "meaning": "以前と変わらない状態が続いているさま。",
+      "reading": "いぜん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "漸次",
+      "meaning": "少しずつ、次第に。",
+      "reading": "ぜんじ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "適宜",
+      "meaning": "その時の状況に応じて、適切に判断して行うさま。",
+      "reading": "てきぎ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "余儀なく",
+      "meaning": "他に方法がなく、やむを得ずそうするさま。",
+      "reading": "よぎなく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "一蹴",
+      "meaning": "要求や意見などを、問題にせずきっぱり退けること。",
+      "reading": "いっしゅう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一抹",
+      "meaning": "ほんのわずかに感じられるもの。一筋、一片。",
+      "reading": "いちまつ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一任",
+      "meaning": "物事の処理や判断を、すべてある人に任せること。",
+      "reading": "いちにん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "機微",
+      "meaning": "表面からは捉えにくい、微妙な事情や心の動き。",
+      "reading": "きび",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "概ね",
+      "meaning": "細かな例外を除けば、だいたい。全体として。",
+      "reading": "おおむね",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "強ち",
+      "meaning": "必ずしも。多くは否定を伴い、「一概にそうとは言えない」の意を表す。",
+      "reading": "あながち",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "殊更",
+      "meaning": "特に際立たせて。また、わざわざ意図的に。",
+      "reading": "ことさら",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蔑ろ",
+      "meaning": "軽く見て、まともに取り扱わないこと。",
+      "reading": "ないがしろ",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "凡庸",
+      "meaning": "平凡で、特に優れたところがないこと。",
+      "reading": "ぼんよう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "汎用",
+      "meaning": "特定の用途に限らず、広くさまざまな用途に使えること。",
+      "reading": "はんよう",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "所以",
+      "meaning": "そうである理由や根拠。",
+      "reading": "ゆえん",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "予て",
+      "meaning": "以前から。前もって。",
+      "reading": "かねて",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "容易い",
+      "meaning": "簡単で、容易にできるさま。",
+      "reading": "たやすい",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "生憎",
+      "meaning": "都合の悪いことに。期待に反して具合が悪いさま。",
+      "reading": "あいにく",
+      "note": "",
+      "category": "初級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     }
   ]
 }

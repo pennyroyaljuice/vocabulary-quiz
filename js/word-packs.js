@@ -207,14 +207,17 @@ const WordPacks = (() => {
 
                             await App.reloadWords();
 
+                            const skippedText =
+                                Array.isArray(result.skippedWords) &&
+                                result.skippedWords.length > 0
+                                    ? `\n\nユーザー語彙のため追加しなかった語彙：\n${result.skippedWords.join("、")}`
+                                    : "";
+
                             alert(
-                                
-                                `${result.addedCount}語を追加しました。` +
-                                (
-                                    result.skippedCount
-                                        ? ` ${result.skippedCount}語は登録済みなどのためスキップしました。`
-                                        : ""
-                                )
+                                `${pack.name}を追加しました。\n\n` +
+                                `追加：${result.addedCount}語\n` +
+                                `スキップ：${result.skippedCount}語` +
+                                skippedText
                             );
 
                             render(container);
@@ -262,6 +265,40 @@ const WordPacks = (() => {
                             button.textContent =
                                 "削除中...";
 
+                            const packData =
+                                await loadPack(packId);
+
+                            const currentVocabulary =
+                                Storage.getVocabulary();
+
+                            const packWordKeys =
+                                new Set(
+                                    packData.words.map(
+                                        (item) =>
+                                            Storage.normalizeWordKey(
+                                                item.word
+                                            )
+                                    )
+                                );
+
+                            const remainingWords =
+                                currentVocabulary
+                                    .filter((item) => {
+                                        const key =
+                                            Storage.normalizeWordKey(
+                                                item.word
+                                            );
+
+                                        return (
+                                            packWordKeys.has(key) &&
+                                            String(item.packId || "") !==
+                                                String(packId)
+                                        );
+                                    })
+                                    .map(
+                                        (item) => item.word
+                                    );
+
                             const result =
                                 Storage
                                     .removeVocabularyPack(
@@ -270,8 +307,16 @@ const WordPacks = (() => {
 
                             await App.reloadWords();
 
+                            const remainingText =
+                                remainingWords.length > 0
+                                    ? `\n\nユーザー語彙として残った語彙：\n${remainingWords.join("、")}`
+                                    : "";
+
                             alert(
-                                `${result.removedCount}語を削除しました。`
+                                `${pack?.name || "語彙パック"}を削除しました。\n\n` +
+                                `削除：${result.removedCount}語\n` +
+                                `ユーザー語彙として残存：${remainingWords.length}語` +
+                                remainingText
                             );
 
                             render(container);

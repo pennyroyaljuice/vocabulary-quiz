@@ -1355,6 +1355,7 @@ const Storage = (() => {
 
         let addedCount = 0;
         let skippedCount = 0;
+        const skippedWords = [];
 
         for (const sourceItem of pack.words) {
             if (
@@ -1383,6 +1384,7 @@ const Storage = (() => {
 
             if (existingKeys.has(key)) {
                 skippedCount += 1;
+                skippedWords.push(word);
                 continue;
             }
 
@@ -1419,6 +1421,7 @@ const Storage = (() => {
         return {
             addedCount,
             skippedCount,
+            skippedWords,
             totalCount:
                 data.vocabulary.length
         };
