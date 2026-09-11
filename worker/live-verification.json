@@ -1,0 +1,124 @@
+{
+  "dictionary": {
+    "found": true,
+    "word": "生物",
+    "entries": [
+      {
+        "entryId": "1379430",
+        "word": "生物",
+        "readings": [
+          "せいぶつ"
+        ],
+        "partOfSpeech": [
+          "n"
+        ],
+        "glosses": [
+          "living thing",
+          "organism",
+          "creature",
+          "life",
+          "biology"
+        ]
+      },
+      {
+        "entryId": "1379440",
+        "word": "生物",
+        "readings": [
+          "なまもの"
+        ],
+        "partOfSpeech": [
+          "n"
+        ],
+        "glosses": [
+          "raw food",
+          "perishables"
+        ]
+      }
+    ]
+  },
+  "checkedAt": "2026-09-11T15:11:06.7158854+09:00",
+  "cases": [
+    {
+      "input": {
+        "word": "生物",
+        "readingHint": "せいぶつ",
+        "contextHint": "",
+        "dictionaryHint": "候補1\n読み: せいぶつ\n品詞: n\n意味: living thing; organism; creature; life; biology\n\n候補2\n読み: なまもの\n品詞: n\n意味: raw food; perishables"
+      },
+      "response": {
+        "vocabulary": {
+          "word": "生物",
+          "reading": "せいぶつ",
+          "meaning": "生物であるもの",
+          "description": "",
+          "category": "名詞",
+          "quizTypes": [
+            "wordToMeaning",
+            "meaningToWord",
+            "reading"
+          ],
+          "needsReview": true,
+          "comparisonNote": "辞書の語釈「living thing」を先頭候補として使用しました。他の候補に別の語義が含まれることがあるため、意図に合うか確認してください。"
+        }
+      }
+    },
+    {
+      "input": {
+        "word": "生物",
+        "readingHint": "せいぶつ",
+        "contextHint": "生物学",
+        "dictionaryHint": "候補1\n読み: せいぶつ\n品詞: n\n意味: living thing; organism; creature; life; biology\n\n候補2\n読み: なまもの\n品詞: n\n意味: raw food; perishables"
+      },
+      "response": {
+        "vocabulary": {
+          "word": "生物",
+          "reading": "せいぶつ",
+          "meaning": "生物を指す",
+          "description": "",
+          "category": "名詞",
+          "quizTypes": [
+            "wordToMeaning",
+            "meaningToWord",
+            "reading"
+          ],
+          "needsReview": true,
+          "comparisonNote": "辞書の語釈「organism」を文脈に基づいて選択しました。他の候補に別の語義が含まれることがあるため、意図に合うか確認してください。"
+        }
+      }
+    },
+    {
+      "input": {
+        "word": "生物",
+        "readingHint": "なまもの",
+        "contextHint": "加熱していない食べ物",
+        "dictionaryHint": "候補1\n読み: せいぶつ\n品詞: n\n意味: living thing; organism; creature; life; biology\n\n候補2\n読み: なまもの\n品詞: n\n意味: raw food; perishables"
+      },
+      "response": {
+        "vocabulary": {
+          "word": "生物",
+          "reading": "なまもの",
+          "meaning": "生の食材",
+          "description": "",
+          "category": "名詞",
+          "quizTypes": [
+            "wordToMeaning",
+            "meaningToWord",
+            "reading"
+          ],
+          "needsReview": true,
+          "comparisonNote": "辞書の語釈「raw food」を文脈に基づいて選択しました。他の候補に別の語義が含まれることがあるため、意図に合うか確認してください。"
+        }
+      }
+    },
+    {
+      "message": "Response status code does not indicate success: 422 (Unprocessable Entity).",
+      "input": {
+        "word": "雲菓量子ぽよ",
+        "readingHint": "",
+        "contextHint": "",
+        "dictionaryHint": ""
+      },
+      "error": "\r\n{\r\n  \"error\": \"\\u6307\\u5B9A\\u3055\\u308C\\u305F\\u8A9E\\u30FB\\u8AAD\\u307F\\u306E\\u8F9E\\u66F8\\u60C5\\u5831\\u304C\\u898B\\u3064\\u304B\\u308A\\u307E\\u305B\\u3093\\u3002\\u8AAD\\u307F\\u3092\\u78BA\\u8A8D\\u3059\\u308B\\u304B\\u3001\\u8F9E\\u66F8\\u3067\\u78BA\\u8A8D\\u3057\\u305F\\u610F\\u5473\\u3092\\u624B\\u5165\\u529B\\u3057\\u3066\\u304F\\u3060\\u3055\\u3044\\u3002\"\r\n}"
+    }
+  ]
+}

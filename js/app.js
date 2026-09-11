@@ -5,6 +5,9 @@ const APP_VERSION = "0.9.0";
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
 
+const DICTIONARY_API_URL =
+    "https://vocabulary-dictionary.pennyroyal-juice.workers.dev/lookup";
+
 const App = (() => {
     let words = [];
     let quizAnswerViewState = null;
