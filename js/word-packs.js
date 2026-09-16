@@ -14,7 +14,7 @@ const WordPacks = (() => {
             packId: "intermediate-100",
             name: "中級100",
             description:
-                "新聞・評論・小説などでよく見かける一段上の語彙。",
+                "評論・報道・小説の読解を深める100語。抽象的な議論や心情を表す語を、補足説明と例文付きで学べます。",
             file:
                 "packs/intermediate-100.json"
         },
@@ -22,7 +22,7 @@ const WordPacks = (() => {
             packId: "advanced-100",
             name: "上級100",
             description:
-                "文学・評論・高度な文章の読解に役立つ難度の高い語彙。",
+                "文学・思想・批評に登場する難語と四字熟語100語。文章の趣や微妙な意味を捉える補足説明と例文付き。",
             file:
                 "packs/advanced-100.json"
         }

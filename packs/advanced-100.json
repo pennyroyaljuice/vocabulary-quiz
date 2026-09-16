@@ -1,48 +1,1237 @@
 {
   "packId": "advanced-100",
   "name": "上級100",
-  "description": "文学・評論・高度な文章の読解に役立つ難度の高い語彙。",
-  "version": 1,
+  "description": "文学・思想・批評に登場する難語と四字熟語100語。文章の趣や微妙な意味を捉えるための補足説明と例文付き。",
+  "version": 2,
   "words": [
     {
       "word": "韜晦",
       "reading": "とうかい",
-      "meaning": "自分の才能や立場、本心などを表に出さず隠すこと。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "自分の才能や本心、立場などを、意識して表に出さずにおくこと。",
+      "description": "人が真意を明かさない態度について使う。例：彼は冗談を交えながら本心を韜晦した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
       "word": "牽強付会",
       "reading": "けんきょうふかい",
-      "meaning": "道理に合わないことを無理に結びつけ、自分に都合よく説明すること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "無理な理屈で物事を結び付け、自分に都合よく説明すること。",
+      "description": "根拠の弱い解釈を批判する際に使う。例：その説明は偶然の一致を利用した牽強付会にすぎない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "漢字ペディア「牽強付会」",
+          "url": "https://www.kanjipedia.jp/kotoba/0001928100"
+        }
+      ]
     },
     {
       "word": "人口に膾炙",
       "reading": "じんこうにかいしゃ",
-      "meaning": "広く世間の人々に知られ、親しまれていること。",
-      "description": "",
-      "category": "慣用表現",
-      "quizTypes": ["meaning", "word"]
+      "meaning": "多くの人に語られ、広く世間に知られていること。",
+      "description": "「人口に膾炙する」の形で、詩句や話などの広まりを表す。例：この物語は長く人口に膾炙してきた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
     },
     {
       "word": "換骨奪胎",
       "reading": "かんこつだったい",
-      "meaning": "既存の作品や表現をもとにしながら、工夫を加えて新しいものとして作り直すこと。",
-      "description": "",
-      "category": "四字熟語",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "先行する作品の発想や表現を取り入れ、新しい作品として作り変えること。",
+      "description": "既存の作品を創作に生かす場面で使う。例：古典を換骨奪胎して現代の物語を描いた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
       "word": "晦渋",
       "reading": "かいじゅう",
-      "meaning": "文章や表現が難解で、意味を理解しにくいこと。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "文章や表現が込み入っていて、意味を理解しにくいこと。",
+      "description": "読み解くのが難しい文章の性質を述べる語。例：晦渋な一節を何度も読み返した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "漢字ペディア「晦渋」",
+          "url": "https://www.kanjipedia.jp/kotoba/0000799500"
+        }
+      ]
+    },
+    {
+      "word": "衒学",
+      "reading": "げんがく",
+      "meaning": "自分の知識や学識を必要以上に見せびらかすこと。",
+      "description": "知識の披露が目的になった態度を批判する際に使う。例：専門語を並べた説明が衒学に陥っている。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "韻致",
+      "reading": "いんち",
+      "meaning": "言葉や風景、作品などから感じられる、上品で趣のある味わい。",
+      "description": "細部に漂う趣を評するときに使う。例：短い詩の中に深い韻致がある。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "滋味",
+      "reading": "じみ",
+      "meaning": "作品や人柄などに、しみじみと感じられる深い味わい。",
+      "description": "派手ではない魅力をじっくり味わう場面で使う。例：読み返すほど滋味の増す随筆だ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "諧謔",
+      "reading": "かいぎゃく",
+      "meaning": "気の利いたおどけや、面白みのある言葉で人を笑わせること。",
+      "description": "文章や会話に含まれるユーモアを評する語。例：厳しい批評にも諧謔が織り込まれている。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "諷刺",
+      "reading": "ふうし",
+      "meaning": "遠回しな表現や笑いによって、社会や人物の欠点を批判すること。",
+      "description": "直接断定せずに問題を浮かび上がらせる表現を指す。例：動物を登場させた物語で権力を諷刺する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "寓意",
+      "reading": "ぐうい",
+      "meaning": "物語や絵などの具体的な表現に託して、別の意味を示すこと。また、その意味。",
+      "description": "作品の表面に現れない主題を読み取る際に使う。例：旅の物語に人生の寓意を読み取る。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "暗喩",
+      "reading": "あんゆ",
+      "meaning": "「ようだ」などの比較の言葉を使わず、別のものにたとえる表現。",
+      "description": "表現が何を何に重ねているか分析するときに使う。例：「記憶の海を泳ぐ」は暗喩を用いた表現だ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "換喩",
+      "reading": "かんゆ",
+      "meaning": "あるものを、それと密接に関係する別のものの名で表す比喩。",
+      "description": "容器で中身を表すなど、関連性による言い換えを指す。例：「鍋が煮える」は容器で中身を表した換喩だ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "撞着",
+      "reading": "どうちゃく",
+      "meaning": "二つの事柄が互いに食い違い、両立しないこと。",
+      "description": "主張の内部で矛盾が生じた場面で使う。例：その説明は自己撞着に陥っている。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "背理",
+      "reading": "はいり",
+      "meaning": "道理や論理に反していて、筋が通らないこと。",
+      "description": "前提から矛盾した結果が出る議論などで使う。例：その仮定を採用すると背理に至る。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "二律背反",
+      "reading": "にりつはいはん",
+      "meaning": "互いに矛盾する二つの主張が、ともに成り立つように見えること。",
+      "description": "容易に一方を退けられない対立を論じる際に使う。例：二つの原則の二律背反をどう解くかが課題だ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "融即",
+      "reading": "ゆうそく",
+      "meaning": "別々のものが互いに溶け合い、一体となっていること。",
+      "description": "自己と自然などの境界が薄れる様子を論じる語。例：詩の中では人間と自然が融即している。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "包摂",
+      "reading": "ほうせつ",
+      "meaning": "あるものを、より大きな範囲やまとまりの中に含めること。",
+      "description": "概念の関係や社会のあり方を述べる際に使う。例：多様な立場を包摂する枠組みを考える。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "分節",
+      "reading": "ぶんせつ",
+      "meaning": "連続したものを、区切りを設けていくつかの部分に分けること。",
+      "description": "経験や音声などをまとまりとして捉える際に使う。例：一続きの経験を言葉によって分節する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "措辞",
+      "reading": "そじ",
+      "meaning": "文章や発言で、言葉を選び組み立てて表すこと。また、その表し方。",
+      "description": "同じ内容をどう言い表すかに注目する語。例：結論は同じでも措辞によって印象が変わる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "縹緲",
+      "reading": "ひょうびょう",
+      "meaning": "遠くかすんで、姿や様子がはっきりしないこと。",
+      "description": "風景や音の捉えにくさを文学的に描く語。例：霧の向こうに縹緲とした山並みが見える。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "漢字ペディア「緲」",
+          "url": "https://www.kanjipedia.jp/kanji/0005965600/"
+        }
+      ]
+    },
+    {
+      "word": "爬梳",
+      "reading": "はそ",
+      "meaning": "多くの資料や複雑な事柄を調べ、整理すること。",
+      "description": "散在する記録を丹念に読み解く研究で使う。例：書簡を爬梳して執筆の経緯をたどる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "渉猟",
+      "reading": "しょうりょう",
+      "meaning": "資料や書物を、広い範囲にわたって探し調べること。",
+      "description": "必要な知識を求めて多くの文献に当たる際に使う。例：関連文献を渉猟して論点を整理した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "博捜",
+      "reading": "はくそう",
+      "meaning": "資料や情報を、広く探し求めること。",
+      "description": "手掛かりを各方面から集める場面で使う。例：各地の記録を博捜して失われた足跡を追う。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "考証",
+      "reading": "こうしょう",
+      "meaning": "資料や証拠に基づいて、過去の事実や物事の由来を調べ確かめること。",
+      "description": "時代背景や史実の妥当性を確かめる際に使う。例：衣装の考証を重ねて舞台を制作する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "校勘",
+      "reading": "こうかん",
+      "meaning": "同じ書物の異なる写本や版本を比べ、本文の誤りや違いを調べること。",
+      "description": "古い本文を確定する作業について使う。例：複数の写本を校勘して異同を記録する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "洒脱",
+      "reading": "しゃだつ",
+      "meaning": "俗っぽさやこだわりがなく、さっぱりと洗練されていること。",
+      "description": "文章や振る舞いの軽やかさを評する語。例：洒脱な語り口が読者を引き付ける。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "闡明",
+      "reading": "せんめい",
+      "meaning": "隠れていた意味や道理を、詳しく説いて明らかにすること。",
+      "description": "考えの筋道や原理を解き明かす場面で使う。例：資料の分析を通じて制度の性質を闡明する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "闡揚",
+      "reading": "せんよう",
+      "meaning": "優れた思想や功績などを、明らかにして広く知らせること。",
+      "description": "価値を世に伝える活動について使う。例：先人の業績を闡揚する展覧会を開く。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "縷説",
+      "reading": "るせつ",
+      "meaning": "細かな点まで行き届くように、詳しく説明すること。",
+      "description": "省略せず順を追って説く場面で使う。例：ここで経緯を縷説する余裕はない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "縷述",
+      "reading": "るじゅつ",
+      "meaning": "細かいところまで、筋道を立てて述べること。",
+      "description": "事情を丁寧に記す文章について使う。例：報告書は交渉の経過を縷述している。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "贅言",
+      "reading": "ぜいげん",
+      "meaning": "本筋を伝えるのに必要のない、余分な言葉。",
+      "description": "説明の付け足しが不要であることを示す語。例：結論は明らかで、これ以上の贅言を要しない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蕪雑",
+      "reading": "ぶざつ",
+      "meaning": "文章や構成などが整理されず、雑然としていること。",
+      "description": "まとまりの悪い記述を評するときに使う。例：蕪雑な草稿を整理して論旨を通す。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "佶屈聱牙",
+      "reading": "きっくつごうが",
+      "meaning": "文章が難しい言葉で込み入っていて、読みにくく理解しにくいこと。",
+      "description": "平明さに欠ける文章を評する語。例：佶屈聱牙な文章を読みやすく書き直す。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "閑雅",
+      "reading": "かんが",
+      "meaning": "落ち着きがあり、上品で趣のあること。",
+      "description": "景色やたたずまいの静かな美しさに使う。例：庭には閑雅な趣がある。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "典雅",
+      "reading": "てんが",
+      "meaning": "整っていて上品であり、古典的な美しさを感じさせること。",
+      "description": "文章や音楽、身のこなしを評する際に使う。例：典雅な旋律が会場に響く。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "瀟洒",
+      "reading": "しょうしゃ",
+      "meaning": "すっきりと洗練され、しゃれていること。",
+      "description": "建物や装いの軽やかな美しさを表す。例：木立の奥に瀟洒な洋館が立っている。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "清冽",
+      "reading": "せいれつ",
+      "meaning": "水などが清らかで、冷たく澄んでいること。",
+      "description": "水や空気の清々しさを描写する語。例：岩間から清冽な水が湧き出している。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "静謐",
+      "reading": "せいひつ",
+      "meaning": "物音や動きが少なく、静かで穏やかなこと。",
+      "description": "空間全体の深い静けさを表す。例：夜明け前の図書館は静謐に包まれていた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "寂寥",
+      "reading": "せきりょう",
+      "meaning": "ひっそりとして寂しく、心に空しさを感じること。",
+      "description": "人のいない風景や孤独な心情を描く際に使う。例：祭りのあとの広場に寂寥を覚えた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蕭条",
+      "reading": "しょうじょう",
+      "meaning": "もの寂しく、ひっそりとして活気がないこと。",
+      "description": "人影やにぎわいの失われた情景を描く語。例：冬の野に蕭条たる風景が広がる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "荒寥",
+      "reading": "こうりょう",
+      "meaning": "土地や景色が荒れ果て、寂しいこと。",
+      "description": "荒れた広い場所の寂しさを表す。例：荒寥とした原野を旅人が進む。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "杳然",
+      "reading": "ようぜん",
+      "meaning": "遠く隔たっていて、はっきりと見えたり分かったりしないさま。",
+      "description": "消息や記憶の捉えにくさにも使う。例：友の消息は杳然として知れなかった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "杳冥",
+      "reading": "ようめい",
+      "meaning": "暗く深く、奥がはっきりと分からないこと。",
+      "description": "底知れない暗がりや遠さを表す語。例：洞窟の先は杳冥として見通せない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "朦朧",
+      "reading": "もうろう",
+      "meaning": "姿や意識などがぼんやりして、はっきりしないこと。",
+      "description": "見通しや意識の不鮮明さを描く際に使う。例：霧の向こうに山影が朦朧と浮かぶ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "幽邃",
+      "reading": "ゆうすい",
+      "meaning": "奥深く、静かで趣のあること。",
+      "description": "深い森や山中のたたずまいを描く語。例：幽邃な渓谷に足を踏み入れた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "幽玄",
+      "reading": "ゆうげん",
+      "meaning": "表面には表れない、奥深くほのかな美しさや趣があること。",
+      "description": "言葉で尽くしにくい芸術的な味わいを評する語。例：能の舞に幽玄の美を感じる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "玲瓏",
+      "reading": "れいろう",
+      "meaning": "玉のように美しく透き通り、曇りがないさま。",
+      "description": "澄んだ美しさを描写する際に使う。例：玲瓏たる月が夜空に浮かんでいる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "絢爛",
+      "reading": "けんらん",
+      "meaning": "色や飾りが豊かで、目を奪うほど華やかなこと。",
+      "description": "装飾や舞台の華やかさを表す。例：絢爛たる衣装が舞台を彩る。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "燦然",
+      "reading": "さんぜん",
+      "meaning": "きらびやかに、明るく輝くさま。",
+      "description": "実際の光にも、優れた功績の比喩にも使う。例：磨かれた装飾が灯りを受けて燦然と輝く。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "端倪",
+      "reading": "たんげい",
+      "meaning": "物事の全体像や成り行きを推し量ること。",
+      "description": "「端倪すべからざる」の形で底知れなさを表す。例：若い演奏家に端倪すべからざる才能を感じた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "倨傲",
+      "reading": "きょごう",
+      "meaning": "おごり高ぶり、他人を見下すような態度を取ること。",
+      "description": "尊大な言動を批判する際に使う。例：倨傲な態度が周囲の反発を招いた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "狷介",
+      "reading": "けんかい",
+      "meaning": "自分の考えを堅く守り、他人と容易に打ち解けないこと。",
+      "description": "頑固で近寄りがたい性格を述べる語。例：狷介な人柄のため、誤解されることもあった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "孤高",
+      "reading": "ここう",
+      "meaning": "周囲に迎合せず、自分の高い志や立場を守っていること。",
+      "description": "独自の道を歩む人物を描くときに使う。例：孤高の画家として独自の表現を追求した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "磊落",
+      "reading": "らいらく",
+      "meaning": "心が大きく開けていて、細かいことにこだわらないこと。",
+      "description": "明るくおおらかな人柄を表す。例：磊落な笑い声で場の緊張が和らいだ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "闊達",
+      "reading": "かったつ",
+      "meaning": "心が広く、のびのびとして小さなことにこだわらないこと。",
+      "description": "自由な発言やおおらかな態度について使う。例：闊達な意見交換から新しい案が生まれた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "剛毅",
+      "reading": "ごうき",
+      "meaning": "意志が強く、困難にひるまないこと。",
+      "description": "厳しい状況でも信念を貫く姿勢を述べる語。例：剛毅な精神で難局に立ち向かった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "狡猾",
+      "reading": "こうかつ",
+      "meaning": "自分の利益のために、ずるく巧みに立ち回ること。",
+      "description": "人を出し抜く振る舞いを批判する際に使う。例：狡猾な手口で相手を欺いた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "奸佞",
+      "reading": "かんねい",
+      "meaning": "心がねじけていて、口先巧みに人に取り入ること。",
+      "description": "へつらいや策略に満ちた人物を描く語。例：物語には奸佞な家臣が登場する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "面従腹背",
+      "reading": "めんじゅうふくはい",
+      "meaning": "表面では従うふりをしながら、内心では反対していること。",
+      "description": "外に示す態度と本心の隔たりを述べる際に使う。例：強引な方針は部下の面従腹背を招いた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "陽奉陰違",
+      "reading": "ようほういんい",
+      "meaning": "表向きは従いながら、陰では従わずに背くこと。",
+      "description": "公然の態度と実際の行動が違う場合に使う。例：命令を受けた役人は陽奉陰違の態度を取った。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "阿附",
+      "reading": "あふ",
+      "meaning": "自分に有利になるよう、相手にへつらい付き従うこと。",
+      "description": "力のある人に取り入る姿勢を批判する語。例：地位を得るために権力者へ阿附する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "諂諛",
+      "reading": "てんゆ",
+      "meaning": "相手に気に入られようとして、お世辞を言いへつらうこと。",
+      "description": "言葉で機嫌を取る振る舞いについて使う。例：諂諛の言葉より率直な忠告を求めた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "讒言",
+      "reading": "ざんげん",
+      "meaning": "他人をおとしめるために、事実を曲げたり偽ったりして告げ口すること。",
+      "description": "悪意ある報告で立場を危うくする場面に使う。例：讒言によって忠実な家臣が疑われた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "誣告",
+      "reading": "ぶこく",
+      "meaning": "人に害を与える目的で、事実でないことを告げ訴えること。",
+      "description": "虚偽の訴えで相手を陥れる行為を指す。例：物語の主人公は誣告によって職を失った。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "誹謗",
+      "reading": "ひぼう",
+      "meaning": "他人の悪口を言い、名誉や評判を傷つけること。",
+      "description": "人をおとしめる言動を述べる際に使う。例：意見への批判と人格への誹謗を区別する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "譎詐",
+      "reading": "けっさ",
+      "meaning": "人をだますために、偽りや策略を用いること。",
+      "description": "入り組んだ欺きの手段を述べる語。例：譎詐に満ちた交渉の内幕が明らかになる。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "籠絡",
+      "reading": "ろうらく",
+      "meaning": "巧みに取り入って相手の心をつかみ、思いどおりに動かすこと。",
+      "description": "利益や言葉で相手を味方に引き込む際に使う。例：贈り物で担当者を籠絡しようとした。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "掣肘",
+      "reading": "せいちゅう",
+      "meaning": "そばから干渉し、自由な行動を妨げること。",
+      "description": "他者の介入で仕事が進まない場面に使う。例：細かな掣肘を受けて裁量を発揮できない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "羈絆",
+      "reading": "きはん",
+      "meaning": "人の自由な行動を縛り、離れにくくするつながりや制約。",
+      "description": "しがらみから逃れようとする心情を述べる語。例：古い人間関係の羈絆を断とうとする。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "羈旅",
+      "reading": "きりょ",
+      "meaning": "故郷を離れて旅をすること。また、旅先で暮らすこと。",
+      "description": "旅や異郷での生活を文学的に述べる語。例：羈旅の寂しさを歌に託した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "流寓",
+      "reading": "りゅうぐう",
+      "meaning": "故郷を離れた土地で、仮に住まいを定めて暮らすこと。",
+      "description": "異郷での一時的な生活を述べる際に使う。例：詩人は戦乱を避けて南方に流寓した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "放逐",
+      "reading": "ほうちく",
+      "meaning": "その場所や集団から追い出すこと。",
+      "description": "所属や居場所を奪う処置について使う。例：主人公は共同体から放逐された。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蟄居",
+      "reading": "ちっきょ",
+      "meaning": "外出せず、家や部屋に閉じこもって暮らすこと。",
+      "description": "人との接触を絶った生活を述べる際に使う。例：冬の間は山荘に蟄居して執筆した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "隠遁",
+      "reading": "いんとん",
+      "meaning": "世間との交わりを避け、静かな場所で暮らすこと。",
+      "description": "社会の表舞台を離れた生き方を表す。例：晩年は山里に隠遁した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "遁世",
+      "reading": "とんせい",
+      "meaning": "俗世間を離れ、名誉や利益を求めない生活に入ること。",
+      "description": "出家や隠居に向かう心情を述べる語。例：争いに疲れた人物が遁世を願う。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "韜光",
+      "reading": "とうこう",
+      "meaning": "自分の才能や功績を、目立つように表さず隠すこと。",
+      "description": "力を誇示しない姿勢について使う。例：彼は韜光の姿勢を貫き、功を誇らなかった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "雌伏",
+      "reading": "しふく",
+      "meaning": "力を発揮できる機会を待ち、表立った活動を控えること。",
+      "description": "準備をしながら時機を待つ期間に使う。例：長い雌伏を経て新作を発表した。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "捲土重来",
+      "reading": "けんどちょうらい",
+      "meaning": "一度敗れたり失敗したりした者が、勢いを取り戻して再び挑むこと。",
+      "description": "敗北後の再挑戦を述べる際に使う。例：予選敗退を糧に捲土重来を期す。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "乾坤一擲",
+      "reading": "けんこんいってき",
+      "meaning": "運命を懸けるほどの重大な勝負に、一度で挑むこと。",
+      "description": "成否を左右する大きな決断を表す。例：乾坤一擲の勝負に打って出た。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "捨身",
+      "reading": "しゃしん",
+      "meaning": "自分の身を顧みず、全力で物事に当たること。",
+      "description": "危険や不利益を覚悟した行動について使う。例：捨身の覚悟で最後の交渉に臨んだ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "不撓不屈",
+      "reading": "ふとうふくつ",
+      "meaning": "困難に直面しても、くじけたり屈したりしないこと。",
+      "description": "努力を続ける強い意志を表す。例：不撓不屈の精神で研究を続けた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "百折不撓",
+      "reading": "ひゃくせつふとう",
+      "meaning": "何度失敗しても、志を曲げず挑み続けること。",
+      "description": "挫折を繰り返しながらも進む姿勢について使う。例：百折不撓の努力が実を結んだ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "臥薪嘗胆",
+      "reading": "がしんしょうたん",
+      "meaning": "目的を果たすために、苦労や悔しさに耐えて努力すること。",
+      "description": "敗北などをきっかけに再起を目指す場面で使う。例：臥薪嘗胆の日々を経て決勝に戻ってきた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "刻苦勉励",
+      "reading": "こっくべんれい",
+      "meaning": "苦労に耐え、学問や仕事に懸命に励むこと。",
+      "description": "目標のために地道な努力を重ねる姿を表す。例：刻苦勉励して専門の技術を身に付けた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "曲学阿世",
+      "reading": "きょくがくあせい",
+      "meaning": "真理を求めず、世間や権力者に気に入られるよう学問の内容を曲げること。",
+      "description": "学問上の誠実さを失った姿勢を批判する語。例：都合のよい結論に合わせた研究は曲学阿世だ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "隔靴掻痒",
+      "reading": "かっかそうよう",
+      "meaning": "肝心なところに届かず、もどかしく感じること。",
+      "description": "説明や対応が核心に触れない場面で使う。例：質問に正面から答えない説明は隔靴掻痒の感がある。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "画竜点睛",
+      "reading": "がりょうてんせい",
+      "meaning": "全体を完成させるために、最後に加える最も大切な仕上げ。",
+      "description": "小さいが決定的な仕上げの重要性を述べる語。例：結末の一文が作品の画竜点睛となっている。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "百家争鳴",
+      "reading": "ひゃっかそうめい",
+      "meaning": "多くの論者が、それぞれの立場から自由に意見を述べ合うこと。",
+      "description": "多様な説が活発に論じられる状況を表す。例：新しい課題をめぐり百家争鳴の議論が続く。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "羊頭狗肉",
+      "reading": "ようとうくにく",
+      "meaning": "立派な看板や宣伝を掲げながら、実際の内容が伴わないこと。",
+      "description": "外見上の約束と中身の食い違いを批判する語。例：説明と実態が違うなら羊頭狗肉と言われても仕方がない。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "微言大義",
+      "reading": "びげんたいぎ",
+      "meaning": "短く簡潔な言葉の中に、深く重要な意味が込められていること。",
+      "description": "少ない言葉が大きな思想を伝える表現を評する語。例：その一節には微言大義の趣がある。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "漢字ペディア「微言大義」",
+          "url": "https://www.kanjipedia.jp/kotoba/0005878600"
+        }
+      ]
+    },
+    {
+      "word": "不即不離",
+      "reading": "ふそくふり",
+      "meaning": "近付きすぎず離れすぎず、適度な関係を保っていること。",
+      "description": "二つのものの微妙な距離や結び付きを表す。例：批評家は作者と不即不離の距離を保った。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "和光同塵",
+      "reading": "わこうどうじん",
+      "meaning": "自分の才能や徳を目立たせず、世間の人々に交じって暮らすこと。",
+      "description": "能力を誇示せず周囲になじむ姿勢を述べる語。例：彼は和光同塵の生き方を選んだ。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "党同伐異",
+      "reading": "とうどうばつい",
+      "meaning": "同じ意見の者だけと結び付き、異なる意見の者を攻撃すること。",
+      "description": "内容を検討せず立場で敵味方を分ける姿勢を批判する。例：議論が党同伐異に陥らないよう注意する。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "同床異夢",
+      "reading": "どうしょういむ",
+      "meaning": "同じ立場で行動しているように見えて、心の中では別々の目的を持つこと。",
+      "description": "協力関係の内側にある意図の違いを述べる語。例：共同事業の参加者は実は同床異夢だった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "呉越同舟",
+      "reading": "ごえつどうしゅう",
+      "meaning": "仲の悪い者同士が同じ場に居合わせたり、共通の目的で協力したりすること。",
+      "description": "普段は対立する相手と手を組む状況を表す。例：危機への対応では競合各社も呉越同舟となった。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "合従連衡",
+      "reading": "がっしょうれんこう",
+      "meaning": "勢力を持つ者が、利害に応じて同盟や提携を組み替えること。",
+      "description": "複数の組織の結び付きが変化する情勢に使う。例：業界再編を前に企業の合従連衡が進む。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "隔世之感",
+      "reading": "かくせいのかん",
+      "meaning": "大きな変化を見て、時代が変わったかのように感じること。",
+      "description": "昔と今の著しい違いに驚く場面で使う。例：故郷の変貌に隔世之感を覚えた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "乾坤",
+      "reading": "けんこん",
+      "meaning": "天と地。また、世界全体。",
+      "description": "大きな空間や天地を文学的に表す語。例：乾坤を揺るがすような雷鳴が響いた。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "不易流行",
+      "reading": "ふえきりゅうこう",
+      "meaning": "変わらない本質を保ちながら、新しい変化を取り入れること。",
+      "description": "伝統と革新を両立させるあり方を論じる語。例：不易流行を意識して伝統芸能を次世代に伝える。",
+      "category": "上級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "漢字ペディア「不易流行」",
+          "url": "https://www.kanjipedia.jp/kotoba/0005997500"
+        }
+      ]
     }
   ]
 }

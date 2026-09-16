@@ -1,48 +1,1218 @@
 {
   "packId": "intermediate-100",
   "name": "中級100",
-  "description": "新聞・評論・小説などでよく見かける一段上の語彙。",
-  "version": 1,
+  "description": "評論・報道・小説の読解を深める100語。抽象的な議論や人の心情を表す語に、補足説明と例文を添えています。",
+  "version": 2,
   "words": [
-    {
-      "word": "踏襲",
-      "reading": "とうしゅう",
-      "meaning": "それまでのやり方や方針などを受け継ぎ、そのまま続けること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
-    },
-    {
-      "word": "形骸化",
-      "reading": "けいがいか",
-      "meaning": "本来の意味や機能が失われ、形だけが残った状態になること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
-    },
-    {
-      "word": "示唆",
-      "reading": "しさ",
-      "meaning": "直接には言い表さず、それとなく気づかせたり考えさせたりすること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
-    },
     {
       "word": "乖離",
       "reading": "かいり",
-      "meaning": "互いに離れ、隔たりが生じること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "本来近いはずの物事の間に、隔たりが生じること。",
+      "description": "理想と現実、予測と結果などのずれを述べるときに使う。例：住民の期待と計画の内容に乖離がある。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     },
     {
       "word": "敷衍",
       "reading": "ふえん",
-      "meaning": "内容を詳しく説明したり、意味を広げて述べたりすること。",
-      "description": "",
-      "category": "一般",
-      "quizTypes": ["meaning", "word", "reading"]
+      "meaning": "ある主張や趣旨を広げ、詳しく説明すること。",
+      "description": "要点に説明を加えて理解を助ける場面で使う。例：先ほどの議論を具体例によって敷衍する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蓋然性",
+      "reading": "がいぜんせい",
+      "meaning": "ある出来事が起こる、またはある判断が正しいと見込まれる度合い。",
+      "description": "確実とは断定できない見込みを論じるときに使う。例：資料がそろえば、仮説の蓋然性を検討できる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "妥当",
+      "reading": "だとう",
+      "meaning": "判断や方法が事情や道理に合っていて、適切であること。",
+      "description": "結論や処置が適切かを評価するときに使う。例：この規模の工事なら、その見積額は妥当だ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "整合性",
+      "reading": "せいごうせい",
+      "meaning": "複数の内容が互いに矛盾せず、筋道が通っていること。",
+      "description": "説明同士や計画と実施内容の関係を確かめる際に使う。例：報告書と会計記録の整合性を確認する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "自明",
+      "reading": "じめい",
+      "meaning": "特に証明や説明をしなくても、明らかだと分かること。",
+      "description": "前提を当然視してよいか問い直す文脈でも使う。例：この結論は、すべての読者にとって自明とは限らない。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "所与",
+      "reading": "しょよ",
+      "meaning": "考察や行動の出発点として、すでに与えられていることやもの。",
+      "description": "議論の前提となる条件について使う。例：限られた予算を所与の条件として計画を立てる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "捨象",
+      "reading": "しゃしょう",
+      "meaning": "物事を考える際に、目的に直接関係しない性質や要素を除くこと。",
+      "description": "モデルを作るために細部を省く場面で使う。例：個人差を捨象して集団全体の傾向を調べる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "抽象",
+      "reading": "ちゅうしょう",
+      "meaning": "具体的な物事から、共通する性質や本質的な要素を取り出すこと。",
+      "description": "個々の例をまとめて概念として捉えるときに使う。例：複数の事例から共通の構造を抽象する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "具象",
+      "reading": "ぐしょう",
+      "meaning": "形や姿を備え、具体的に捉えられること。また、そのもの。",
+      "description": "美術では現実の物の形を表す作品について使う。例：具象と抽象の両方の表現を展示で比較する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "演繹",
+      "reading": "えんえき",
+      "meaning": "一般的な原理や前提から、個別の結論を論理的に導くこと。",
+      "description": "前提が結論を支える推論の筋道に注目する語。例：定義と公理から結論を演繹する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "帰納",
+      "reading": "きのう",
+      "meaning": "個々の事例から、一般的な法則や共通の性質を導くこと。",
+      "description": "観察を積み重ねて規則を考える場面で使う。例：多くの観察結果から規則性を帰納する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "相対",
+      "reading": "そうたい",
+      "meaning": "ほかのものとの関係や比較によって成り立つこと。",
+      "description": "単独の値ではなく、比較の基準に着目するときに使う。例：相対評価では集団内の位置が判断に関わる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "普遍",
+      "reading": "ふへん",
+      "meaning": "限られた場合だけでなく、広くすべてに共通して当てはまること。",
+      "description": "時代や地域を越えて通じる性質を論じるときに使う。例：この作品は普遍的な問いを扱っている。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "内在",
+      "reading": "ないざい",
+      "meaning": "ある性質や問題などが、そのものの内部に含まれていること。",
+      "description": "仕組み自体が抱える要素を指摘する場面で使う。例：制度に内在する矛盾を明らかにする。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "外在",
+      "reading": "がいざい",
+      "meaning": "あるものの外部に存在すること。",
+      "description": "内部の要因と外部の要因を区別するときに使う。例：作品に外在する事情だけで評価を決めない。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "媒介",
+      "reading": "ばいかい",
+      "meaning": "二つのものの間に立ち、関係や働きかけをつなぐこと。",
+      "description": "交流や情報伝達を仲立ちするものについて使う。例：翻訳が異なる文化の交流を媒介する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "還元",
+      "reading": "かんげん",
+      "meaning": "複雑な物事を、より基本的な要素や形に置き換えて捉えること。",
+      "description": "多面的な問題を単純な原因へ結びつける議論で使う。例：学習の成果を努力だけに還元することはできない。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "収斂",
+      "reading": "しゅうれん",
+      "meaning": "広がりや違いのあるものが、一つの方向や状態へまとまること。",
+      "description": "複数の意見や傾向が近づく過程について使う。例：議論を重ねるうちに意見が一案に収斂した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "止揚",
+      "reading": "しよう",
+      "meaning": "対立する立場を単に捨てず、その要素を生かしてより高い段階へ進めること。",
+      "description": "相反する考えを乗り越える議論で使う。例：二つの立場の対立を止揚する視点を探る。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "措定",
+      "reading": "そてい",
+      "meaning": "議論を進めるために、ある事柄を前提として置くこと。",
+      "description": "何を仮に認めて論じるかを示す語。例：情報が全員に共有されていると措定して考える。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "反証",
+      "reading": "はんしょう",
+      "meaning": "ある主張や仮説が成り立たないことを示す証拠。また、それを示すこと。",
+      "description": "一般的な主張に反する事実を提示するときに使う。例：その仮説に対する反証が見つかった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "傍証",
+      "reading": "ぼうしょう",
+      "meaning": "ある事柄を、周辺の事実から間接的に裏付ける証拠。",
+      "description": "直接の証拠ではない資料の位置付けを示す語。例：当時の日記は、会合があったことの傍証となる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "論駁",
+      "reading": "ろんばく",
+      "meaning": "相手の主張の誤りや不備を論理的に指摘して退けること。",
+      "description": "理由を示した反論を述べる場面で使う。例：資料を挙げて相手の説を論駁する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "詭弁",
+      "reading": "きべん",
+      "meaning": "一見もっともらしく見せながら、筋の通らない理屈で相手を納得させようとする議論。",
+      "description": "論理のすり替えなどを批判する際に使う。例：質問への答えを避けた説明は詭弁に聞こえた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "瑕疵",
+      "reading": "かし",
+      "meaning": "本来備わるべき性質が欠けていることや、不備・欠点。",
+      "description": "手続きや成果物に見つかった問題について使う。例：審査の手続きに瑕疵が見つかった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "齟齬",
+      "reading": "そご",
+      "meaning": "意見や認識、物事の進み方などが食い違うこと。",
+      "description": "関係者の理解が一致していない場面で使う。例：担当者の間で納期の認識に齟齬があった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "軋轢",
+      "reading": "あつれき",
+      "meaning": "人や集団の間で、対立や不和が生じること。",
+      "description": "利害や方針の衝突による関係悪化について使う。例：役割分担をめぐって部署間に軋轢が生じた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "相克",
+      "reading": "そうこく",
+      "meaning": "相反するものが互いに対立し、争うこと。",
+      "description": "価値観や感情がぶつかり合う状況を述べる語。例：自由と秩序の相克を描いた小説を読む。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "葛藤",
+      "reading": "かっとう",
+      "meaning": "相反する欲求や考えの間で迷い、心の中で争うこと。",
+      "description": "どちらを選ぶか決められない内面を描くときに使う。例：夢を追うか家業を継ぐかで葛藤する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "桎梏",
+      "reading": "しっこく",
+      "meaning": "自由な行動や発展を妨げる、強い束縛。",
+      "description": "制度や慣習による制約を比喩的に述べる語。例：古い慣習の桎梏から抜け出そうとする。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "隘路",
+      "reading": "あいろ",
+      "meaning": "物事を進めるうえで障害となる、解決の難しい点。",
+      "description": "計画の進行を妨げる箇所を指す。例：資金不足が事業拡大の隘路となっている。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蹉跌",
+      "reading": "さてつ",
+      "meaning": "物事が順調に進まず、途中でつまずくこと。",
+      "description": "計画や人生の挫折を振り返るときに使う。例：研究の蹉跌を経て方法を見直した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "頓挫",
+      "reading": "とんざ",
+      "meaning": "それまで進んでいた計画や仕事が、途中で行き詰まること。",
+      "description": "実現に向けた動きが止まる場面で使う。例：用地の確保ができず計画が頓挫した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "逡巡",
+      "reading": "しゅんじゅん",
+      "meaning": "決心がつかず、ためらうこと。",
+      "description": "行動に移る直前の迷いを描く語。例：返事をする前にしばらく逡巡した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "躊躇",
+      "reading": "ちゅうちょ",
+      "meaning": "迷いや不安から、行動をためらうこと。",
+      "description": "一歩を踏み出せない状況について使う。例：費用が気になって申し込みを躊躇した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "斟酌",
+      "reading": "しんしゃく",
+      "meaning": "相手の事情や心情などをくみ取り、判断に取り入れること。",
+      "description": "事情を考慮した対応について使う。例：遅れた事情を斟酌して期限を延ばした。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "忖度",
+      "reading": "そんたく",
+      "meaning": "他人の気持ちや意図を推し量ること。",
+      "description": "明言されていない意向を読み取ろうとする場面で使う。例：相手の意図を忖度するだけでなく、本人に確認した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "慮る",
+      "reading": "おもんぱかる",
+      "meaning": "周囲の事情や相手の立場をよく考える。",
+      "description": "判断する前に相手への影響を考える場面で使う。例：家族の負担を慮って予定を変更した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "酌量",
+      "reading": "しゃくりょう",
+      "meaning": "事情をくみ取り、処分や判断を軽くする方向に考慮すること。",
+      "description": "責任を判断する際の事情の扱いについて使う。例：失敗に至った経緯には酌量の余地がある。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "忌憚",
+      "reading": "きたん",
+      "meaning": "相手を気にして、言動を遠慮すること。",
+      "description": "「忌憚のない」の形で率直な意見を求めることが多い。例：改善のために忌憚のない意見を聞かせてほしい。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "憚る",
+      "reading": "はばかる",
+      "meaning": "差し障りを気にして、遠慮したり控えたりする。",
+      "description": "人前での発言や行動を控える場面で使う。例：静かな会場では大声で話すことが憚られる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord"
+      ]
+    },
+    {
+      "word": "諫言",
+      "reading": "かんげん",
+      "meaning": "立場が上の人に、過ちを改めるよう忠告すること。",
+      "description": "目上の人の判断をいさめる場面で使う。例：側近は計画の危うさについて諫言した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "勘案",
+      "reading": "かんあん",
+      "meaning": "複数の事情を考え合わせること。",
+      "description": "条件を総合して判断する際に使う。例：距離と費用を勘案して会場を決める。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "考量",
+      "reading": "こうりょう",
+      "meaning": "事情や条件をよく考え、その重みを判断すること。",
+      "description": "利益と不利益などを慎重に検討するときに使う。例：実施による負担も考量する必要がある。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "折衝",
+      "reading": "せっしょう",
+      "meaning": "利害や意見の異なる相手と、合意を目指して交渉すること。",
+      "description": "条件の調整を重ねる場面で使う。例：開催日程について関係団体と折衝する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "懐柔",
+      "reading": "かいじゅう",
+      "meaning": "相手をうまく扱って、自分に従うようにすること。",
+      "description": "利益や好意を示して協力を取り付ける文脈で使う。例：反対派を懐柔しようと役職を提示した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "迎合",
+      "reading": "げいごう",
+      "meaning": "自分の考えを抑えて、相手の意向や好みに合わせること。",
+      "description": "支持を得るために姿勢を変えることを批判する場面で使う。例：人気だけに迎合せず、必要な課題を取り上げる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "追従",
+      "reading": "ついじゅう",
+      "meaning": "自分の判断を持たず、他人の言動や方針に従うこと。",
+      "description": "周囲に合わせるだけの態度について使う。例：多数派に追従する前に根拠を確かめたい。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "阿諛",
+      "reading": "あゆ",
+      "meaning": "相手の機嫌を取るために、へつらった言動をすること。",
+      "description": "お世辞によって取り入る態度を述べる語。例：権力者への阿諛を戒める文章を読んだ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "矜持",
+      "reading": "きょうじ",
+      "meaning": "自分の能力や立場に対して持つ誇り。",
+      "description": "仕事や生き方を支える自負について使う。例：職人としての矜持を持って仕上げに臨む。「きんじ」とも読む。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "デジタル大辞泉ほか「矜持」（コトバンク）",
+          "url": "https://kotobank.jp/word/矜持-478223"
+        }
+      ]
+    },
+    {
+      "word": "皮相",
+      "reading": "ひそう",
+      "meaning": "物事の表面だけを捉え、本質にまで考えが及んでいないこと。",
+      "description": "分析や理解の浅さを指摘する際に使う。例：売上だけで判断するのは皮相な見方だ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "気概",
+      "reading": "きがい",
+      "meaning": "困難にひるまず、物事を成し遂げようとする強い気持ち。",
+      "description": "積極的に挑戦する意志について使う。例：新しい分野を切り開く気概を示した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "気骨",
+      "reading": "きこつ",
+      "meaning": "自分の信念を守り、安易に他人に屈しない強さ。",
+      "description": "圧力の中でも姿勢を貫く人物を評するときに使う。例：不正を見過ごさない気骨のある記者だ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "見識",
+      "reading": "けんしき",
+      "meaning": "物事を深く理解し、正しく判断する力。また、その判断。",
+      "description": "経験や知識に支えられた考えを評価する語。例：地域の歴史に対する深い見識に学ぶ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "慧眼",
+      "reading": "けいがん",
+      "meaning": "物事の本質や将来の可能性を鋭く見抜く力。",
+      "description": "ほかの人が気付かない価値を認める判断について使う。例：無名の作品の価値を見抜いた慧眼に驚く。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "洞察",
+      "reading": "どうさつ",
+      "meaning": "表面だけでなく、物事の内側や本質を見抜くこと。",
+      "description": "背景にある構造や心理を理解する場面で使う。例：登場人物の心理に対する洞察が深い。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "卓見",
+      "reading": "たっけん",
+      "meaning": "物事の本質をよく捉えた、優れた意見や見解。",
+      "description": "鋭い分析や提案を評価するときに使う。例：問題の核心を突く卓見に接した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "趨勢",
+      "reading": "すうせい",
+      "meaning": "物事全体がある方向へ進んでいく勢いや流れ。",
+      "description": "社会や市場の大きな変化について使う。例：人口動態の趨勢を踏まえて計画を見直す。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "潮流",
+      "reading": "ちょうりゅう",
+      "meaning": "時代の思想や社会の動きに見られる大きな流れ。",
+      "description": "個別の出来事を広い動向の中で捉える語。例：新しい芸術の潮流が各地に広がった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "萌芽",
+      "reading": "ほうが",
+      "meaning": "物事が生まれ、発展し始める兆し。",
+      "description": "後の変化につながる小さな動きを指す。例：若いころの作品に独自の作風の萌芽が見える。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "嚆矢",
+      "reading": "こうし",
+      "meaning": "ある物事が始まる最初の例やきっかけ。",
+      "description": "活動や流れの出発点を述べる際に使う。例：この試みを地域交流事業の嚆矢とする。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "黎明",
+      "reading": "れいめい",
+      "meaning": "新しい時代や文化などが始まりかけること。",
+      "description": "分野が形を整え始めた時期について使う。例：映画の黎明期に制作された作品を研究する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "隆盛",
+      "reading": "りゅうせい",
+      "meaning": "勢いが強まり、盛んに栄えること。",
+      "description": "産業や文化が大きく発展する様子を述べる。例：港の発展とともに商業が隆盛を極めた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "凋落",
+      "reading": "ちょうらく",
+      "meaning": "栄えていたものの勢いや地位が衰えること。",
+      "description": "かつての繁栄が失われる変化について使う。例：産業の凋落が町の人口減少につながった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "衰微",
+      "reading": "すいび",
+      "meaning": "勢いや働きが衰え、弱くなること。",
+      "description": "文化や組織の力が次第に失われる様子を指す。例：担い手が減り、伝統工芸が衰微していった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "跋扈",
+      "reading": "ばっこ",
+      "meaning": "好ましくないものが、抑えられずに勢力を振るうこと。",
+      "description": "無秩序に広がる活動を批判する際に使う。例：根拠のない情報が跋扈する状況を憂える。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "蔓延",
+      "reading": "まんえん",
+      "meaning": "好ましくないものが広い範囲に行き渡ること。",
+      "description": "病気だけでなく風潮や不正の広がりにも使う。例：無責任な噂が地域に蔓延した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "払拭",
+      "reading": "ふっしょく",
+      "meaning": "疑いや不安などを、すっかり取り除くこと。",
+      "description": "残っている悪い印象を消そうとする場面で使う。例：丁寧な説明で住民の不安を払拭する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "一掃",
+      "reading": "いっそう",
+      "meaning": "不要なものや好ましくないものを、一度にすっかり取り除くこと。",
+      "description": "広く残る問題をなくそうとするときに使う。例：作業手順を見直して無駄を一掃する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "淘汰",
+      "reading": "とうた",
+      "meaning": "条件に合わないものが取り除かれ、残るものが選ばれること。",
+      "description": "競争や変化によって存続するものが絞られる際に使う。例：新しい技術の登場で古い方式が淘汰された。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "醸成",
+      "reading": "じょうせい",
+      "meaning": "雰囲気や考え方などを、時間をかけてつくり出すこと。",
+      "description": "交流や経験の積み重ねによる変化を述べる語。例：共同作業を通じて信頼感を醸成する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "涵養",
+      "reading": "かんよう",
+      "meaning": "能力や態度などを、少しずつ養い育てること。",
+      "description": "教育や経験を通じた内面的な成長に使う。例：読書を通じて想像力を涵養する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "陶冶",
+      "reading": "とうや",
+      "meaning": "教育や経験によって、人格や能力を練り育てること。",
+      "description": "人の資質を磨く過程について使う。例：芸術活動が感性の陶冶につながる。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "研鑽",
+      "reading": "けんさん",
+      "meaning": "学問や技術を深く研究し、磨きをかけること。",
+      "description": "専門的な力を高める継続的な努力を指す。例：演奏家として日々研鑽を積む。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "練達",
+      "reading": "れんたつ",
+      "meaning": "経験を重ね、技術や扱い方に十分熟達すること。",
+      "description": "長年の経験に支えられた巧みさを表す。例：練達の職人が複雑な修理を引き受けた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "精緻",
+      "reading": "せいち",
+      "meaning": "細部までよく行き届き、巧みで正確なこと。",
+      "description": "分析や作品の細やかな仕上がりを評価する語。例：精緻な模型で建物の構造を示す。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "緻密",
+      "reading": "ちみつ",
+      "meaning": "細かいところまで隙や抜かりがないこと。",
+      "description": "計画や考えの綿密さを述べるときに使う。例：緻密な調査に基づいて報告書を作る。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "杜撰",
+      "reading": "ずさん",
+      "meaning": "扱いや仕上げがいい加減で、誤りや手落ちが多いこと。",
+      "description": "管理や調査の不十分さを指摘するときに使う。例：記録の杜撰な管理が混乱を招いた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "粗漏",
+      "reading": "そろう",
+      "meaning": "注意が行き届かず、抜けや漏れがあること。",
+      "description": "確認や準備に不備があった場面で使う。例：調査に粗漏がないか再点検する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "恬淡",
+      "reading": "てんたん",
+      "meaning": "欲にとらわれず、物事に執着しないこと。",
+      "description": "名声や利益へのこだわりの少ない態度を表す。例：彼は地位に恬淡としている。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "淡泊",
+      "reading": "たんぱく",
+      "meaning": "気持ちがあっさりしていて、強く執着しないこと。",
+      "description": "人付き合いや勝敗への態度を述べる際に使う。例：勝負の結果には意外に淡泊だった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "執着",
+      "reading": "しゅうちゃく",
+      "meaning": "ある物事に強く心をとらわれ、離れられないこと。",
+      "description": "考えや所有物にこだわり続ける状況を指す。例：以前の成功に執着せず方法を改める。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "固執",
+      "reading": "こしつ",
+      "meaning": "自分の意見や態度を変えず、あくまで守ろうとすること。",
+      "description": "ほかの案を受け入れようとしない場面で使う。例：当初の計画に固執して変更を拒んだ。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "拘泥",
+      "reading": "こうでい",
+      "meaning": "細かいことや形式にこだわり、離れられないこと。",
+      "description": "本筋よりも些細な点を気にする態度について使う。例：前例に拘泥せず解決策を探す。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "泥濘",
+      "reading": "でいねい",
+      "meaning": "雨水などで土がぬかるみ、足を取られる状態や場所。",
+      "description": "道の歩きにくさを描写する際に使う。例：雨上がりの泥濘を避けて歩いた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "煩瑣",
+      "reading": "はんさ",
+      "meaning": "細かく込み入っていて、わずらわしいこと。",
+      "description": "手続きや作業が複雑すぎる場面で使う。例：煩瑣な申請手続きを簡略化する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "冗長",
+      "reading": "じょうちょう",
+      "meaning": "文章や話などに無駄が多く、必要以上に長いこと。",
+      "description": "説明の長さを見直す場面で使う。例：冗長な部分を削って論旨を明確にする。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "明晰",
+      "reading": "めいせき",
+      "meaning": "考えや説明が筋道立っていて、はっきりしていること。",
+      "description": "思考や文章の分かりやすさを評価するときに使う。例：明晰な論理で複雑な問題を解きほぐす。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "含蓄",
+      "reading": "がんちく",
+      "meaning": "表面の言葉だけでは尽くせない、深い意味や味わいを含むこと。",
+      "description": "短い言葉や作品の奥行きを評価するときに使う。例：経験に裏打ちされた含蓄のある言葉だった。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "余韻",
+      "reading": "よいん",
+      "meaning": "出来事や作品が終わったあとも、心に残る感覚や味わい。",
+      "description": "鑑賞後に続く印象を表すときに使う。例：演奏が終わっても余韻に浸っていた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "情緒",
+      "reading": "じょうちょ",
+      "meaning": "物事に触れて起こる、細やかな感情や気分。",
+      "description": "風景や音楽が心に与える感じを述べる語。例：雨音が独特の情緒を誘う。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "哀愁",
+      "reading": "あいしゅう",
+      "meaning": "もの悲しく、寂しい感じ。",
+      "description": "風景や表情、作品に漂う悲しさを表す。例：別れを歌う旋律に哀愁が漂う。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "郷愁",
+      "reading": "きょうしゅう",
+      "meaning": "故郷や昔の生活を懐かしく思う気持ち。",
+      "description": "過去の記憶を呼び起こす風景や音について使う。例：祭りの音に幼い日の郷愁を覚える。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "感傷",
+      "reading": "かんしょう",
+      "meaning": "物事に感じて、悲しさや寂しさに心を動かされること。",
+      "description": "過去や別れを思って心が揺れる場面で使う。例：卒業を前に感傷に浸る。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "憧憬",
+      "reading": "しょうけい",
+      "meaning": "理想とするものや遠くにあるものを、強くあこがれ求めること。",
+      "description": "手の届かない世界への思いを述べる語。例：未知の土地への憧憬を胸に旅立つ。「どうけい」とも読む。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ],
+      "sources": [
+        {
+          "title": "デジタル大辞泉「憧憬」（goo辞書）",
+          "url": "https://dictionary.goo.ne.jp/word/憧憬_(しょうけい)/"
+        }
+      ]
+    },
+    {
+      "word": "憤懣",
+      "reading": "ふんまん",
+      "meaning": "不満や怒りが心にたまり、晴れないこと。",
+      "description": "納得できない扱いへの強い感情を表す。例：説明のない決定に憤懣を抱いた。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "慨嘆",
+      "reading": "がいたん",
+      "meaning": "好ましくない状況を見て、嘆き悲しむこと。",
+      "description": "現状への失望を述べる場面で使う。例：文化財が失われたことを慨嘆する。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "痛恨",
+      "reading": "つうこん",
+      "meaning": "自分の失敗や失ったものを、ひどく残念に思うこと。",
+      "description": "取り返しのつかない失敗への思いを表す。例：大切な場面で痛恨のミスを犯した。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
+    },
+    {
+      "word": "忸怩",
+      "reading": "じくじ",
+      "meaning": "自分の言動や至らなさを、深く恥じること。",
+      "description": "自分への反省を述べる場面で使う。例：期待に応えられず、忸怩たる思いがある。",
+      "category": "中級",
+      "quizTypes": [
+        "wordToMeaning",
+        "meaningToWord",
+        "reading"
+      ]
     }
   ]
 }
