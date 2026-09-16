@@ -812,6 +812,11 @@ const AddWords = (() => {
             ).value =
                 generated.category || "";
 
+            const sourceInput = card.querySelector('[data-field="sourceUrls"]');
+            if (sourceInput && Array.isArray(generated.sources) && generated.sources.length) {
+                sourceInput.value = sourcesToText(generated.sources);
+            }
+
             const generatedTypes =
                 Array.isArray(
                     generated.quizTypes

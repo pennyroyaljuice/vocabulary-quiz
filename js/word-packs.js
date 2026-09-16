@@ -94,13 +94,21 @@ const WordPacks = (() => {
 
         container.innerHTML = `
             <section class="panel">
-                <h2>語彙パック</h2>
+                <div class="page-heading">
+                    <div>
+                        <p class="eyebrow">WORD PACKS</p>
+                        <h2>語彙パック</h2>
 
-                <p class="muted">
-                    難易度別の語彙をまとめて追加できます。
-                    追加した語彙は通常の語彙と同じように
-                    編集・削除・クイズできます。
-                </p>
+                        <p class="page-description">
+                            難易度別の語彙をまとめて追加できます。
+                            追加した語彙は通常の語彙と同じように
+                            編集・削除・クイズできます。
+                        </p>
+                    </div>
+                    <button id="backHomeButton" class="menuButton compact-button" type="button">
+                        ホームへ戻る
+                    </button>
+                </div>
 
                 <div class="word-pack-list">
                     ${packs
@@ -154,14 +162,6 @@ const WordPacks = (() => {
                         })
                         .join("")}
                 </div>
-
-                <button
-                    id="backHomeButton"
-                    class="secondary"
-                    type="button"
-                >
-                    ホームに戻る
-                </button>
             </section>
         `;
 
