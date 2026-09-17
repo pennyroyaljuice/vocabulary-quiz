@@ -1130,14 +1130,20 @@ const Storage = (() => {
         };
     }
 
+    function cleanVocabularyText(item) {
+        const clean = value => String(value || "")
+            .replace(/^\s*補足[（(]AI生成[）)]\s*[:：]?\s*/u, "")
+            .replace(/(?:^|\n)[ \t]*(?:出典|参照元|引用元)[：:][^\n]*(?:\n[ \t]*https?:\/\/[^\s]+)?/gu, "")
+            .trim();
+        return { ...item, meaning: clean(item.meaning), description: clean(item.description) };
+    }
+
     function getVocabulary() {
     const data = load();
 
     return Array.isArray(data.vocabulary)
         ? data.vocabulary.map(
-            (item) => ({
-                ...item
-            })
+            cleanVocabularyText
         )
         : [];
 }
@@ -1147,9 +1153,7 @@ const Storage = (() => {
 
         return Array.isArray(data.pendingWords)
             ? data.pendingWords.map(
-                (item) => ({
-                    ...item
-                })
+                cleanVocabularyText
             )
             : [];
     }
@@ -1871,6 +1875,7 @@ return {
     save,
 
     getVocabulary,
+    cleanVocabularyText,
     getPendingWords,
     updateVocabularyWord,
     removeVocabularyWord,

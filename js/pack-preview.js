@@ -19,6 +19,32 @@ const PackPreview = (() => {
         let quiz;
         let search = "";
         let count = 10;
+        function singleWordButton(host, word) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "menuButton";
+            button.dataset.addWord = word.word;
+            const key = Storage.normalizeWordKey(word.word);
+            const existing = Storage.getVocabulary().some(item => Storage.normalizeWordKey(item.word) === key);
+            const pending = Storage.getPendingWords().some(item => Storage.normalizeWordKey(item.word) === key);
+            button.textContent = existing ? "自分の語彙に追加済み" : pending ? "登録待ちに追加済み" : "この語彙を追加する";
+            button.disabled = existing || pending;
+            const status = document.createElement("p");
+            status.setAttribute("role", "status");
+            button.onclick = async () => {
+                button.disabled = true;
+                try {
+                    const result = Storage.addVocabularyPack({ ...pack, words: [word] });
+                    await App.reloadWords();
+                    button.textContent = "自分の語彙に追加済み";
+                    status.textContent = result.addedCount ? `「${word.word}」を追加しました。` : "登録済み・登録待ちのため追加しませんでした。";
+                } catch (error) {
+                    status.textContent = error.message;
+                    button.disabled = false;
+                }
+            };
+            host.append(button, status);
+        }
         function header(title, description) {
             root.innerHTML = `<section class="card"><div class="page-heading"><div>
                 <p class="eyebrow">WORD PACK PREVIEW</p><h2>${escape(pack.name)} · ${escape(title)}</h2>
@@ -86,7 +112,7 @@ const PackPreview = (() => {
         function renderQuestion() {
             const question = quiz.getCurrentQuestion();
             if (!question) return renderResult();
-            const body = header("お試しクイズ", "このパックだけから出題します。語彙の登録や学習記録の更新は行いません。");
+            const body = header("お試しクイズ", "解答後に気になった語彙を1語ずつ追加できます。お試しの学習記録は保存されません。");
             body.innerHTML = `<p class="eyebrow">${question.number} / ${question.total}問 · ${escape(question.typeLabel)}</p>
                 <progress class="pack-trial-progress" max="${question.total}" value="${question.number - 1}" aria-label="お試しクイズの進捗"></progress>
                 <p>${escape(question.prompt)}</p><h3 class="pack-trial-question" tabindex="-1">${escape(question.text)}</h3>
@@ -115,6 +141,7 @@ const PackPreview = (() => {
                         <button class="primary" type="button">${question.number === question.total ? '結果を見る' : '次の問題へ'}</button>`;
                     feedback.querySelector("button").onclick = () => { quiz.next(); renderQuestion(); };
                     feedback.querySelector("button").focus();
+                    singleWordButton(feedback, result.word);
                 };
             });
             body.querySelector(".pack-trial-question").focus({ preventScroll: true });
@@ -132,6 +159,10 @@ const PackPreview = (() => {
             body.querySelector("[data-again]").onclick = startTrial;
             body.querySelector("[data-list]").onclick = renderList;
             addButton(body);
+            body.querySelectorAll("ol > li").forEach((item, index) => {
+                const word = pack.words.find(word => word.word === result.answers[index].word);
+                if (word) singleWordButton(item, word);
+            });
         }
         if (trial) startTrial(); else renderList();
     }

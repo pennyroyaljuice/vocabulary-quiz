@@ -2362,11 +2362,7 @@ const AddWords = (() => {
             );
         }
 
-        return {
-            ...json.vocabulary,
-            description: String(json.vocabulary.description || "")
-                .replace(/^\s*補足[（(]AI生成[）)]\s*[:：]?\s*/u, "")
-        };
+        return Storage.cleanVocabularyText(json.vocabulary);
     }
 
     function showMessage(
