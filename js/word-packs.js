@@ -106,7 +106,7 @@ const WordPacks = (() => {
                         </p>
                     </div>
                     <button id="backHomeButton" class="menuButton compact-button" type="button">
-                        ホームへ戻る
+                        設定へ戻る
                     </button>
                 </div>
 
@@ -172,7 +172,7 @@ const WordPacks = (() => {
             .addEventListener(
                 "click",
                 () =>
-                    Router.show("home")
+                    Router.show("settings")
             );
 
         container

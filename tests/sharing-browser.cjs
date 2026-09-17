@@ -14,6 +14,7 @@ const fs = require('node:fs/promises');
         const guest = await receiver.newPage();
         for (const page of [owner, guest]) page.on('pageerror', error => errors.push(error.message));
         await owner.goto(base);
+        await owner.getByRole('button', { name: '設定', exact: true }).click();
         await owner.getByRole('button', { name: '語彙を共有', exact: true }).waitFor();
         await owner.evaluate(async () => {
             Storage.addVocabularyPack({ packId: 'test-source', words: [
@@ -32,6 +33,7 @@ const fs = require('node:fs/promises');
         assert.equal(await owner.locator('#publishedShares h4').innerText(), '動作確認 <b>共有セット</b>');
         assert.equal(await owner.locator('#publishedShares h4 b').count(), 0);
         await guest.goto(base);
+        await guest.getByRole('button', { name: '設定', exact: true }).click();
         await guest.getByRole('button', { name: '語彙を共有', exact: true }).waitFor();
         await guest.evaluate(async () => {
             Storage.addVocabularyPack({ packId: 'existing', words: [{ word: '共有試験既存語', reading: 'きぞんご', meaning: '受信者自身の意味。', description: '消してはいけない補足。', category: '自分' }] });
@@ -48,6 +50,7 @@ const fs = require('node:fs/promises');
         assert.equal(await guest.evaluate(() => Storage.getVocabulary().length), 2);
         // 再読込後も、取り込み元を追跡できる。
         await guest.reload();
+        await guest.getByRole('button', { name: '設定', exact: true }).click();
         await guest.getByRole('button', { name: '語彙を共有', exact: true }).click();
         await fs.mkdir('tests/artifacts', { recursive: true });
         await guest.screenshot({ path: 'tests/artifacts/sharing-mobile.png', fullPage: true, animations: 'disabled' });

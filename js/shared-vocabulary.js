@@ -34,7 +34,7 @@ const SharedVocabulary = (() => {
                 <div class="page-heading">
                     <div><p class="eyebrow">SHARE VOCABULARY</p><h2>語彙を共有</h2>
                     <p class="page-description">共有コードで、語彙セットを渡したり取り込んだりできます。</p></div>
-                    <button class="menuButton compact-button" id="shareHome" type="button">ホームへ戻る</button>
+                    <button class="menuButton compact-button" id="shareHome" type="button">設定へ戻る</button>
                 </div>
             </section>
             <section class="card share-section">
@@ -63,7 +63,7 @@ const SharedVocabulary = (() => {
                 <p class="muted">公開停止はこのブラウザーから行えます。すでに他の人が取り込んだ語彙は消えません。ブラウザーの保存データを消すと公開停止の情報も失われます。</p>
                 <div id="publishedShares"></div>
             </section>`;
-        container.querySelector("#shareHome").onclick = () => Router.show("home");
+        container.querySelector("#shareHome").onclick = () => Router.show("settings");
         const publishedList = container.querySelector("#publishedShares");
         const importedList = container.querySelector("#importedShares");
 

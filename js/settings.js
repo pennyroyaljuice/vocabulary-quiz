@@ -138,6 +138,19 @@ const Settings = (() => {
 
             <section class="card settings-section">
                 <h3>
+                    語彙の追加・共有
+                </h3>
+                <p class="settings-description">
+                    語彙パックを追加したり、共有コードで語彙セットを受け渡したりできます。
+                </p>
+                <div class="settings-button-grid">
+                    <button id="settingsWordPacksButton" class="menuButton" type="button">語彙パック</button>
+                    <button id="settingsSharedVocabularyButton" class="menuButton" type="button">語彙を共有</button>
+                </div>
+            </section>
+
+            <section class="card settings-section">
+                <h3>
                     学習データ
                 </h3>
 
@@ -274,6 +287,10 @@ const Settings = (() => {
     }
 
     function bindEvents(container) {
+        container.querySelector("#settingsWordPacksButton")
+            .addEventListener("click", () => Router.show("wordPacks"));
+        container.querySelector("#settingsSharedVocabularyButton")
+            .addEventListener("click", () => Router.show("sharedVocabulary"));
         container
             .querySelector(
                 "#settingsHomeButton"

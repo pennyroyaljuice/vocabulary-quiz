@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.10.0";
+const APP_VERSION = "0.10.1";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -486,18 +486,6 @@ const App = (() => {
                 </button>
 
                 <button
-                    id="wordPacksButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    語彙パック
-                </button>    
-
-                <button id="sharedVocabularyButton" class="menuButton" type="button">
-                    語彙を共有
-                </button>
-
-                <button
                     id="rankingButton"
                     class="menuButton"
                     type="button"
@@ -712,16 +700,6 @@ const App = (() => {
                 "click",
                 () => Router.show("addWords")
             );
-
-        container
-            .querySelector("#wordPacksButton")
-            .addEventListener(
-                "click",
-                () => Router.show("wordPacks")
-            ); 
-
-        container.querySelector("#sharedVocabularyButton")
-            .addEventListener("click", () => Router.show("sharedVocabulary"));
 
         container
             .querySelector("#reviewButton")
