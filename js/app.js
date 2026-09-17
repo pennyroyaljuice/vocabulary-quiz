@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.10.1";
+const APP_VERSION = "0.11.0";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -208,6 +208,7 @@ const App = (() => {
     }
 
     function registerRoutes() {
+        Router.register("packPreview", (container, params) => PackPreview.render(container, params));
         Router.register("sharedVocabulary", container => SharedVocabulary.render(container));
 
         Router.register(

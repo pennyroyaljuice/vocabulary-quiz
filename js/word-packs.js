@@ -136,6 +136,10 @@ const WordPacks = (() => {
                                         ${pack.description}
                                     </p>
 
+                                    <div class="pack-preview-actions">
+                                        <button class="menuButton" type="button" data-pack-preview="${pack.packId}">100語の一覧を見る</button>
+                                        <button class="menuButton" type="button" data-pack-trial="${pack.packId}">お試しクイズ（10問）</button>
+                                    </div>
                                     <button
                                         class="primary"
                                         type="button"
@@ -174,6 +178,13 @@ const WordPacks = (() => {
                 () =>
                     Router.show("settings")
             );
+
+        container.querySelectorAll("[data-pack-preview]").forEach(button => {
+            button.onclick = () => Router.show("packPreview", { packId: button.dataset.packPreview });
+        });
+        container.querySelectorAll("[data-pack-trial]").forEach(button => {
+            button.onclick = () => Router.show("packPreview", { packId: button.dataset.packTrial, trial: true });
+        });
 
         container
             .querySelectorAll(

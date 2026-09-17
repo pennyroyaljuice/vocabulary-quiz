@@ -20,7 +20,7 @@ function memoryStorage() {
 function app() {
     const context = vm.createContext({ console, localStorage: memoryStorage(), sessionStorage: memoryStorage() });
     for (const source of sources) vm.runInContext(source, context);
-    return vm.runInContext('({ Storage, Quiz, WordPacks })', context);
+    return vm.runInContext('({ Storage, Quiz, WordPacks, createQuiz })', context);
 }
 
 test('three packs contain 300 distinct words and valid quiz metadata', () => {
@@ -111,4 +111,39 @@ test('new packs can complete meaning, word and reading quizzes with explanations
             assert.equal(Quiz.getResult().score, words.length);
         }
     }
+});
+
+test('trial quizzes leave storage, session history and the normal quiz untouched', () => {
+    const values = new Map();
+    const sessionValues = new Map([['vocabularyQuizPreviousWords', '["existing-id"]']]);
+    const storage = map => ({ getItem: key => map.get(key) ?? null, setItem: (key, value) => map.set(key, value), removeItem: key => map.delete(key) });
+    const context = vm.createContext({ console, localStorage: storage(values), sessionStorage: storage(sessionValues) });
+    for (const source of sources) vm.runInContext(source, context);
+    const { Storage, Quiz, createQuiz } = vm.runInContext('({ Storage, Quiz, createQuiz })', context);
+    Storage.addVocabularyPack(packs[0]);
+    Quiz.initialize(Storage.getVocabulary());
+    Quiz.start({ questionCount: 5 });
+    const normalQuestion = JSON.stringify(Quiz.getCurrentQuestion());
+    const beforeLocal = [...values.entries()];
+    const beforeSession = [...sessionValues.entries()];
+    for (const pack of packs) {
+        const trial = createQuiz({ practice: true });
+        trial.initialize(pack.words.map((word, index) => ({ ...word, id: `trial-${index}` })));
+        trial.start({ questionCount: 100 });
+        let question = trial.getCurrentQuestion();
+        const ids = new Set();
+        while (question) {
+            ids.add(question.word.id);
+            // 間違えた場合も普段の苦手語に追加しない。
+            trial.answer(question.number % 2 ? question.correctAnswer : '不正解の回答');
+            question = trial.next();
+        }
+        assert.equal(ids.size, 100);
+        assert.equal(trial.getResult().score, 50);
+    }
+    assert.deepEqual([...values.entries()], beforeLocal);
+    assert.deepEqual([...sessionValues.entries()], beforeSession);
+    assert.equal(JSON.stringify(Quiz.getCurrentQuestion()), normalQuestion);
+    Quiz.answer(Quiz.getCurrentQuestion().correctAnswer);
+    assert.notDeepEqual([...values.entries()], beforeLocal);
 });

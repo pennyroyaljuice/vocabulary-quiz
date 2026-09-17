@@ -1,6 +1,6 @@
 "use strict";
 
-const Quiz = (() => {
+function createQuiz({ practice = false } = {}) {
     const QUESTION_TYPES = {
         WORD_TO_MEANING: "wordToMeaning",
         MEANING_TO_WORD: "meaningToWord",
@@ -66,10 +66,9 @@ const Quiz = (() => {
             ? options.words
             : words;
 
-        const selectedWords = selectWeightedWords(
-            sourceWords,
-            questionCount
-        );
+        const selectedWords = practice
+            ? Utils.shuffle(sourceWords).slice(0, questionCount)
+            : selectWeightedWords(sourceWords, questionCount);
 
         questions = selectedWords.map((word) =>
             createQuestion(word)
@@ -876,10 +875,9 @@ function calculateWeight(word, previousIds = []) {
                 score += 1;
             }
 
-            Storage.updateStats(
-                question.word.id,
-                isCorrect
-            );
+            if (!practice) {
+                Storage.updateStats(question.word.id, isCorrect);
+            }
         }
 
         const answerRecord = {
@@ -1058,4 +1056,6 @@ return {
     isFinished,
     calculateWeight
     };
-})();
+}
+
+const Quiz = createQuiz();
