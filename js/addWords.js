@@ -1196,7 +1196,10 @@ const AddWords = (() => {
                                         ...new Set(
                                             result.duplicates
                                         )
-                                    ]
+                                    ].map((word) => {
+                                        const existing = findDuplicate(word);
+                                        return `${existing?.word || word}：${existing?.meaning?.trim() || "意味は未登録です（登録待ち）"}`;
+                                    })
                                 )}
                             </div>
    
@@ -1547,7 +1550,7 @@ const AddWords = (() => {
         if (duplicate) {
             showMessage(
                 message,
-                `「${duplicate}」と重複しています。`,
+                `「${duplicate.word}」と重複しています。\n意味：${duplicate.meaning?.trim() || "未登録です（登録待ち）"}`,
                 "warning"
             );
             return;
@@ -1660,7 +1663,7 @@ const AddWords = (() => {
                 );
 
         if (vocabularyMatch) {
-            return vocabularyMatch.word;
+            return vocabularyMatch;
         }
 
         const pendingMatch =
@@ -1674,9 +1677,7 @@ const AddWords = (() => {
                         ) === key
                 );
 
-        return pendingMatch
-            ? pendingMatch.word
-            : "";
+        return pendingMatch || null;
     }
 
     function createQuizTypes({
@@ -2361,7 +2362,11 @@ const AddWords = (() => {
             );
         }
 
-        return json.vocabulary;
+        return {
+            ...json.vocabulary,
+            description: String(json.vocabulary.description || "")
+                .replace(/^\s*補足[（(]AI生成[）)]\s*[:：]?\s*/u, "")
+        };
     }
 
     function showMessage(
