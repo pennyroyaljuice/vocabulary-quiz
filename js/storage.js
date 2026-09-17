@@ -1427,6 +1427,31 @@ const Storage = (() => {
         };
     }
 
+    function addSharedVocabulary(pack) {
+        const code = VocabularyShareFormat.normalizeCode(pack?.code);
+        const normalized = VocabularyShareFormat.normalizePack(pack);
+        return addVocabularyPack({
+            packId: `shared-${code}`,
+            words: normalized.words.map(word => ({ ...word, sharedCode: code, sharedName: normalized.name }))
+        });
+    }
+
+    function getSharedVocabularyPacks() {
+        const groups = new Map();
+        for (const word of getVocabulary()) {
+            const match = String(word.packId || "").match(/^shared-(\d{24})$/);
+            if (!match) continue;
+            const code = match[1];
+            if (!groups.has(code)) groups.set(code, { code, name: word.sharedName || "共有語彙", count: 0 });
+            groups.get(code).count++;
+        }
+        return [...groups.values()];
+    }
+
+    function removeSharedVocabulary(code) {
+        return removeVocabularyPack(`shared-${VocabularyShareFormat.normalizeCode(code)}`);
+    }
+
     function removeVocabularyPack(
         packId
     ) {
@@ -1853,6 +1878,9 @@ return {
     addVocabularyPack,
     removeVocabularyPack,
     getVocabularyPackStatus,
+    addSharedVocabulary,
+    getSharedVocabularyPacks,
+    removeSharedVocabulary,
     
     getStats,
     getWordStats,
