@@ -15,6 +15,14 @@ const fs = require('node:fs/promises');
             await page.locator(`[data-pack-preview="${pack}"]`).click();
             await page.getByText('100語中 100語を表示', { exact: true }).waitFor();
             assert.equal(await page.locator('.pack-word-preview > li').count(), 100);
+            if (pack === 'intermediate-100') {
+                assert.equal(await page.locator('.pack-word-preview h3').filter({ hasText: '牽強付会' }).count(), 1);
+                assert.equal(await page.locator('.pack-word-preview h3').filter({ hasText: '郷愁' }).count(), 0);
+            }
+            if (pack === 'advanced-100') {
+                assert.equal(await page.locator('.pack-word-preview h3').filter({ hasText: '郢書燕説' }).count(), 1);
+                assert.equal(await page.locator('.pack-word-preview h3').filter({ hasText: '牽強付会' }).count(), 0);
+            }
             await page.locator('#packSearch').fill('存在しない検索語xyz');
             await page.getByText('一致する語彙はありません。', { exact: true }).waitFor();
             await page.locator('#packSearch').fill('');

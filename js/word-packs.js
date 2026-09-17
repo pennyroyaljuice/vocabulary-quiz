@@ -14,7 +14,7 @@ const WordPacks = (() => {
             packId: "intermediate-100",
             name: "中級100",
             description:
-                "評論・報道・小説の読解を深める100語。抽象的な議論や心情を表す語を、補足説明と例文付きで学べます。",
+                "難易度を見直した改訂版。牽強付会・撞着・掣肘など、抽象的な論理や修辞を読み解く100語。",
             file:
                 "packs/intermediate-100.json"
         },
@@ -22,7 +22,7 @@ const WordPacks = (() => {
             packId: "advanced-100",
             name: "上級100",
             description:
-                "文学・思想・批評に登場する難語と四字熟語100語。文章の趣や微妙な意味を捉える補足説明と例文付き。",
+                "難易度を見直した改訂版。肯綮・剔抉・郢書燕説など、難解な漢語と故事成語を掘り下げる100語。",
             file:
                 "packs/advanced-100.json"
         }
@@ -135,6 +135,7 @@ const WordPacks = (() => {
                                     <p>
                                         ${pack.description}
                                     </p>
+                                    ${pack.packId !== "beginner-100" ? '<p class="settings-description">改訂版では40語を入れ替えています。登録済みの場合も「追加する」で未登録語を取り込めます。以前の語彙と学習記録は残ります。</p>' : ''}
 
                                     <div class="pack-preview-actions">
                                         <button class="menuButton" type="button" data-pack-preview="${pack.packId}">100語の一覧を見る</button>
