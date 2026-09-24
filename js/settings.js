@@ -144,6 +144,8 @@ const Settings = (() => {
                     語彙パックを追加したり、共有コードで語彙セットを受け渡したりできます。
                 </p>
                 <div class="settings-button-grid">
+                    <label class="toggle-row"><span>語彙追加時にAIで自動生成</span><input id="autoGenerateWordsToggle" type="checkbox" ${settings.autoGenerateWords !== false ? 'checked' : ''}></label>
+                    <p class="settings-description">ONにすると、新しく入力した語彙の読み・意味・補足を順番に生成します。生成後は登録待ちから内容を確認して確定できます。OFFにすると、次の語彙から自動生成を停止します。</p>
                     <button id="settingsWordPacksButton" class="menuButton" type="button">語彙パック</button>
                     <button id="settingsSharedVocabularyButton" class="menuButton" type="button">語彙を共有</button>
                 </div>
@@ -287,6 +289,7 @@ const Settings = (() => {
     }
 
     function bindEvents(container) {
+        container.querySelector("#autoGenerateWordsToggle").onchange = event => saveSetting("autoGenerateWords", event.target.checked);
         container.querySelector("#settingsWordPacksButton")
             .addEventListener("click", () => Router.show("wordPacks"));
         container.querySelector("#settingsSharedVocabularyButton")

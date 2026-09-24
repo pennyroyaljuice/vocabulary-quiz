@@ -8,7 +8,8 @@ const Storage = (() => {
         questionCount: 10,
         readingQuiz: true,
         darkMode: "auto",
-        animation: true
+        animation: true,
+        autoGenerateWords: true
     };
 
     function createDefaultData() {
@@ -1135,7 +1136,7 @@ const Storage = (() => {
             .replace(/^\s*補足[（(]AI生成[）)]\s*[:：]?\s*/u, "")
             .replace(/(?:^|\n)[ \t]*(?:出典|参照元|引用元)[：:][^\n]*(?:\n[ \t]*https?:\/\/[^\s]+)?/gu, "")
             .trim();
-        return { ...item, meaning: clean(item.meaning), description: clean(item.description) };
+        return { ...item, meaning: clean(item.meaning), description: clean(item.description).replace(/^具体的に(?:は)?[、,:：\s]*/u, "") };
     }
 
     function getVocabulary() {

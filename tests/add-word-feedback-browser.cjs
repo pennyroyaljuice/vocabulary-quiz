@@ -15,6 +15,7 @@ const assert = require('node:assert/strict');
         await page.goto('https://pennyroyaljuice.github.io/vocabulary-quiz/');
         await page.getByRole('button', { name: '設定', exact: true }).waitFor();
         await page.evaluate(() => {
+            Storage.updateSetting('autoGenerateWords', false);
             Storage.addVocabularyPack({ packId: 'feedback-test', name: '確認用', words: [
                 { word: '既存語', reading: 'きそんご', meaning: '既存の意味 <確認>', quizTypes: ['wordToMeaning'] }
             ] });

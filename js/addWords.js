@@ -1,6 +1,40 @@
 "use strict";
 
 const AddWords = (() => {
+    const autoQueue = new Map();
+    const autoErrors = new Map();
+    let autoRunning = false;
+
+    async function autoGenerate(entries, container) {
+        if (Storage.getSettings().autoGenerateWords === false) return;
+        for (const entry of entries) autoQueue.set(String(entry.id), entry);
+        updatePendingWordsDisplay(container);
+        if (autoRunning) return;
+        autoRunning = true;
+        try {
+            for (const [id] of autoQueue) {
+                if (Storage.getSettings().autoGenerateWords === false) break;
+                const before = Storage.getPendingWords().find(item => String(item.id) === id);
+                if (!before || before.meaning) { autoQueue.delete(id); continue; }
+                try {
+                    const generated = await generateWordByAI(before.word, before.readingHint || before.reading || "", before.contextHint || "", before.sources || []);
+                    const current = Storage.getPendingWords().find(item => String(item.id) === id);
+                    // Do not restore deleted words or overwrite edits made while waiting.
+                    if (current && JSON.stringify(current) === JSON.stringify(before)) {
+                        Storage.updatePendingWord(id, { ...generated, word: before.word, status: "generated" });
+                    }
+                } catch (error) {
+                    autoErrors.set(id, error.message || "生成に失敗しました");
+                }
+                autoQueue.delete(id);
+                updatePendingWordsDisplay(container);
+            }
+        } finally {
+            autoQueue.clear();
+            autoRunning = false;
+            updatePendingWordsDisplay(container);
+        }
+    }
 
     function render(container, words) {
             Array.isArray(words)
@@ -67,6 +101,7 @@ const AddWords = (() => {
                 <p class="settings-description">
                     既存語彙および追加済み語彙との重複は除外されます。
                 </p>
+                <p class="settings-description">AI自動生成：${Storage.getSettings().autoGenerateWords !== false ? 'ON（追加後に順番に生成します）' : 'OFF'}。設定から変更できます。</p>
 
                 <button
                     id="checkNewWordsButton"
@@ -1236,6 +1271,7 @@ const AddWords = (() => {
         updatePendingWordsDisplay(
             container
         );  
+        void autoGenerate(result.added, container);
     }
 
 
@@ -1860,6 +1896,7 @@ const AddWords = (() => {
                                 <button
                                     class="pending-word-edit-button"
                                     type="button"
+                                    ${autoQueue.has(String(item.id)) ? 'disabled' : ''}
                                     data-edit-custom-word="${Utils.escapeAttribute(
                                         item.id
                                     )}"
@@ -1873,7 +1910,7 @@ const AddWords = (() => {
 
                                         <small>
                                             ${
-                                                item.meaning
+                                                autoQueue.has(String(item.id)) ? "AI自動生成中・生成待ち…" : autoErrors.has(String(item.id)) ? `生成できませんでした。開いて再試行してください：${Utils.escapeHtml(autoErrors.get(String(item.id)))}` : item.status === "generated" ? "AI生成済み・内容を確認" : item.meaning
                                                     ? "下書き保存済み"
                                                     : "情報生成待ち"
                                             }
@@ -2250,6 +2287,7 @@ const AddWords = (() => {
                 await fetch(
                     DICTIONARY_API_URL,
                     {
+                        signal: AbortSignal.timeout(20000),
                         method: "POST",
 
                         headers: {
@@ -2328,6 +2366,7 @@ const AddWords = (() => {
             await fetch(
                 AI_API_URL,
                 {
+                    signal: AbortSignal.timeout(120000),
                     method: "POST",
 
                     headers: {
