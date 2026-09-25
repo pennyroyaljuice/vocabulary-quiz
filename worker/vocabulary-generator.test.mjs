@@ -22,8 +22,9 @@ test('context selects one gloss and translation cannot merge other senses', asyn
     assert.equal(selection.contextHint, '生物学');
     const input = JSON.parse(calls[1].messages[1].content);
     assert.deepEqual(input.glosses, ['biology']);
-    assert.equal(input.contextHint, undefined);
-    assert.equal(input.word, undefined);
+    assert.equal(input.contextHint, '生物学');
+    assert.equal(input.word, '生物');
+    assert.equal(input.reading, 'せいぶつ');
     assert.equal(body.vocabulary.reading, 'せいぶつ');
 });
 test('without context only the first dictionary gloss is translated', async () => {

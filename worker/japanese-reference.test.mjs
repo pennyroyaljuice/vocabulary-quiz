@@ -34,12 +34,11 @@ test('modern Japanese excludes Old Japanese entries', () => {
     assert.equal(candidates[0].reading, 'なまもの');
     assert.match(candidates[0].meaning, /加工/);
 });
-test('context-free input fills reading and meaning without user reading', async () => {
+test('multiple Japanese readings require context instead of silently selecting one', async () => {
     const result = await generateFromJapaneseReference({ AI: { run: async () => ({ response: { id: 0 } }) } }, { word: '生物' }, fetcher);
-    assert.equal(result.status, 200);
-    assert.equal(result.body.vocabulary.reading, 'せいぶつ');
-    assert.match(result.body.vocabulary.meaning, /^生命/);
-    assert.ok(result.body.vocabulary.sources[0].url.startsWith('https://ja.wiktionary.org/'));
+    assert.equal(result.status, 422);
+    assert.match(result.body.error, /読みで意味が変わる/);
+    assert.equal(result.body.vocabulary, undefined);
 });
 test('kanji reference to the requested kana entry resolves without mixing senses', async () => {
     const result = await generateFromJapaneseReference({ AI: { run: async () => { throw new Error('No selection needed'); } } }, { word: '生物', readingHint: 'なまもの' }, fetcher);

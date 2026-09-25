@@ -31,6 +31,14 @@ test('a religious mistranslation is rejected, retried against the original and n
   if(mode==='recover')assert.match(result.body.vocabulary.meaning,/仏事/);else assert.equal(result.body.vocabulary,undefined);
  }
 });
+test('斎 requires a reading and the とき sense stays Buddhist even with misleading English',async()=>{
+ for(const readingHint of ['', 'とき', 'トキ']){
+  const response=await worker.fetch(new Request('https://example.test',{method:'POST',headers:{Origin:'http://localhost:5500','Content-Type':'application/json'},body:JSON.stringify({word:'斎',readingHint,dictionaryHint:'読み: とき\n品詞: n\n意味: meals exchanged by parishioners and priests'})}),{AI:{run(){throw Error('must not call AI');}}});
+  const body=await response.json();assert.equal(response.status,readingHint?200:422);
+  if(readingHint){assert.equal(body.vocabulary.reading,'とき');assert.match(body.vocabulary.meaning,/仏事/);assert.doesNotMatch(body.vocabulary.meaning,/司祭|教区|キリスト/);}
+  else assert.match(body.error,/読みで意味が変わります/);
+ }
+});
 test('failed Japanese selection without context never falls back to the first definition',async()=>{
  const fetcher=async()=>Response.json({parse:{title:'試験語',wikitext:"==日本語==\n===名詞===\n'''試験語'''（しけんご）\n# 第一の意味。\n# 第二の意味。"}});
  const result=await generateFromJapaneseReference({AI:{run:async()=>({response:{id:-1}})}},{word:'試験語'},fetcher);

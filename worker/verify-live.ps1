@@ -1,6 +1,6 @@
 $ErrorActionPreference = 'Stop'
 $headers = @{ Origin = 'https://pennyroyaljuice.github.io' }
-$expectedRelease = '2026-09-25-reference-review-v5'
+$expectedRelease = '2026-09-25-sense-context-v6'
 $health = Invoke-RestMethod -Uri ('https://vocabulary-generator.pennyroyal-juice.workers.dev/?verify=' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()) -Headers @{ 'Cache-Control' = 'no-cache' } -TimeoutSec 20
 if ($health.release -ne $expectedRelease) {
     throw "本番の版が一致しません。期待: $expectedRelease / 実際: $($health.release)。生成テストは実行しません。"
@@ -16,6 +16,8 @@ if ($dictionary.found -and $dictionary.entries) {
     }) -join "`n`n"
 }
 $cases = @(
+    @{ word = '斎'; readingHint = ''; contextHint = ''; dictionaryHint = '' },
+    @{ word = '斎'; readingHint = 'とき'; contextHint = '法要の後の食事'; dictionaryHint = '' },
     @{ word = '御斎'; readingHint = ''; contextHint = ''; dictionaryHint = '' },
     @{ word = '生物'; readingHint = ''; contextHint = ''; dictionaryHint = '' },
     @{ word = '生物'; readingHint = 'せいぶつ'; contextHint = ''; dictionaryHint = $dictionaryHint },
