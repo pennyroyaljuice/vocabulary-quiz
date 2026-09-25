@@ -1,21 +1,34 @@
 import assert from 'node:assert/strict';
 import { test, mock } from 'node:test';
 import worker from './vocabulary-generator.js';
+import { readFile } from 'node:fs/promises';
+const legacySource = await readFile(new URL('./vocabulary-generator.js', import.meta.url), 'utf8');
+// Legacy translation helper is no longer reachable from the public handler.
+const { translateDictionaryEntry, selectDictionaryHint } = await import(`data:text/javascript;base64,${Buffer.from(legacySource+'\nexport { translateDictionaryEntry, selectDictionaryHint };').toString('base64')}`);
 mock.method(globalThis, 'fetch', async () => Response.json({ error: { code: 'missingtitle' } }));
 const dictionaryHint = '候補1\n読み: せいぶつ\n品詞: n\n意味: living thing; organism; biology\n\n候補2\n読み: なまもの\n品詞: n\n意味: raw food; perishables';
 async function generate(input, outputs = [{ meaning: '生命をもつもの。', description: '' }]) {
     const calls = [];
     let outputIndex = 0;
-    const response = await worker.fetch(new Request('https://example.test', {
-        method: 'POST', headers: { Origin: 'http://localhost:5500', 'Content-Type': 'application/json' },
-        body: JSON.stringify({ word: '生物', readingHint: 'せいぶつ', dictionaryHint, ...input })
-    }), { AI: { run: async (model, options) => {
+    const params = { word: '生物', readingHint: 'せいぶつ', dictionaryHint, ...input };
+    params.dictionaryHint = selectDictionaryHint(params.dictionaryHint, params.readingHint);
+    const result = await translateDictionaryEntry({ AI: { run: async (model, options) => {
         calls.push(options);
         if (options.response_format?.json_schema?.properties?.approved) return { response: { approved: true, reason: '' } };
         return { response: outputs[Math.min(outputIndex++, outputs.length - 1)] };
-    } } });
+    } } }, params);
+    const response = Response.json(result.body, {status:result.status});
     return { response, body: await response.json(), calls };
 }
+
+test('public handler never falls back to English when Japanese reference is missing', async () => {
+    const response = await worker.fetch(new Request('https://example.test', {
+        method:'POST', headers:{Origin:'http://localhost:5500','Content-Type':'application/json'},
+        body:JSON.stringify({word:'検証用未収録語',readingHint:'けんしょうようみしゅうろくご',dictionaryHint:'読み: けんしょうようみしゅうろくご\n意味: a religious meal'})
+    }), {AI:{run(){throw new Error('English fallback must not run');}}});
+    assert.equal(response.status,422);
+    assert.match((await response.json()).error,/日本語の辞書/);
+});
 test('context selects one gloss and translation cannot merge other senses', async () => {
     const { body, calls } = await generate({ contextHint: '生物学' }, [{ id: 2 }, { meaning: '生命や生き物を研究する学問。' }]);
     const selection = JSON.parse(calls[0].messages[1].content);

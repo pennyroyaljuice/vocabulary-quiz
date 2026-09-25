@@ -7,7 +7,7 @@ const ALLOWED_ORIGINS = new Set([
 const MODEL =
     "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-const RELEASE = "2026-09-25-sense-context-v6";
+const RELEASE = "2026-09-25-japanese-only-v7";
 
 // Independently written definitions verified against Japanese specialist references.
 const VERIFIED_ENTRIES = {
@@ -218,8 +218,7 @@ export default {
             if (verified) return jsonResponse(verified.body, verified.status, corsHeaders);
             const japanese = await generateFromJapaneseReference(env, { word, readingHint, contextHint });
             if (japanese) return jsonResponse(japanese.body, japanese.status, corsHeaders);
-            const result = await translateDictionaryEntry(env, { word, readingHint, contextHint, dictionaryHint });
-            return jsonResponse(result.body, result.status, corsHeaders);
+            return jsonResponse({ error: "日本語の辞書で、この語と読みの意味を確認できませんでした。英語からの翻訳や推測では補いません。表記・読みを確認して再試行するか、日本語辞書で確認した意味を入力してください。" }, 422, corsHeaders);
 
         } catch (error) {
             console.error(

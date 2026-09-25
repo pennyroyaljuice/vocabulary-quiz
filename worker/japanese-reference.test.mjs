@@ -51,7 +51,7 @@ test('incorrect meanings in model output cannot replace the selected definition'
     assert.match(result.body.vocabulary.meaning, /軽すぎる/);
     assert.equal(result.body.vocabulary.reading, 'やくぶそく');
 });
-test('unknown word and unavailable service allow the existing fallback', async () => {
+test('unknown word and unavailable service report no Japanese reference', async () => {
     const env = { AI: { run: async () => { throw new Error('Must not invent unknown words'); } } };
     assert.equal(await generateFromJapaneseReference(env, { word: '雲菓量子ぽよ' }, fetcher), null);
     assert.equal(await generateFromJapaneseReference(env, { word: '生物' }, async () => { throw new Error('offline'); }), null);

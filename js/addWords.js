@@ -2280,88 +2280,6 @@ const AddWords = (() => {
         contextHint = "",
         sources = []
     ) {
-        let dictionaryHint = "";
-
-        try {
-            const dictionaryResponse =
-                await fetch(
-                    DICTIONARY_API_URL,
-                    {
-                        signal: AbortSignal.timeout(20000),
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            word
-                        })
-                    }
-                );
-
-            const dictionaryJson =
-                await dictionaryResponse.json();
-
-            if (
-                dictionaryResponse.ok &&
-                dictionaryJson.found &&
-                Array.isArray(
-                    dictionaryJson.entries
-                )
-            ) {
-                dictionaryHint =
-                    dictionaryJson.entries
-                        .map(
-                            (
-                                entry,
-                                index
-                            ) => {
-                                const readings =
-                                    Array.isArray(
-                                        entry.readings
-                                    )
-                                        ? entry.readings.join(
-                                            ", "
-                                        )
-                                        : "";
-
-                                const partOfSpeech =
-                                    Array.isArray(
-                                        entry.partOfSpeech
-                                    )
-                                        ? entry.partOfSpeech.join(
-                                            ", "
-                                        )
-                                        : "";
-
-                                const glosses =
-                                    Array.isArray(
-                                        entry.glosses
-                                    )
-                                        ? entry.glosses.join(
-                                            "; "
-                                        )
-                                        : "";
-
-                                return [
-                                    `候補${index + 1}`,
-                                    `読み: ${readings}`,
-                                    `品詞: ${partOfSpeech}`,
-                                    `意味: ${glosses}`
-                                ].join("\n");
-                            }
-                        )
-                        .join("\n\n");
-            }
-        } catch (error) {
-            console.warn(
-                "辞書検索に失敗しました。AI生成のみで続行します。",
-                error
-            );
-        }
-
         const response =
             await fetch(
                 AI_API_URL,
@@ -2378,8 +2296,7 @@ const AddWords = (() => {
                         word,
                         readingHint,
                         contextHint,
-                        sources,
-                        dictionaryHint
+                        sources
                     })
                 }
             );
