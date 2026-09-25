@@ -1,15 +1,18 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { test, mock } from 'node:test';
 import worker from './vocabulary-generator.js';
+mock.method(globalThis, 'fetch', async () => Response.json({ error: { code: 'missingtitle' } }));
 const dictionaryHint = '候補1\n読み: せいぶつ\n品詞: n\n意味: living thing; organism; biology\n\n候補2\n読み: なまもの\n品詞: n\n意味: raw food; perishables';
 async function generate(input, outputs = [{ meaning: '生命をもつもの。', description: '' }]) {
     const calls = [];
+    let outputIndex = 0;
     const response = await worker.fetch(new Request('https://example.test', {
         method: 'POST', headers: { Origin: 'http://localhost:5500', 'Content-Type': 'application/json' },
         body: JSON.stringify({ word: '生物', readingHint: 'せいぶつ', dictionaryHint, ...input })
     }), { AI: { run: async (model, options) => {
         calls.push(options);
-        return { response: outputs[Math.min(calls.length - 1, outputs.length - 1)] };
+        if (options.response_format?.json_schema?.properties?.approved) return { response: { approved: true, reason: '' } };
+        return { response: outputs[Math.min(outputIndex++, outputs.length - 1)] };
     } } });
     return { response, body: await response.json(), calls };
 }
@@ -26,7 +29,7 @@ test('context selects one gloss and translation cannot merge other senses', asyn
 test('without context only the first dictionary gloss is translated', async () => {
     const { calls, body } = await generate({});
     assert.deepEqual(JSON.parse(calls[0].messages[1].content).glosses, ['living thing']);
-    assert.equal(calls.length, 1);
+    assert.equal(calls.length, 3);
     assert.equal(body.vocabulary.needsReview, true);
     assert.match(body.vocabulary.comparisonNote, /living thing/);
 });
@@ -70,7 +73,7 @@ test('unique reading works without a hint', async () => {
 test('repeated headword triggers a correction and can recover', async () => {
     const { response, calls } = await generate({}, [{ meaning: '「生物」。' }, { meaning: '生命をもつもの。' }]);
     assert.equal(response.status, 200);
-    assert.equal(calls.length, 2);
+    assert.equal(calls.length, 4);
     assert.ok(JSON.parse(calls[1].messages[1].content).correction);
 });
 test('invalid translations stop after two attempts', async () => {
@@ -79,4 +82,10 @@ test('invalid translations stop after two attempts', async () => {
         assert.equal(response.status, 422);
         assert.equal(calls.length, 2);
     }
+});
+
+test('fallback adds a supplement without replacing the translated meaning', async () => {
+    const { body } = await generate({}, [{ meaning: '生命をもつもの。' }, { supplement: '例：池の生物を観察する。', meaning: '誤った意味' }]);
+    assert.equal(body.vocabulary.meaning, '生命をもつもの。');
+    assert.match(body.vocabulary.description, /例：池の生物/);
 });
