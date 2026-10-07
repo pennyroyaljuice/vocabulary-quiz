@@ -4,5 +4,6 @@
   "compatibility_date": "2026-09-25",
   "account_id": "8de9c2953bbceff89ad5c016248f2258",
   "workers_dev": true,
-  "ai": { "binding": "AI" }
+  "ai": { "binding": "AI" },
+  "services": [{ "binding": "DICTIONARY", "service": "vocabulary-dictionary" }]
 }

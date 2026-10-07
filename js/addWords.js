@@ -294,13 +294,14 @@ const AddWords = (() => {
 
                     <span class="pending-status">
                         ${
-                            item.status === "generated"
+                            item.referenceCheck === "ai_unverified" ? "AI仮案・辞書未確認" : item.status === "generated"
                                 ? "AI生成済み"
                                 : "手動編集中"
                         }
                     </span>
                 </div>
 
+                <p class="settings-description ${item.comparisonNote ? "" : "hidden"}" data-reference-note>${Utils.escapeHtml(item.comparisonNote || "")}</p>
                 <div class="custom-word-fields">
                     ${createInputField(
                         "語彙",
@@ -848,7 +849,7 @@ const AddWords = (() => {
                 generated.category || "";
 
             const sourceInput = card.querySelector('[data-field="sourceUrls"]');
-            if (sourceInput && Array.isArray(generated.sources) && generated.sources.length) {
+            if (sourceInput && Array.isArray(generated.sources)) {
                 sourceInput.value = sourcesToText(generated.sources);
             }
 
@@ -877,7 +878,7 @@ const AddWords = (() => {
                     Array.isArray(
                         generated.sources
                     ) &&
-                    generated.sources.length > 0
+                    (generated.sources.length > 0 || generated.referenceCheck === "ai_unverified")
                         ? generated.sources
                         : sources,
 
@@ -890,6 +891,13 @@ const AddWords = (() => {
             }
         );
 
+        const statusLabel = card.querySelector(".pending-status");
+        if (statusLabel) statusLabel.textContent = generated.referenceCheck === "ai_unverified" ? "AI仮案・辞書未確認" : "AI生成済み";
+        const referenceNote = card.querySelector("[data-reference-note]");
+        if (referenceNote) {
+            referenceNote.textContent = generated.comparisonNote || "";
+            referenceNote.classList.toggle("hidden", !generated.comparisonNote);
+        }
         if (
             generated.needsReview &&
             generated.comparisonNote
@@ -1910,7 +1918,7 @@ const AddWords = (() => {
 
                                         <small>
                                             ${
-                                                autoQueue.has(String(item.id)) ? "AI自動生成中・生成待ち…" : autoErrors.has(String(item.id)) ? `生成できませんでした。開いて再試行してください：${Utils.escapeHtml(autoErrors.get(String(item.id)))}` : item.status === "generated" ? "AI生成済み・内容を確認" : item.meaning
+                                                autoQueue.has(String(item.id)) ? "AI自動生成中・生成待ち…" : autoErrors.has(String(item.id)) ? `生成できませんでした。開いて再試行してください：${Utils.escapeHtml(autoErrors.get(String(item.id)))}` : item.referenceCheck === "ai_unverified" ? "AI仮案・辞書未確認・内容を確認" : item.status === "generated" ? "AI生成済み・内容を確認" : item.meaning
                                                     ? "下書き保存済み"
                                                     : "情報生成待ち"
                                             }
@@ -1965,7 +1973,7 @@ const AddWords = (() => {
 
                     <span class="pending-status">
                         ${
-                            item.status === "generated"
+                            item.referenceCheck === "ai_unverified" ? "AI仮案・辞書未確認" : item.status === "generated"
                                 ? "生成済み"
                                 : "入力待ち"
                         }
