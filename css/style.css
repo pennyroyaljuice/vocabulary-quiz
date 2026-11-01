@@ -69,19 +69,32 @@ justify-content:space-between;
 
 align-items:center;
 
+gap:12px;
+
 margin-bottom:20px;
 
 }
 
 .logo{
 
-font-size:2rem;
+flex:0 1 360px;
+min-width:0;
+line-height:1;
 
-font-weight:bold;
+}
+
+.logo img{
+
+display:block;
+width:100%;
+height:auto;
 
 }
 
 #word-count{
+
+flex:0 0 auto;
+white-space:nowrap;
 
 color:var(--sub);
 

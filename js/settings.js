@@ -266,7 +266,7 @@ const Settings = (() => {
             </section>
 
         <section class="app-version">
-            Vocabulary Quiz
+            Word Vault
             <strong>
                 Version ${APP_VERSION}
             </strong>
