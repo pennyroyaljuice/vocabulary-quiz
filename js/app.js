@@ -416,19 +416,24 @@ const App = (() => {
             </div>
 
             <strong>
-                ${todayActivity.answered}
-                / ${dailyGoal}問
+                <span class="daily-progress-value">${todayActivity.answered} / ${dailyGoal}</span>問
             </strong>
         </div>
 
         <div
             class="daily-progress-track"
+            role="progressbar"
             aria-label="今日の学習進捗"
+            aria-valuemin="0"
+            aria-valuemax="${dailyGoal}"
+            aria-valuenow="${Math.min(todayActivity.answered, dailyGoal)}"
+            aria-valuetext="${dailyGoal}問中${todayActivity.answered}問完了"
         >
-            <div
-                class="daily-progress-bar"
-                style="width: ${dailyProgress}%"
-            ></div>
+            ${Array.from({ length: 10 }, (_, index) => `
+                <span class="daily-progress-cell" aria-hidden="true">
+                    <span style="width:${Math.max(0, Math.min(100, dailyProgress * 10 - index * 100))}%"></span>
+                </span>
+            `).join("")}
         </div>
 
         <p class="daily-progress-message">
@@ -599,6 +604,15 @@ const App = (() => {
             )}
         </section>
         `;
+
+        // Decorative arrows stay separate from readable Japanese button labels.
+        container.querySelectorAll(".home-menu .menuButton, #dailyButton")
+            .forEach(button => {
+                const arrow = document.createElement("span");
+                arrow.className = "pixel-arrow";
+                arrow.setAttribute("aria-hidden", "true");
+                button.append(arrow);
+            });
 
         container
             .querySelector("#dailyButton")

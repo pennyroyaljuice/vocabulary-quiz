@@ -1,0 +1,161 @@
+/* Pixel typography is opt-in for interface labels and metrics only.
+   Learning words, readings, meanings, choices and form fields retain normal type. */
+@font-face {
+    font-family: "Word Vault Pixel";
+    src: url("../assets/fonts/press-start-2p.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    unicode-range: U+0020-007E;
+}
+
+:root {
+    --reading-font: "BIZ UDPGothic", "Hiragino Sans", "Yu Gothic", Meiryo, sans-serif;
+    --pixel-font: "Word Vault Pixel", monospace;
+    --pixel-outline: #153747;
+    --pixel-shadow: #9ae4cf;
+    --pixel-step: polygon(8px 0, calc(100% - 8px) 0,
+        calc(100% - 8px) 4px, calc(100% - 4px) 4px,
+        calc(100% - 4px) 8px, 100% 8px,
+        100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px),
+        calc(100% - 4px) calc(100% - 4px), calc(100% - 8px) calc(100% - 4px),
+        calc(100% - 8px) 100%, 8px 100%,
+        8px calc(100% - 4px), 4px calc(100% - 4px),
+        4px calc(100% - 8px), 0 calc(100% - 8px),
+        0 8px, 4px 8px, 4px 4px, 8px 4px);
+}
+
+body, button, input, textarea, select {
+    font-family: var(--reading-font);
+}
+
+.topbar {
+    padding: 16px 12px;
+    background: #0b273a;
+    clip-path: var(--pixel-step);
+    gap: 10px;
+}
+
+#word-count {
+    min-width: 66px;
+    padding: 8px;
+    border: 2px solid #8ce9cb;
+    border-radius: 0;
+    background: #123b43;
+    color: #a3f5dc;
+    clip-path: polygon(4px 0, calc(100% - 4px) 0, calc(100% - 4px) 2px,
+        100% 2px, 100% calc(100% - 2px), calc(100% - 4px) calc(100% - 2px),
+        calc(100% - 4px) 100%, 4px 100%, 4px calc(100% - 2px),
+        0 calc(100% - 2px), 0 2px, 4px 2px);
+}
+
+.word-count-label, #word-count-value, .eyebrow,
+.stat strong, .daily-progress-value {
+    font-family: var(--pixel-font);
+    font-weight: 400;
+    font-synthesis: none;
+}
+
+.word-count-label { font-size: 8px; letter-spacing: 1px; margin-bottom: 6px; }
+#word-count-value { font-size: 16px; }
+.eyebrow { font-size: 9px; line-height: 1.8; letter-spacing: 1px; color: var(--mint-ink); }
+.home-card .eyebrow { color: var(--sub); }
+.badge { background: var(--mint-surface); color: var(--mint-ink); }
+.stat strong { font-size: 20px; line-height: 1.6; }
+.daily-progress-value { font-size: 14px; }
+
+/* Two stepped layers form the frame without clipping text or focus rings. */
+.card, .primary, .menuButton, .stat {
+    --panel-fill: var(--card);
+    --panel-line: var(--pixel-outline);
+    position: relative;
+    isolation: isolate;
+    border: 0;
+    border-radius: 0;
+    background: transparent !important;
+    box-shadow: none;
+}
+
+.card::before, .primary::before, .menuButton::before, .stat::before,
+.card::after, .primary::after, .menuButton::after, .stat::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    clip-path: var(--pixel-step);
+}
+
+.card::before, .primary::before, .menuButton::before, .stat::before {
+    inset: 0;
+    z-index: -2;
+    background: var(--panel-line);
+}
+
+.card::after, .primary::after, .menuButton::after, .stat::after {
+    inset: 2px;
+    z-index: -1;
+    background: var(--panel-fill);
+}
+
+.card { filter: drop-shadow(4px 4px 0 var(--pixel-shadow)); margin-bottom: 22px; }
+.menuButton, .stat { --panel-fill: var(--mint-surface); --panel-line: var(--mint-ink); }
+.menuButton:hover, .stat:hover { --panel-fill: var(--mint-border); }
+.primary { --panel-fill: #0b273a; --panel-line: #138a78; color: #fff; }
+.primary:hover { --panel-fill: #17465b; }
+.primary::after { inset: 2px 2px 5px; }
+.primary::before { background: #41d3aa; }
+
+.home-menu .menuButton { text-align: left; padding-right: 36px; }
+.home-menu .menuButton:last-child { margin-bottom: 0; }
+.pixel-arrow {
+    position: absolute;
+    right: 18px;
+    top: calc(50% - 7px);
+    width: 10px;
+    height: 14px;
+    background: var(--mint-ink);
+    clip-path: polygon(0 0, 4px 0, 4px 3px, 7px 3px, 7px 5px,
+        10px 5px, 10px 9px, 7px 9px, 7px 11px, 4px 11px,
+        4px 14px, 0 14px, 0 10px, 3px 10px, 3px 4px, 0 4px);
+}
+#dailyButton { padding-right: 38px; }
+#dailyButton .pixel-arrow { background: #7cf2cb; }
+
+.daily-progress-track {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: clamp(4px, 1.6vw, 12px);
+    height: auto;
+    border-radius: 0;
+    background: transparent !important;
+    overflow: visible;
+}
+.daily-progress-cell {
+    display: block;
+    max-width: 28px;
+    width: 100%;
+    aspect-ratio: 1;
+    border: 2px solid var(--mint-border);
+    background: var(--mint-surface);
+}
+.daily-progress-cell > span {
+    display: block;
+    height: 100%;
+    background: #21c69b;
+}
+
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 4px;
+}
+
+html[data-theme="dark"] { --pixel-outline: #6cbaa8; --pixel-shadow: #203e3b; }
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] { --pixel-outline: #6cbaa8; --pixel-shadow: #203e3b; }
+}
+@media (max-width: 360px) {
+    .topbar { padding: 12px 8px; gap: 8px; }
+    #word-count { min-width: 60px; padding: 7px 6px; }
+    #word-count-value { font-size: 14px; }
+    .daily-progress-heading { gap: 8px; }
+    .daily-progress-value { font-size: 12px; }
+}
