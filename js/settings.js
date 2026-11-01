@@ -111,6 +111,20 @@ const Settings = (() => {
 
             <section class="card settings-section">
                 <h3>
+                    画面デザイン
+                </h3>
+                <p class="settings-description">
+                    ドット調の装飾と、丸みのあるシンプルな表示を切り替えます。
+                    どちらも学習用の語彙には読みやすい通常書体を使います。
+                </p>
+                <div class="settings-options" role="group" aria-label="画面デザイン">
+                    ${createRadioOption("uiStyle", "pixel", "ドットUI", settings.uiStyle !== "simple")}
+                    ${createRadioOption("uiStyle", "simple", "シンプルUI", settings.uiStyle === "simple")}
+                </div>
+            </section>
+
+            <section class="card settings-section">
+                <h3>
                     アニメーション
                 </h3>
 
@@ -350,6 +364,13 @@ const Settings = (() => {
                     }
                 );
             });
+
+        container.querySelectorAll('input[name="uiStyle"]').forEach(input => {
+            input.addEventListener("change", () => {
+                saveSetting("uiStyle", input.value);
+                Appearance.apply(Storage.getSettings());
+            });
+        });
 
         container
             .querySelector(

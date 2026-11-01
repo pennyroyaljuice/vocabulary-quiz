@@ -8,6 +8,7 @@ const Storage = (() => {
         questionCount: 10,
         readingQuiz: true,
         darkMode: "auto",
+        uiStyle: "pixel",
         animation: true,
         autoGenerateWords: true
     };
@@ -113,6 +114,10 @@ const Storage = (() => {
                     ? source.unifiedVocabularyVersion
                     : 0
         };
+
+        if (!["pixel", "simple"].includes(migrated.settings.uiStyle)) {
+            migrated.settings.uiStyle = "pixel";
+        }
 
         // 旧版では darkMode が boolean の場合がある
         if (migrated.settings.darkMode === true) {

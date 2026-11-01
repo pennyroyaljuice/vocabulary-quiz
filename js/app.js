@@ -316,6 +316,8 @@ const App = (() => {
         const mode =
             settings.darkMode || "auto";
 
+        Appearance.apply(settings);
+
         document.documentElement.dataset.theme =
             mode;
 
@@ -429,11 +431,14 @@ const App = (() => {
             aria-valuenow="${Math.min(todayActivity.answered, dailyGoal)}"
             aria-valuetext="${dailyGoal}問中${todayActivity.answered}問完了"
         >
+            <div class="daily-progress-bar" style="width:${dailyProgress}%" aria-hidden="true"></div>
+            <div class="daily-progress-pixels" aria-hidden="true">
             ${Array.from({ length: 10 }, (_, index) => `
                 <span class="daily-progress-cell" aria-hidden="true">
                     <span style="width:${Math.max(0, Math.min(100, dailyProgress * 10 - index * 100))}%"></span>
                 </span>
             `).join("")}
+            </div>
         </div>
 
         <p class="daily-progress-message">

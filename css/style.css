@@ -1265,6 +1265,10 @@ html[data-theme="dark"] .learning-progress-track {
     transition: width 0.35s ease;
 }
 
+.daily-progress-pixels, .pixel-arrow {
+    display: none;
+}
+
 .daily-progress-message {
     margin: 12px 0 0;
     color: var(--sub);

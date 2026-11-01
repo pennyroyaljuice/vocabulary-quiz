@@ -107,6 +107,7 @@ body, button, input, textarea, select {
 .home-menu .menuButton { text-align: left; padding-right: 36px; }
 .home-menu .menuButton:last-child { margin-bottom: 0; }
 .pixel-arrow {
+    display: block;
     position: absolute;
     right: 18px;
     top: calc(50% - 7px);
@@ -121,13 +122,16 @@ body, button, input, textarea, select {
 #dailyButton .pixel-arrow { background: #7cf2cb; }
 
 .daily-progress-track {
-    display: grid;
-    grid-template-columns: repeat(10, minmax(0, 1fr));
-    gap: clamp(4px, 1.6vw, 12px);
     height: auto;
     border-radius: 0;
     background: transparent !important;
     overflow: visible;
+}
+.daily-progress-track > .daily-progress-bar { display: none; }
+.daily-progress-pixels {
+    display: grid;
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+    gap: clamp(4px, 1.6vw, 12px);
 }
 .daily-progress-cell {
     display: block;
