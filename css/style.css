@@ -2313,6 +2313,42 @@ html[data-theme="dark"]
 .pack-trial-choices button:disabled { opacity: 1; color: var(--text); cursor: default; }
 .pack-trial-choices .pack-choice-correct { outline: 2px solid #238653; outline-offset: -2px; }
 .pack-trial-choices .pack-choice-wrong { outline: 2px solid #c74a4a; outline-offset: -2px; }
+
+/* Keep the small learning controls clear in both interface designs. */
+.quiz-question-word-row .menuButton {
+    min-height: 40px;
+    border: 1px solid var(--mint-border);
+    border-radius: 8px;
+    background: var(--mint-surface) !important;
+    color: var(--text);
+    box-shadow: none;
+    font-family: inherit;
+    font-size: .95rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.quiz-question-word-row .menuButton::before,
+.quiz-question-word-row .menuButton::after {
+    display: none;
+}
+
+.quiz-question-word-row .menuButton:hover:not(:disabled) {
+    border-color: var(--mint-ink);
+}
+
+.quiz-question-word-row .quiz-choice-reading-button.reading-on {
+    border-color: var(--mint-ink);
+    color: var(--mint-ink);
+    opacity: 1;
+}
+
+.quiz-question-word-row .quiz-choice-reading-button.reading-off,
+.quiz-question-word-row .quiz-choice-reading-button.reading-unavailable,
+.quiz-question-word-row .quiz-choice-reading-button:disabled {
+    color: var(--sub);
+    opacity: 1;
+}
 .pack-trial-feedback:not(:empty) { padding: 18px 0; margin: 18px 0; border-top: 2px solid var(--accent, #4169e1); }
 .pack-trial-feedback p { margin: 12px 0; line-height: 1.8; overflow-wrap: anywhere; }
 .pack-trial-note { white-space: pre-wrap; }
