@@ -186,12 +186,12 @@ const App = (() => {
     function updateHeaderWordCount() {
         const element =
             document.getElementById(
-                "word-count"
+                "word-count-value"
             );
 
         if (element) {
             element.textContent =
-                `${words.length} Words`;
+                String(words.length);
         }
     }
 
