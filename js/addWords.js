@@ -36,6 +36,22 @@ const AddWords = (() => {
         }
     }
 
+    // Share the pending-word storage and AI queue with the full add page.
+    function addFromHome(raw, container) {
+        const entry = parseVocabularyLine(raw);
+
+        if (!entry.word) {
+            return { added: [], duplicates: [], empty: true };
+        }
+
+        const result = Storage.addUnifiedPendingWords([entry]);
+        if (result.added.length) {
+            void autoGenerate(result.added, container);
+        }
+
+        return result;
+    }
+
     function render(container, words) {
             Array.isArray(words)
                 ? [...words]
@@ -2422,6 +2438,7 @@ const AddWords = (() => {
 
         return {
             render,
+            addFromHome,
             renderEditor,
             renderUnifiedEditor
         };
