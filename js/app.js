@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.11.2";
+const APP_VERSION = "0.11.3";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -411,49 +411,6 @@ const App = (() => {
         <button id="addWordsButton" class="menuButton home-quick-add-management" type="button">登録待ち語彙</button>
     </section>
 
-            <section class="card home-menu">
-            
-                <button
-                    id="reviewButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    復習ノート
-                </button>
-
-                <button
-                    id="dictionaryButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    語彙一覧
-                </button>
-
-                <button
-                    id="rankingButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    苦手ランキング
-                </button>
-
-                <button
-                    id="statisticsButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    統計
-                </button>
-
-                <button
-                    id="settingsButton"
-                    class="menuButton"
-                    type="button"
-                >
-                    設定
-                </button>
-            </section>
-
             <section class="card home-cloud-sync">
                 <div class="home-cloud-sync-heading">
                     <div>
@@ -541,6 +498,49 @@ const App = (() => {
                 "unseen"
             )}
         </section>
+            <section class="card home-menu">
+            
+                <button
+                    id="reviewButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    復習ノート
+                </button>
+
+                <button
+                    id="dictionaryButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    語彙一覧
+                </button>
+
+                <button
+                    id="rankingButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    苦手ランキング
+                </button>
+
+                <button
+                    id="statisticsButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    統計
+                </button>
+
+                <button
+                    id="settingsButton"
+                    class="menuButton"
+                    type="button"
+                >
+                    設定
+                </button>
+            </section>
+
         `;
 
         // Decorative arrows stay separate from readable Japanese button labels.
