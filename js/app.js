@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.11.0";
+const APP_VERSION = "0.11.1";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -334,9 +334,6 @@ const App = (() => {
         const summary =
             Statistics.getSummary(words);
 
-        const todayActivity =
-            Storage.getTodayActivity();
-
         const settings =
             Storage.getSettings();
 
@@ -344,16 +341,6 @@ const App = (() => {
             Number(
                 settings.questionCount
             ) || 10;
-
-        const dailyProgress =
-            Math.min(
-                Math.round(
-                    todayActivity.answered /
-                    dailyGoal *
-                    100
-                ),
-                100
-            );
 
         container.innerHTML = `
 
@@ -405,69 +392,22 @@ const App = (() => {
             </section>
 
 
-    <section class="card daily-progress-card">
-        <div class="daily-progress-heading">
-            <div>
-                <p class="eyebrow">
-                    TODAY
-                </p>
-
-                <h3>
-                    今日の学習
-                </h3>
-            </div>
-
-            <strong>
-                <span class="daily-progress-value">${todayActivity.answered} / ${dailyGoal}</span>問
-            </strong>
-        </div>
-
-        <div
-            class="daily-progress-track"
-            role="progressbar"
-            aria-label="今日の学習進捗"
-            aria-valuemin="0"
-            aria-valuemax="${dailyGoal}"
-            aria-valuenow="${Math.min(todayActivity.answered, dailyGoal)}"
-            aria-valuetext="${dailyGoal}問中${todayActivity.answered}問完了"
-        >
-            <div class="daily-progress-bar" style="width:${dailyProgress}%" aria-hidden="true"></div>
-            <div class="daily-progress-pixels" aria-hidden="true">
-            ${Array.from({ length: 10 }, (_, index) => `
-                <span class="daily-progress-cell" aria-hidden="true">
-                    <span style="width:${Math.max(0, Math.min(100, dailyProgress * 10 - index * 100))}%"></span>
-                </span>
-            `).join("")}
-            </div>
-        </div>
-
-        <p class="daily-progress-message">
-            ${
-                todayActivity.answered >=
-                dailyGoal
-                    ? "今日の目標を達成しました。"
-                    : `あと${
-                        dailyGoal -
-                        todayActivity.answered
-                    }問で今日の目標達成です。`
-            }
-        </p>
-
-        ${
-            todayActivity.answered
-                ? `
-                    <p class="daily-progress-accuracy">
-                        今日の正答率：
-                        <strong>
-                            ${Utils.percentage(
-                                todayActivity.correct,
-                                todayActivity.answered
-                            )}%
-                        </strong>
-                    </p>
-                `
-                : ""
-        }
+    <section class="card home-quick-add-card">
+        <p class="eyebrow">ADD VOCABULARY</p>
+        <h3>語彙を追加</h3>
+        <form id="homeQuickAddForm" class="home-quick-add-form">
+            <input
+                id="homeQuickAddInput"
+                class="home-quick-add-input"
+                type="text"
+                aria-label="追加する語彙"
+                placeholder="言葉を入力"
+                autocomplete="off"
+                required
+            >
+            <button class="primary" type="submit">追加</button>
+        </form>
+        <p id="homeQuickAddResult" class="home-quick-add-result" role="status" aria-live="polite" hidden></p>
     </section>
 
             <section class="card home-menu">
@@ -493,7 +433,7 @@ const App = (() => {
                     class="menuButton"
                      type="button"
                 >
-                    語彙を追加
+                    登録待ち・語彙管理
                 </button>
 
                 <button
@@ -713,6 +653,41 @@ const App = (() => {
                     });
                 }
             );
+
+        const quickAddForm = container.querySelector("#homeQuickAddForm");
+        const quickAddInput = container.querySelector("#homeQuickAddInput");
+        const quickAddResult = container.querySelector("#homeQuickAddResult");
+
+        quickAddForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            try {
+                const result = AddWords.addFromHome(quickAddInput.value, container);
+                quickAddResult.hidden = false;
+
+                if (result.empty) {
+                    quickAddResult.className = "home-quick-add-result is-warning";
+                    quickAddResult.textContent = "追加する言葉を入力してください。";
+                } else if (result.added.length) {
+                    quickAddInput.value = "";
+                    quickAddResult.className = "home-quick-add-result is-success";
+                    quickAddResult.textContent =
+                        "「" + result.added[0].word + "」を登録待ちへ追加しました。" +
+                        (Storage.getSettings().autoGenerateWords !== false
+                            ? "AIによる意味の自動生成を試みます。"
+                            : "AI自動生成は設定でOFFになっています。");
+                } else {
+                    quickAddResult.className = "home-quick-add-result is-warning";
+                    quickAddResult.textContent = "この言葉はすでに登録済み、または登録待ちです。";
+                }
+            } catch (error) {
+                console.error(error);
+                quickAddResult.hidden = false;
+                quickAddResult.className = "home-quick-add-result is-warning";
+                quickAddResult.textContent =
+                    error.message || "語彙の追加に失敗しました。";
+            }
+        });
 
         container
             .querySelector("#addWordsButton")
