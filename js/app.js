@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.11.1";
+const APP_VERSION = "0.11.2";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -408,6 +408,7 @@ const App = (() => {
             <button class="primary" type="submit">追加</button>
         </form>
         <p id="homeQuickAddResult" class="home-quick-add-result" role="status" aria-live="polite" hidden></p>
+        <button id="addWordsButton" class="menuButton home-quick-add-management" type="button">登録待ち語彙</button>
     </section>
 
             <section class="card home-menu">
@@ -426,14 +427,6 @@ const App = (() => {
                     type="button"
                 >
                     語彙一覧
-                </button>
-
-                 <button
-                    id="addWordsButton"
-                    class="menuButton"
-                     type="button"
-                >
-                    登録待ち・語彙管理
                 </button>
 
                 <button
