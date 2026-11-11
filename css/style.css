@@ -2388,3 +2388,7 @@ html[data-theme="dark"]
 }
 .home-quick-add-result.is-success { color: var(--mint-ink); }
 .home-quick-add-result.is-warning { color: var(--danger); }
+.home-quick-add-card .home-quick-add-management {
+    margin-top: 16px;
+    margin-bottom: 0;
+}
