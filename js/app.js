@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.11.3";
+const APP_VERSION = "0.11.4";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -334,6 +334,21 @@ const App = (() => {
         const summary =
             Statistics.getSummary(words);
 
+        // Match the shortcut counts to the exact pools used by their quizzes.
+        const quizStats = Storage.getStats();
+        const weakQuizWords = words.filter((word) => {
+            const stat = quizStats[word.id] || quizStats[String(word.id)];
+            if (!stat || !stat.asked) return false;
+            const accuracy = stat.correct / stat.asked;
+            return stat.wrong >= 2 || accuracy < 0.6;
+        });
+        const unseenQuizWords = words.filter((word) => {
+            const stat = quizStats[word.id] || quizStats[String(word.id)];
+            return !stat || !stat.asked;
+        });
+        const pendingWordCount = Storage.getPendingWords().length;
+
+
         const settings =
             Storage.getSettings();
 
@@ -377,7 +392,8 @@ const App = (() => {
                     class="menuButton"
                     type="button"
                 >
-                    苦手語クイズ
+                    <span class="home-button-label">苦手語クイズ</span>
+                    <span class="home-button-count">${weakQuizWords.length}</span>
                 </button>
 
                 <button
@@ -385,7 +401,8 @@ const App = (() => {
                     class="menuButton"
                     type="button"
                 >
-                    未出題クイズ
+                    <span class="home-button-label">未出題クイズ</span>
+                    <span class="home-button-count">${unseenQuizWords.length}</span>
                 </button>
             </div>
 
@@ -408,7 +425,7 @@ const App = (() => {
             <button class="primary" type="submit">追加</button>
         </form>
         <p id="homeQuickAddResult" class="home-quick-add-result" role="status" aria-live="polite" hidden></p>
-        <button id="addWordsButton" class="menuButton home-quick-add-management" type="button">登録待ち語彙</button>
+        <button id="addWordsButton" class="menuButton home-quick-add-management" type="button"><span class="home-button-label">登録待ち語彙</span><span class="home-button-count" id="homePendingWordCount">${pendingWordCount}</span></button>
     </section>
 
             <section class="card home-cloud-sync">
@@ -564,31 +581,7 @@ const App = (() => {
             .addEventListener(
                 "click",
                 () => {
-                    const stats =
-                        Storage.getStats();
-
-                    const weakWords =
-                        words.filter((word) => {
-                            const stat =
-                                stats[word.id] ||
-                                stats[String(word.id)];
-
-                            if (
-                                !stat ||
-                                !stat.asked
-                            ) {
-                                return false;
-                            }
-
-                            const accuracy =
-                                stat.correct /
-                                stat.asked;
-
-                            return (
-                                stat.wrong >= 2 ||
-                                accuracy < 0.6
-                            );
-                        });
+                    const weakWords = weakQuizWords;
 
                     if (!weakWords.length) {
                         alert(
@@ -614,20 +607,7 @@ const App = (() => {
             .addEventListener(
                 "click",
                 () => {
-                    const stats =
-                        Storage.getStats();
-
-                    const unseenWords =
-                        words.filter((word) => {
-                            const stat =
-                                stats[word.id] ||
-                                stats[String(word.id)];
-
-                            return (
-                                !stat ||
-                                !stat.asked
-                            );
-                        });
+                    const unseenWords = unseenQuizWords;
 
                     if (!unseenWords.length) {
                         alert(
@@ -662,6 +642,8 @@ const App = (() => {
                     quickAddResult.className = "home-quick-add-result is-warning";
                     quickAddResult.textContent = "追加する言葉を入力してください。";
                 } else if (result.added.length) {
+                    container.querySelector("#homePendingWordCount").textContent =
+                        String(Storage.getPendingWords().length);
                     quickAddInput.value = "";
                     quickAddResult.className = "home-quick-add-result is-success";
                     quickAddResult.textContent =
