@@ -1,6 +1,6 @@
 "use strict";
 
-const APP_VERSION = "0.11.4";
+const APP_VERSION = "0.11.5";
 
 const AI_API_URL =
     "https://vocabulary-generator.pennyroyal-juice.workers.dev/";
@@ -1449,6 +1449,29 @@ const App = (() => {
         startQuiz();
     }
 
+    // Update all visible copies of the same word without restarting the quiz.
+    function bindFavoriteToggles(scope) {
+        scope.querySelectorAll("[data-favorite-word-id]").forEach(button => {
+            button.addEventListener("click", () => {
+                const id = button.dataset.favoriteWordId;
+                try {
+                    const active = Storage.toggleFavoriteWord(id);
+                    document.querySelectorAll("[data-favorite-word-id]").forEach(item => {
+                        if (item.dataset.favoriteWordId !== id) return;
+                        item.textContent = active ? "★" : "☆";
+                        item.setAttribute("aria-pressed", String(active));
+                        const label = active ? "お気に入りから外す" : "お気に入りに追加";
+                        const word = words.find(entry => String(entry.id) === id);
+                        item.setAttribute("aria-label", label + "：" + (word?.word || ""));
+                    });
+                } catch (error) {
+                    console.error(error);
+                    alert(error.message || "お気に入りの変更に失敗しました。");
+                }
+            });
+        });
+    }
+
     function renderQuizRoute(container) {
         const question =
             Quiz.getCurrentQuestion();
@@ -1496,6 +1519,15 @@ const App = (() => {
                             question.word.category || ""
                         )}
                     </span>
+
+                    <button
+                        class="favorite-toggle quiz-favorite-button"
+                        type="button"
+                        data-favorite-word-id="${Utils.escapeAttribute(String(question.word.id))}"
+                        aria-label="${Storage.isFavoriteWord(question.word.id) ? "お気に入りから外す" : "お気に入りに追加"}：${Utils.escapeAttribute(question.word.word)}"
+                        aria-pressed="${Storage.isFavoriteWord(question.word.id)}"
+                        title="お気に入り"
+                    >${Storage.isFavoriteWord(question.word.id) ? "★" : "☆"}</button>
                 </div>
 
                 <p class="question-prompt">
@@ -1563,6 +1595,8 @@ const App = (() => {
                     Router.show("home");
                 }
             );
+
+        bindFavoriteToggles(container);
 
         container
             .querySelectorAll(".choice")
@@ -1785,10 +1819,18 @@ const App = (() => {
 
                     return `
                         <div class="quiz-question-word-row">
-                            <span class="quiz-question-word-name">
-                                ${Utils.escapeHtml(
-                                    word.word
-                                )}
+                            <span class="quiz-question-word-label">
+                                <span class="quiz-question-word-name">
+                                    ${Utils.escapeHtml(word.word)}
+                                </span>
+                                <button
+                                    class="favorite-toggle quiz-choice-favorite-button"
+                                    type="button"
+                                    data-favorite-word-id="${Utils.escapeAttribute(String(word.id))}"
+                                    aria-label="${Storage.isFavoriteWord(word.id) ? "お気に入りから外す" : "お気に入りに追加"}：${Utils.escapeAttribute(word.word)}"
+                                    aria-pressed="${Storage.isFavoriteWord(word.id)}"
+                                    title="お気に入り"
+                                >${Storage.isFavoriteWord(word.id) ? "★" : "☆"}</button>
                             </span>
 
                             <button
@@ -1848,6 +1890,8 @@ const App = (() => {
         </div>
 
         `;
+
+bindFavoriteToggles(answerBox);
 
 answerBox
     .querySelectorAll(
