@@ -41,7 +41,8 @@ const Storage = (() => {
             streak: 0,
             lastSeen: null,
             lastCorrect: null,
-            lastWrong: null
+            lastWrong: null,
+            favorite: false
         };
     }
 
@@ -162,6 +163,34 @@ const Storage = (() => {
                 {}
             )
         };
+    }
+
+    // Favorites live alongside each word's learning stats, so regular
+    // backups and cloud synchronization include them automatically.
+    function isFavoriteWord(wordId) {
+        return getWordStats(wordId).favorite === true;
+    }
+
+    function setFavoriteWord(wordId, favorite) {
+        const data = load();
+        const key = String(wordId);
+
+        if (!data.vocabulary.some(item => String(item.id) === key)) {
+            throw new Error("お気に入り対象の語彙が見つかりません。");
+        }
+
+        data.stats[key] = {
+            ...createDefaultWordStats(),
+            ...(data.stats[key] || {}),
+            favorite: Boolean(favorite)
+        };
+
+        save(data);
+        return data.stats[key].favorite;
+    }
+
+    function toggleFavoriteWord(wordId) {
+        return setFavoriteWord(wordId, !isFavoriteWord(wordId));
     }
 
     function getSettings() {
@@ -1895,6 +1924,9 @@ return {
     
     getStats,
     getWordStats,
+    isFavoriteWord,
+    setFavoriteWord,
+    toggleFavoriteWord,
     getSettings,
     updateSetting,
     updateStats,
