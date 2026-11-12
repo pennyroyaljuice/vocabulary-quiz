@@ -40,7 +40,8 @@ const Dictionary = (() => {
                 "all",
                 "mastered",
                 "weak",
-                "unseen"
+                "unseen",
+                "favorite"
             ]);
 
         currentFilter =
@@ -115,6 +116,11 @@ const Dictionary = (() => {
                     ${createFilterButton(
                         "unseen",
                         "未出題"
+                    )}
+
+                    ${createFilterButton(
+                        "favorite",
+                        "★ お気に入り"
                     )}
                 </div>
 
@@ -210,6 +216,7 @@ const Dictionary = (() => {
             });
 
         bindWordButtons(container);
+        bindFavoriteButtons(container);
         bindKanaButtons(container);
     }
 
@@ -246,7 +253,38 @@ const Dictionary = (() => {
             );
 
         bindWordButtons(container);
+        bindFavoriteButtons(container);
         bindKanaButtons(container);
+    }
+
+    function bindFavoriteButtons(container) {
+        container.querySelectorAll("[data-dictionary-favorite-id]").forEach(button => {
+            button.addEventListener("click", () => {
+                const wordId = button.dataset.dictionaryFavoriteId;
+                try {
+                    const active = Storage.toggleFavoriteWord(wordId);
+                    if (currentFilter === "favorite") {
+                        updateListArea(container);
+                    } else {
+                        refreshFavoriteButton(button, active);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert(error.message || "お気に入りの変更に失敗しました。");
+                }
+            });
+        });
+    }
+
+    function refreshFavoriteButton(button, active) {
+        button.textContent = active ? "★" : "☆";
+        button.setAttribute("aria-pressed", String(active));
+        const word = allWords.find(item => String(item.id) === (
+            button.dataset.dictionaryFavoriteId || button.dataset.detailFavoriteId
+        ));
+        button.setAttribute("aria-label",
+            (active ? "お気に入りから外す" : "お気に入りに追加") +
+            "：" + (word?.word || ""));
     }
 
     function bindWordButtons(container) {
@@ -409,6 +447,9 @@ const Dictionary = (() => {
                     case "unseen":
                         return !stat ||
                             !stat.asked;
+
+                    case "favorite":
+                        return stat?.favorite === true;
 
                     case "all":
                     default:
@@ -621,6 +662,15 @@ const Dictionary = (() => {
 
                     <button
                         type="button"
+                        class="favorite-toggle dictionary-favorite-button"
+                        data-dictionary-favorite-id="${Utils.escapeAttribute(String(word.id))}"
+                        aria-label="${Storage.isFavoriteWord(word.id) ? "お気に入りから外す" : "お気に入りに追加"}：${Utils.escapeAttribute(word.word)}"
+                        aria-pressed="${Storage.isFavoriteWord(word.id)}"
+                        title="お気に入り"
+                    >${Storage.isFavoriteWord(word.id) ? "★" : "☆"}</button>
+
+                    <button
+                        type="button"
                         class="reading-toggle ${
                             canUseReading
                                 ? (
@@ -781,6 +831,15 @@ const Dictionary = (() => {
                 >
                     一覧へ戻る
                 </button>
+                <button
+                    id="detailFavoriteButton"
+                    type="button"
+                    class="favorite-toggle detail-favorite-button"
+                    data-detail-favorite-id="${Utils.escapeAttribute(String(word.id))}"
+                    aria-label="${Storage.isFavoriteWord(word.id) ? "お気に入りから外す" : "お気に入りに追加"}：${Utils.escapeAttribute(word.word)}"
+                    aria-pressed="${Storage.isFavoriteWord(word.id)}"
+                    title="お気に入り"
+                >${Storage.isFavoriteWord(word.id) ? "★" : "☆"}</button>
             </div>
 
                 <p class="eyebrow">
@@ -900,6 +959,17 @@ const Dictionary = (() => {
                         "dictionary"
                     )
             );
+
+        container.querySelector("#detailFavoriteButton")
+            .addEventListener("click", (event) => {
+                try {
+                    const active = Storage.toggleFavoriteWord(word.id);
+                    refreshFavoriteButton(event.currentTarget, active);
+                } catch (error) {
+                    console.error(error);
+                    alert(error.message || "お気に入りの変更に失敗しました。");
+                }
+            });
 
         container
             .querySelector(
