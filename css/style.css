@@ -2392,3 +2392,38 @@ html[data-theme="dark"]
     margin-top: 16px;
     margin-bottom: 0;
 }
+
+/* Compact numeric labels for the home shortcuts (no wider cards). */
+.home-quiz-shortcuts .menuButton,
+.home-quick-add-card .home-quick-add-management {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+.home-button-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.home-button-count {
+    flex: 0 0 auto;
+    min-width: 2ch;
+    text-align: right;
+    font-size: 0.83rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--mint-ink);
+    font-variant-numeric: tabular-nums;
+}
+@media (max-width: 380px) {
+    .home-quiz-shortcuts .menuButton {
+        padding-inline: 4px;
+        gap: 3px;
+        font-size: 0.78rem;
+    }
+    .home-quiz-shortcuts .home-button-count {
+        font-size: 0.7rem;
+    }
+}
