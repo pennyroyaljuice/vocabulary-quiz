@@ -1461,8 +1461,13 @@ const App = (() => {
                         item.textContent = active ? "★" : "☆";
                         item.setAttribute("aria-pressed", String(active));
                         const label = active ? "お気に入りから外す" : "お気に入りに追加";
-                        const word = words.find(entry => String(entry.id) === id);
-                        item.setAttribute("aria-label", label + "：" + (word?.word || ""));
+                        if (item.classList.contains("quiz-favorite-button")) {
+                            // A question can hide its answer until grading.
+                            item.setAttribute("aria-label", "この問題の語彙を" + label);
+                        } else {
+                            const word = words.find(entry => String(entry.id) === id);
+                            item.setAttribute("aria-label", label + "：" + (word?.word || ""));
+                        }
                     });
                 } catch (error) {
                     console.error(error);
@@ -1524,7 +1529,7 @@ const App = (() => {
                         class="favorite-toggle quiz-favorite-button"
                         type="button"
                         data-favorite-word-id="${Utils.escapeAttribute(String(question.word.id))}"
-                        aria-label="${Storage.isFavoriteWord(question.word.id) ? "お気に入りから外す" : "お気に入りに追加"}：${Utils.escapeAttribute(question.word.word)}"
+                        aria-label="${Storage.isFavoriteWord(question.word.id) ? "この問題の語彙をお気に入りから外す" : "この問題の語彙をお気に入りに追加"}"
                         aria-pressed="${Storage.isFavoriteWord(question.word.id)}"
                         title="お気に入り"
                     >${Storage.isFavoriteWord(question.word.id) ? "★" : "☆"}</button>
