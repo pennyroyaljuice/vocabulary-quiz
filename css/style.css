@@ -2427,3 +2427,64 @@ html[data-theme="dark"]
         font-size: 0.7rem;
     }
 }
+
+/* Lightweight favorite stars shared by quiz, dictionary and word detail. */
+.favorite-toggle {
+    display: inline-flex;
+    flex: 0 0 40px;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--mint-border);
+    border-radius: 10px;
+    background: var(--mint-surface);
+    color: var(--sub);
+    font: inherit;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+.favorite-toggle[aria-pressed="true"] {
+    color: #c18c17;
+    border-color: #dfc477;
+}
+.favorite-toggle:focus-visible {
+    outline: 3px solid var(--primary);
+    outline-offset: 2px;
+}
+.quiz-meta .quiz-favorite-button {
+    margin-left: auto;
+}
+.dictionary-item-row .dictionary-item {
+    min-width: 0;
+}
+.dictionary-item-row .dictionary-favorite-button {
+    align-self: center;
+}
+.dictionary-word-main {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.quiz-question-word-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+.quiz-question-word-label .quiz-question-word-name {
+    flex: 1 1 auto;
+}
+.quiz-choice-favorite-button {
+    flex: 0 0 32px;
+    width: 32px;
+    min-width: 32px;
+    height: 36px;
+    font-size: 21px;
+}
+.detail-top-actions .detail-favorite-button {
+    flex: 0 0 40px;
+}
